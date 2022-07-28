@@ -18,8 +18,23 @@ class Property:
         return all_values
 
 
+class MetadataMapping:
+    def __init__(self, path_to_mapping):
+        self.path = path_to_mapping
+        self.output_data = {}
+        self.mapping_data = yaml.safe_load(open(path_to_mapping, "r"))['mapping']
+
+    def execute(self):
+        output_data = {}
+        for rdf_property in self.mapping_data:
+            output_data[rdf_property['name']] = Property(
+                'fixtures/arrow_1.xml',
+                {"mods": "http://www.loc.gov/mods/v3"}
+            ).find(rdf_property['xpaths'])
+        return output_data
+
+
 if __name__ == "__main__":
-    x = yaml.safe_load(open("config.yml", "r"))
-    local_identifiers = Property('fixtures/arrow_1.xml', {"mods": "http://www.loc.gov/mods/v3"}).find(x['local_name']['xpaths'])
-    print(local_identifiers)
+    test = MetadataMapping('config.yml')
+    print(test.execute())
 
