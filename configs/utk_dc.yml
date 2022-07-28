@@ -1,0 +1,42 @@
+mapping:
+  - name: local_name
+    xpaths:
+      - 'mods:identifier[@type="local"]'
+      - 'mods:identifier[@type="Vendor ID"]'
+      - 'mods:identifier[@type="archival number"]'
+      - 'mods:identifier[@type="catalog"]'
+      - 'mods:identifier[@type="circular"]'
+      - 'mods:identifier[@type="cw"]'
+      - 'mods:identifier[@type="document ID"]'
+      - 'mods:identifier[@type="documentID"]'
+      - 'mods:identifier[@type="filename"]'
+      - 'mods:identifier[@type="film number"]'
+      - 'mods:identifier[@type="legacy"]'
+      - 'mods:identifier[@type="local"]'
+      - 'mods:identifier[@type="original ID"]'
+      - 'mods:identifier[@type="photograph number"]'
+      - 'mods:identifier[@type="slide number"]'
+      - 'mods:identifier[@type="pid"]'
+      - 'mods:identifier[@type="opac"]'
+      - 'mods:identifier[@type="spc"]'
+    property: "http://id.loc.gov/vocabulary/identifiers/local"
+
+  - name: acquisition_identifier
+    xpaths:
+      - 'mods:identifier[@type="acquisition"]'
+    property: "http://opaquenamespace.org/ns/accessionNumber"
+
+  - name: oclc
+    xpaths:
+      - 'mods:identifier[@type="oclc"]'
+    property: "http://dbpedia.org/ontology/oclc"
+
+  - name: issn
+    xpaths:
+      - 'mods:identifier[@type="issn"]'
+    property: "http://dbpedia.org/ontology/issn"
+
+  - name: isbn
+    xpaths:
+      - 'mods:identifier[@type="isbn"]'
+    property: "http://dbpedia.org/ontology/isbn"
