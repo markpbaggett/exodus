@@ -59,3 +59,10 @@ mapping:
     xpaths:
       - 'mods:tableOfContents'
     property: "http://purl.org/dc/terms/tableOfContents"
+
+  - name: names
+    xpaths:
+      - 'mods:name/mods:namePart'
+    properties:
+      - "http://id.loc.gov/vocabulary/relators/rcp"
+    special: "NameProperty"

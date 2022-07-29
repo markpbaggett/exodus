@@ -1,3 +1,3 @@
-# Exodus :airplane_departure:
+# Exodus
 
 Migration scripts for converting UTK data to Bulrax CSV import.

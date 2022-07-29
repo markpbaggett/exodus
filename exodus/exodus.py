@@ -1,5 +1,6 @@
 from lxml import etree
 import yaml
+import xmltodict
 
 
 class BaseProperty:
@@ -130,15 +131,47 @@ class MetadataMapping:
             else:
                 special = self.__lookup_special_property(rdf_property['special'], file, namespaces)
                 for k, v in special.items():
-                    output_data[k] =v
+                    output_data[k] = v
         return output_data
 
     @staticmethod
     def __lookup_special_property(special_property, file, namespaces):
         special_properties = {
-            "TitleProperty": TitleProperty(file, namespaces).find()
+            "TitleProperty": TitleProperty(file, namespaces).find(),
+            "NameProperty": NameProperty(file).find()
         }
         return special_properties[special_property]
+
+
+class NameProperty:
+    def __init__(self, file):
+        self.path = file
+        self.namespaces = {"http://www.loc.gov/mods/v3": "mods"}
+        self.all_names = self.__find_all_names()
+
+    def __find_all_names(self):
+        with open(self.path) as fd:
+            doc = xmltodict.parse(fd.read(), process_namespaces=True, namespaces=self.namespaces)
+            all_names = doc['mods:mods']['mods:name']
+            if type(all_names) == list:
+                return all_names
+            elif type(all_names) == dict:
+                return [all_names]
+            elif type(all_names) == str:
+                return [all_names]
+            else:
+                return ['Problem']
+
+    def find(self):
+        roles_and_names = {}
+        for name in self.all_names:
+            role = name['mods:role']['mods:roleTerm']['#text']
+            name = name['mods:namePart']
+            if role not in roles_and_names:
+                roles_and_names[role] = [name]
+            else:
+                roles_and_names[role].append(name)
+        return roles_and_names
 
 
 if __name__ == "__main__":
