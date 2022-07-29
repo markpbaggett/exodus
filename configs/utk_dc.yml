@@ -40,3 +40,22 @@ mapping:
     xpaths:
       - 'mods:identifier[@type="isbn"]'
     property: "http://dbpedia.org/ontology/isbn"
+
+  - name: title_and_alternative_title
+    xpaths:
+      - 'mods:titleInfo[not(@supplied)]/mods:title'
+      - 'mods:titleInfo[@supplied="yes"]/mods:title'
+    properties:
+      - "http://purl.org/dc/terms/title"
+      - "http://purl.org/dc/terms/alternative"
+    special: "TitleProperty"
+
+  - name: abstract
+    xpaths:
+      - 'mods:abstract'
+    property: "http://purl.org/dc/terms/abstract"
+
+  - name: table_of_contents
+    xpaths:
+      - 'mods:tableOfContents'
+    property: "http://purl.org/dc/terms/tableOfContents"
