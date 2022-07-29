@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods xmlns="http://www.loc.gov/mods/v3"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+   <identifier type="filename">dabney_1</identifier>
+   <titleInfo supplied="yes">
+      <title>Offical notice-December 29th, 1893 responsibilities of university departments</title>
+   </titleInfo>
+   <abstract>Official notice from the University of Tennessee President listing the administrative duties that top campus officers are charged with.</abstract>
+   <originInfo>
+      <dateCreated>Dec 29, 1893</dateCreated>
+      <dateCreated keyDate="yes" encoding="edtf">1893-12-29</dateCreated>
+   </originInfo>
+   <physicalDescription>
+      <form authority="aat" valueURI="http://vocab.getty.edu/aat/300026877">correspondence</form>
+      <digitalOrigin>reformatted digital</digitalOrigin>
+   </physicalDescription>
+   <subject authority="lcsh"
+            valueURI="http://id.loc.gov/authorities/subjects/sh85141106">
+      <topic>Universities and colleges--Departments</topic>
+   </subject>
+   <subject>
+      <name authority="naf"
+            valueURI="http://id.loc.gov/authorities/names/n80003887">
+         <namePart>University of Tennessee (Knoxville campus)</namePart>
+      </name>
+   </subject>
+   <language>
+      <languageTerm authority="iso639-2b" type="text">English</languageTerm>
+   </language>
+   <typeOfResource>text</typeOfResource>
+   <relatedItem displayLabel="Collection" type="host">
+      <titleInfo>
+         <title>University of Tennessee President's Papers, 1867-1954</title>
+      </titleInfo>
+      <identifier>AR.0001</identifier>
+   </relatedItem>
+   <relatedItem displayLabel="Project" type="host">
+      <titleInfo>
+         <title>Charles Dabney, University of Tennessee Office of the President Records, 1867-1954</title>
+      </titleInfo>
+   </relatedItem>
+   <location>
+      <physicalLocation authority="naf"
+                        valueURI="http://id.loc.gov/authorities/names/no2014027633">University of Tennessee, Knoxville. Special Collections</physicalLocation>
+   </location>
+   <recordInfo>
+      <languageOfCataloging>
+         <languageTerm authority="iso639-2b" type="text">English</languageTerm>
+      </languageOfCataloging>
+      <recordOrigin>Created and edited in general conformance to MODS Guidelines (Version 3.5).</recordOrigin>
+      <recordContentSource valueURI="http://id.loc.gov/authorities/names/n87808088">University of Tennessee, Knoxville. Libraries</recordContentSource>
+   </recordInfo>
+   <accessCondition type="use and reproduction"
+                    xlink:href="http://rightsstatements.org/vocab/InC/1.0/">In Copyright</accessCondition>
+</mods>

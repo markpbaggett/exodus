@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods xmlns="http://www.loc.gov/mods/v3"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+   <identifier type="pid">arrow:1</identifier>
+   <identifier type="filename">arr2710049_0000</identifier>
+   <titleInfo>
+      <title>A Trip of Investigation Made by the Settlement House Committee</title>
+   </titleInfo>
+   <abstract>Pages 49-54 of The Arrow of Pi Beta Phi, volume 27, number 1. Part of Institute of Museum and Library Services grant LG-03-4-0084-04:  From Pi Beta Phi to Arrowmont:  Bringing Education and Economic Development to the Great Smoky Mountains, 1910-2004.  Principal Investigators:  Anne Bridges and Ken Wise.</abstract>
+   <name>
+      <namePart>Pettit, Anna F. T.</namePart>
+      <role>
+         <roleTerm authority="marcrelator"
+                   valueURI="http://id.loc.gov/vocabulary/relators/aut">Author</roleTerm>
+      </role>
+   </name>
+   <originInfo>
+      <dateIssued>November 1910</dateIssued>
+      <dateIssued encoding="edtf" keyDate="yes">1910-11</dateIssued>
+      <publisher>Pi Beta Phi</publisher>
+   </originInfo>
+   <physicalDescription>
+      <form authority="aat" valueURI="http://vocab.getty.edu/aat/300026657">periodicals</form>
+      <extent>Pages 49-54</extent>
+   </physicalDescription>
+   <subject>
+      <temporal>Founding of Pi Beta Phi Settlement School, Gatlinburg, Tennessee, 1909-1927</temporal>
+   </subject>
+   <subject authority="lcsh"
+            valueURI="http://id.loc.gov/authorities/subjects/sh85062912">
+      <topic>Humanitarianism</topic>
+   </subject>
+   <subject authority="lcsh"
+            valueURI="http://id.loc.gov/authorities/subjects/sh2002006228">
+      <topic>Planning</topic>
+   </subject>
+   <subject authority="lcsh"
+            valueURI="http://id.loc.gov/authorities/subjects/sh99005758">
+      <topic>Education</topic>
+   </subject>
+   <subject authority="naf"
+            valueURI="http://id.loc.gov/authorities/names/n80040520">
+      <geographic>Gatlinburg (Tenn.)</geographic>
+   </subject>
+   <subject authority="lcsh"
+            valueURI="http://id.loc.gov/authorities/subjects/sh85057008">
+      <geographic>Great Smoky Mountains (N.C. and Tenn.)</geographic>
+   </subject>
+   <genre authority="lcgft"
+          valueURI="http://id.loc.gov/authorities/genreForms/gf2014026163">Records (Documents)</genre>
+   <language>
+      <languageTerm authority="iso639-2b" type="text">English</languageTerm>
+   </language>
+   <typeOfResource>text</typeOfResource>
+   <relatedItem type="host" displayLabel="Project">
+      <titleInfo>
+         <title>From Pi Beta Phi to Arrowmont</title>
+      </titleInfo>
+   </relatedItem>
+   <relatedItem displayLabel="Project Part" type="host">
+      <titleInfo>
+         <title>The Arrow of Pi Beta Phi</title>
+      </titleInfo>
+   </relatedItem>
+   <relatedItem displayLabel="Bibliographic Citation" type="host">
+      <titleInfo>
+         <title>The Arrow, Volume 27, Number 1</title>
+      </titleInfo>
+   </relatedItem>
+   <location>
+      <physicalLocation>Pi Beta Phi Fraternity</physicalLocation>
+      <physicalLocation displayLabel="Address">1154 Town and Country Commons Drive, Town and Country, Missouri 63017</physicalLocation>
+      <shelfLocator>Box 35, Folder 6</shelfLocator>
+   </location>
+   <recordInfo>
+      <recordContentSource valueURI="http://id.loc.gov/authorities/names/n87808088">University of Tennessee, Knoxville. Libraries</recordContentSource>
+      <recordOrigin>Created and edited in general conformance to MODS Guidelines (Version 3.5).</recordOrigin>
+   </recordInfo>
+   <accessCondition type="use and reproduction"
+                    xlink:href="http://rightsstatements.org/vocab/CNE/1.0/ ">Copyright Not Evaluated</accessCondition>
+</mods>

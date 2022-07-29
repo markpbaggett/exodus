@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods xmlns="http://www.loc.gov/mods/v3"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+   <identifier type="filename">brehm_1</identifier>
+   <titleInfo supplied="yes">
+      <title>Surrender of Athletic Charter, to Dean Dougherty et al, July 5, 1951</title>
+   </titleInfo>
+   <abstract>Letter proposing plans to make athletics an extracurricular activity of the University of Tennessee.</abstract>
+   <physicalDescription>
+      <form authority="aat" valueURI="http://vocab.getty.edu/aat/300026879">letters (correspondence)</form>
+   </physicalDescription>
+   <originInfo>
+      <dateCreated>Jul 5, 1951</dateCreated>
+      <dateCreated encoding="edtf" keyDate="yes">1951-07-05</dateCreated>
+   </originInfo>
+   <name authority="naf"
+         valueURI="http://id.loc.gov/authorities/names/no2019010507">
+      <namePart>Brehm, Cloide Everette, 1889-1971</namePart>
+      <role>
+         <roleTerm authority="marcrelator"
+                   valueURI="http://id.loc.gov/vocabulary/relators/crp">Correspondent</roleTerm>
+      </role>
+   </name>
+   <note>Addressed to: N. W. Dougherty, Fred C. Smith, R. R. Neyland, Ralph E. Dunford, J. P. Hess, John L. Neely, Jr., and Harold Read</note>
+   <subject authority="lcsh"
+            valueURI="http://id.loc.gov/authorities/subjects/sh85028340">
+      <topic>College sports--Management</topic>
+   </subject>
+   <typeOfResource>text</typeOfResource>
+   <relatedItem displayLabel="Project" type="host">
+      <titleInfo>
+         <title>C. E. Brehm, University of Tennessee Office of the President Records, 1948-1959</title>
+      </titleInfo>
+   </relatedItem>
+   <relatedItem displayLabel="Collection" type="host">
+      <titleInfo>
+         <title>University of Tennessee Office of the President Records 1948-1959</title>
+      </titleInfo>
+      <identifier>AR.0006</identifier>
+      <location>
+         <url>https://n2t.net/ark:/87290/v8416v6b</url>
+      </location>
+   </relatedItem>
+   <location>
+      <physicalLocation valueURI="http://id.loc.gov/authorities/names/no2014027633">University of Tennessee, Knoxville. Special Collections</physicalLocation>
+   </location>
+   <language>
+      <languageTerm type="text" authority="iso639-2b">English</languageTerm>
+   </language>
+   <recordInfo>
+      <recordContentSource valueURI="http://id.loc.gov/authorities/names/n87808088">University of Tennessee, Knoxville. Libraries</recordContentSource>
+      <languageOfCataloging>
+         <languageTerm type="text" authority="iso639-2b">English</languageTerm>
+      </languageOfCataloging>
+      <recordOrigin>
+Created and edited in general conformance to MODS Guidelines (Version 3.5).
+</recordOrigin>
+   </recordInfo>
+   <accessCondition type="use and reproduction"
+                    xlink:href="http://rightsstatements.org/vocab/InC/1.0/">In Copyright</accessCondition>
+</mods>
