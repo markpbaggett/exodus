@@ -10,12 +10,9 @@ class BaseProperty:
         self.root_as_str = etree.tostring(self.root)
 
 
-class Property:
+class StandardProperty(BaseProperty):
     def __init__(self, path, namespaces):
-        self.path = path
-        self.namespaces = namespaces
-        self.root = etree.parse(path)
-        self.root_as_str = etree.tostring(self.root)
+        super().__init__(path, namespaces)
 
     def find(self, xpaths):
         all_values = []
@@ -126,7 +123,7 @@ class MetadataMapping:
         output_data = {}
         for rdf_property in self.mapping_data:
             if 'special' not in rdf_property:
-                output_data[rdf_property['name']] = Property(
+                output_data[rdf_property['name']] = StandardProperty(
                     file,
                     namespaces
                 ).find(rdf_property['xpaths'])
