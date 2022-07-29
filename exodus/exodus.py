@@ -166,11 +166,13 @@ class NameProperty:
         roles_and_names = {}
         for name in self.all_names:
             role = name['mods:role']['mods:roleTerm']['#text']
-            name = name['mods:namePart']
+            name_value = name['mods:namePart']
+            if '@valueURI' in name:
+                name_value = name['@valueURI']
             if role not in roles_and_names:
-                roles_and_names[role] = [name]
+                roles_and_names[role] = [name_value]
             else:
-                roles_and_names[role].append(name)
+                roles_and_names[role].append(name_value)
         return roles_and_names
 
 
