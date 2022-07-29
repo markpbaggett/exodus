@@ -123,15 +123,18 @@ class NameProperty:
     def __find_all_names(self):
         with open(self.path) as fd:
             doc = xmltodict.parse(fd.read(), process_namespaces=True, namespaces=self.namespaces)
-            all_names = doc['mods:mods']['mods:name']
-            if type(all_names) == list:
-                return all_names
-            elif type(all_names) == dict:
-                return [all_names]
-            elif type(all_names) == str:
-                return [all_names]
+            if 'mods:name' in doc['mods:mods']:
+                all_names = doc['mods:mods']['mods:name']
+                if type(all_names) == list:
+                    return all_names
+                elif type(all_names) == dict:
+                    return [all_names]
+                elif type(all_names) == str:
+                    return [all_names]
+                else:
+                    return ['Problem']
             else:
-                return ['Problem']
+                return []
 
     def find(self):
         roles_and_names = {}
