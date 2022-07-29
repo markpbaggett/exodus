@@ -1,6 +1,7 @@
 from lxml import etree
 import yaml
 import xmltodict
+import os
 
 
 class BaseProperty:
@@ -113,36 +114,6 @@ class TitleProperty(BaseProperty):
             alternatives.append(title)
         return {'title': titles, 'alternative_title': alternatives}
 
-
-class MetadataMapping:
-    def __init__(self, path_to_mapping):
-        self.path = path_to_mapping
-        self.output_data = {}
-        self.mapping_data = yaml.safe_load(open(path_to_mapping, "r"))['mapping']
-
-    def execute(self, file, namespaces):
-        output_data = {}
-        for rdf_property in self.mapping_data:
-            if 'special' not in rdf_property:
-                output_data[rdf_property['name']] = StandardProperty(
-                    file,
-                    namespaces
-                ).find(rdf_property['xpaths'])
-            else:
-                special = self.__lookup_special_property(rdf_property['special'], file, namespaces)
-                for k, v in special.items():
-                    output_data[k] = v
-        return output_data
-
-    @staticmethod
-    def __lookup_special_property(special_property, file, namespaces):
-        special_properties = {
-            "TitleProperty": TitleProperty(file, namespaces).find(),
-            "NameProperty": NameProperty(file).find()
-        }
-        return special_properties[special_property]
-
-
 class NameProperty:
     def __init__(self, file):
         self.path = file
@@ -176,7 +147,48 @@ class NameProperty:
         return roles_and_names
 
 
+class MetadataMapping:
+    def __init__(self, path_to_mapping, file_path):
+        self.path = path_to_mapping
+        self.output_data = {}
+        self.all_files = self.__get_all_files(file_path)
+        self.mapping_data = yaml.safe_load(open(path_to_mapping, "r"))['mapping']
+
+    @staticmethod
+    def __get_all_files(path):
+        all_files = []
+        for root, dirs, files in os.walk(path, topdown=False):
+            for name in files:
+                all_files.append(os.path.join(root, name))
+        return all_files
+
+    def execute(self, namespaces):
+        all_file_data = []
+        for file in self.all_files:
+            output_data = {}
+            for rdf_property in self.mapping_data:
+                if 'special' not in rdf_property:
+                    output_data[rdf_property['name']] = StandardProperty(
+                        file,
+                        namespaces
+                    ).find(rdf_property['xpaths'])
+                else:
+                    special = self.__lookup_special_property(rdf_property['special'], file, namespaces)
+                    for k, v in special.items():
+                        output_data[k] = v
+            all_file_data.append(output_data)
+        return all_file_data
+
+    @staticmethod
+    def __lookup_special_property(special_property, file, namespaces):
+        special_properties = {
+            "TitleProperty": TitleProperty(file, namespaces).find(),
+            "NameProperty": NameProperty(file).find()
+        }
+        return special_properties[special_property]
+
+
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml')
-    print(test.execute('fixtures/arrow_1.xml', {"mods": "http://www.loc.gov/mods/v3"}))
+    test = MetadataMapping('configs/utk_dc.yml', 'fixtures')
+    print(test.execute({"mods": "http://www.loc.gov/mods/v3"}))
 
