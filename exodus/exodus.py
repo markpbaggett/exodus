@@ -114,6 +114,7 @@ class TitleProperty(BaseProperty):
             alternatives.append(title)
         return {'title': titles, 'alternative_title': alternatives}
 
+
 class NameProperty:
     def __init__(self, file):
         self.path = file
@@ -154,6 +155,7 @@ class MetadataMapping:
     def __init__(self, path_to_mapping, file_path):
         self.path = path_to_mapping
         self.output_data = {}
+        self.fieldnames = []
         self.all_files = self.__get_all_files(file_path)
         self.mapping_data = yaml.safe_load(open(path_to_mapping, "r"))['mapping']
 
@@ -179,8 +181,15 @@ class MetadataMapping:
                     special = self.__lookup_special_property(rdf_property['special'], file, namespaces)
                     for k, v in special.items():
                         output_data[k] = v
+            self.__find_unique_fieldnames(output_data)
             all_file_data.append(output_data)
         return all_file_data
+
+    def __find_unique_fieldnames(self, data):
+        for k, v in data.items():
+            if k not in self.fieldnames:
+                self.fieldnames.append(k)
+        return
 
     @staticmethod
     def __lookup_special_property(special_property, file, namespaces):
@@ -194,4 +203,5 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping('configs/utk_dc.yml', 'fixtures')
     print(test.execute({"mods": "http://www.loc.gov/mods/v3"}))
+    print(test.fieldnames)
 
