@@ -2,6 +2,7 @@ from lxml import etree
 import yaml
 import xmltodict
 import os
+import csv
 
 
 class BaseProperty:
@@ -21,7 +22,8 @@ class StandardProperty(BaseProperty):
         for xpath in xpaths:
             matches = self.root.xpath(xpath, namespaces=self.namespaces)
             for match in matches:
-                all_values.append(match.text)
+                if match.text is not None:
+                    all_values.append(match.text)
         return all_values
 
 
@@ -154,10 +156,11 @@ class NameProperty:
 class MetadataMapping:
     def __init__(self, path_to_mapping, file_path):
         self.path = path_to_mapping
-        self.output_data = {}
         self.fieldnames = []
         self.all_files = self.__get_all_files(file_path)
         self.mapping_data = yaml.safe_load(open(path_to_mapping, "r"))['mapping']
+        self.namespaces = {"mods": "http://www.loc.gov/mods/v3"}
+        self.output_data = self.__execute(self.namespaces)
 
     @staticmethod
     def __get_all_files(path):
@@ -167,20 +170,21 @@ class MetadataMapping:
                 all_files.append(os.path.join(root, name))
         return all_files
 
-    def execute(self, namespaces):
+    def __execute(self, namespaces):
         all_file_data = []
         for file in self.all_files:
             output_data = {}
             for rdf_property in self.mapping_data:
                 if 'special' not in rdf_property:
-                    output_data[rdf_property['name']] = StandardProperty(
-                        file,
-                        namespaces
-                    ).find(rdf_property['xpaths'])
+                    final_values = ""
+                    values = StandardProperty(file, namespaces).find(rdf_property['xpaths'])
+                    if len(values) > 0:
+                        final_values = '|'.join(values)
+                    output_data[rdf_property['name']] = final_values
                 else:
                     special = self.__lookup_special_property(rdf_property['special'], file, namespaces)
                     for k, v in special.items():
-                        output_data[k] = v
+                        output_data[k] = ','.join(v)
             self.__find_unique_fieldnames(output_data)
             all_file_data.append(output_data)
         return all_file_data
@@ -199,9 +203,15 @@ class MetadataMapping:
         }
         return special_properties[special_property]
 
+    def write_csv(self, filename):
+        with open(filename, 'w', newline='') as bulkrax_sheet:
+            writer = csv.DictWriter(bulkrax_sheet, fieldnames=self.fieldnames)
+            writer.writeheader()
+            for data in self.output_data:
+                writer.writerow(data)
+        return
+
 
 if __name__ == "__main__":
     test = MetadataMapping('configs/utk_dc.yml', 'fixtures')
-    print(test.execute({"mods": "http://www.loc.gov/mods/v3"}))
-    print(test.fieldnames)
-
+    test.write_csv('temp/mark.csv')
