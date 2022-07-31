@@ -1,0 +1,19 @@
+mapping:
+  - name: title_and_alternative_title
+    xpaths:
+      - 'mods:titleInfo[not(@supplied)]/mods:title'
+      - 'mods:titleInfo[@supplied="yes"]/mods:title'
+    properties:
+      - "http://purl.org/dc/terms/title"
+      - "http://purl.org/dc/terms/alternative"
+    special: "TitleProperty"
+
+  - name: rights
+    xpaths:
+      - 'mods:accessCondition[not(@type="restriction on access")]/@xlink:href'
+    property: 'http://www.europeana.eu/schemas/edm/rights'
+
+  - name: creator
+    xpaths:
+      - 'mods:name/mods:namePart'
+    property: 'http://purl.org/dc/elements/1.1/creator'
