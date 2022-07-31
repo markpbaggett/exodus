@@ -53,6 +53,7 @@ mapping:
   - name: abstract
     xpaths:
       - 'mods:abstract'
+      - 'mods:physicalDescription/mods:form[@type="material"]'
     property: "http://purl.org/dc/terms/abstract"
 
   - name: table_of_contents
@@ -151,3 +152,41 @@ mapping:
       - "http://id.loc.gov/vocabulary/relators/pbl"
       - "http://id.loc.gov/vocabulary/relators/pup"
     special: "OriginInfoPlaceProperties"
+
+  - name: note
+    xpaths:
+      - 'mods:physicalDescription/mods:note'
+      - 'mods:note[@type="handwritten"]'
+      - 'mods:note[@displayLabel="Attribution"]'
+      - 'mods:note[@displayLabel="use and reproduction"]'
+      - 'mods:note[@displayLabel="Local Rights"]'
+      - 'mods:note[not(@*)]'
+    property: "http://www.w3.org/2004/02/skos/core#note"
+
+  - name: extent
+    xpaths:
+      - 'mods:physicalDescription/mods:extent'
+    property: "http://rdaregistry.info/Elements/u/P60550"
+    todo: "This needs to be special in order to capture units when they exist."
+
+  - name: form
+    xpaths:
+      - 'mods:physicalDescription/mods:form[not(@type="material")]'
+    property: "http://www.europeana.eu/schemas/edm/hasType"
+    todo: "This needs to be special in order to capture URI or string."
+
+  - name: instrumentation
+    xpaths:
+      - 'mods:note[@type="Instrumentation"]'
+    property: "http://opaquenamespace.org/ns/sheetmusic_instrumentation"
+
+  - name: first_line
+    xpaths:
+      - 'mods:note[@type="first line"]'
+      - 'mods:note[@type="First line"]'
+    property: "http://opaquenamespace.org/ns/sheetmusic_instrumentation"
+
+  - name: intended_audience
+    xpaths:
+      - 'mods:note[@displayLabel="Grade level"]'
+    property: "http://id.loc.gov/ontologies/bibframe/IntendedAudience"
