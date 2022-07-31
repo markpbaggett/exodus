@@ -161,6 +161,7 @@ mapping:
       - 'mods:note[@displayLabel="use and reproduction"]'
       - 'mods:note[@displayLabel="Local Rights"]'
       - 'mods:note[not(@*)]'
+      - 'mods:accessCondition[@type="restriction on access"]'
     property: "http://www.w3.org/2004/02/skos/core#note"
 
   - name: extent
@@ -190,3 +191,9 @@ mapping:
     xpaths:
       - 'mods:note[@displayLabel="Grade level"]'
     property: "http://id.loc.gov/ontologies/bibframe/IntendedAudience"
+
+  - name: rights
+    xpaths:
+      - 'mods:accessCondition[not(@type="restriction on access")]/@xlink:href'
+    property: 'http://www.europeana.eu/schemas/edm/rights'
+

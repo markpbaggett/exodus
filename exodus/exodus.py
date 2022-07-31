@@ -22,8 +22,10 @@ class StandardProperty(BaseProperty):
         for xpath in xpaths:
             matches = self.root.xpath(xpath, namespaces=self.namespaces)
             for match in matches:
-                if match.text is not None:
+                if not xpath.endswith('@xlink:href') and match.text is not None:
                     all_values.append(match.text)
+                elif xpath.endswith('@xlink:href'):
+                    all_values.append(match)
         return all_values
 
 
@@ -120,7 +122,7 @@ class TitleProperty(BaseProperty):
 class XMLtoDictProperty:
     def __init__(self, file):
         self.path = file
-        self.namespaces = {"http://www.loc.gov/mods/v3": "mods"}
+        self.namespaces = {"http://www.loc.gov/mods/v3": "mods", "http://www.w3.org/1999/xlink": "xlink"}
         self.doc = self.__get_doc(file)
 
     def __get_doc(self, path):
@@ -204,7 +206,7 @@ class MetadataMapping:
         self.fieldnames = []
         self.all_files = self.__get_all_files(file_path)
         self.mapping_data = yaml.safe_load(open(path_to_mapping, "r"))['mapping']
-        self.namespaces = {"mods": "http://www.loc.gov/mods/v3"}
+        self.namespaces = {"mods": "http://www.loc.gov/mods/v3", "xlink": "http://www.w3.org/1999/xlink"}
         self.output_data = self.__execute(self.namespaces)
 
     @staticmethod
