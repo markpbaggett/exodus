@@ -117,27 +117,35 @@ class TitleProperty(BaseProperty):
         return {'title': titles, 'alternative_title': alternatives}
 
 
-class NameProperty:
+class XMLtoDictProperty:
     def __init__(self, file):
         self.path = file
         self.namespaces = {"http://www.loc.gov/mods/v3": "mods"}
+        self.doc = self.__get_doc(file)
+
+    def __get_doc(self, path):
+        with open(path) as fd:
+            return xmltodict.parse(fd.read(), process_namespaces=True, namespaces=self.namespaces)
+
+
+class NameProperty(XMLtoDictProperty):
+    def __init__(self, file):
+        super().__init__(file)
         self.all_names = self.__find_all_names()
 
     def __find_all_names(self):
-        with open(self.path) as fd:
-            doc = xmltodict.parse(fd.read(), process_namespaces=True, namespaces=self.namespaces)
-            if 'mods:name' in doc['mods:mods']:
-                all_names = doc['mods:mods']['mods:name']
-                if type(all_names) == list:
-                    return all_names
-                elif type(all_names) == dict:
-                    return [all_names]
-                elif type(all_names) == str:
-                    return [all_names]
-                else:
-                    return ['Problem']
+        if 'mods:name' in self.doc['mods:mods']:
+            all_names = self.doc['mods:mods']['mods:name']
+            if type(all_names) == list:
+                return all_names
+            elif type(all_names) == dict:
+                return [all_names]
+            elif type(all_names) == str:
+                return [all_names]
             else:
-                return []
+                return ['Problem']
+        else:
+            return []
 
     def find(self):
         roles_and_names = {}
