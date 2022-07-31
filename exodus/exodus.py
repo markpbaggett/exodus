@@ -161,6 +161,43 @@ class NameProperty(XMLtoDictProperty):
         return roles_and_names
 
 
+class OriginInfoPlaceProperties(XMLtoDictProperty):
+    def __init__(self, file):
+        super().__init__(file)
+        self.all_values = self.__find_all_values()
+
+    def __find_all_values(self):
+        if 'mods:originInfo' in self.doc['mods:mods']:
+            all_values = self.doc['mods:mods']['mods:originInfo']
+            if type(all_values) == list:
+                return all_values
+            elif type(all_values) == dict:
+                return [all_values]
+            elif type(all_values) == str:
+                return [all_values]
+            else:
+                return ['Problem']
+        else:
+            return []
+
+    @staticmethod
+    def __find_publication_place(place):
+        if '@valueURI' in place['placeTerm']:
+            return place['placeTerm']['@valueURI']
+        else:
+            return place['placeTerm']
+
+    def find(self):
+        relators = {}
+        for value in self.all_values:
+            if 'place' in value:
+                place = self.__find_publication_place(value['place'])
+                relators['place'] = place
+            if 'publisher' in value:
+                relators['publisher'] = value['publisher']
+        return relators
+
+
 class MetadataMapping:
     def __init__(self, path_to_mapping, file_path):
         self.path = path_to_mapping
@@ -207,7 +244,8 @@ class MetadataMapping:
     def __lookup_special_property(special_property, file, namespaces):
         special_properties = {
             "TitleProperty": TitleProperty(file, namespaces).find(),
-            "NameProperty": NameProperty(file).find()
+            "NameProperty": NameProperty(file).find(),
+            "OriginInfoPlaceProperties": OriginInfoPlaceProperties(file).find()
         }
         return special_properties[special_property]
 

@@ -127,3 +127,27 @@ mapping:
       - http://id.loc.gov/vocabulary/relators/vdg
       - http://id.loc.gov/vocabulary/relators/wit
     special: "NameProperty"
+
+  - name: date_created
+    xpaths:
+      - 'mods:originInfo/mods:dateCreated'
+    property: "http://purl.org/dc/terms/created"
+
+  - name: date_issued
+    xpaths:
+      - 'mods:originInfo/mods:dateIssued'
+    property: "http://purl.org/dc/terms/issued"
+
+  - name: date_other
+    xpaths:
+      - 'mods:originInfo/mods:dateOther'
+    property: "http://purl.org/dc/terms/date"
+
+  - name: origin_info_places
+    xpaths:
+      - 'mods:originInfo/mods:place/mods:placeTerm'
+      - 'mods:originInfo/mods:place/mods:placeTerm'
+    properties:
+      - "http://id.loc.gov/vocabulary/relators/pbl"
+      - "http://id.loc.gov/vocabulary/relators/pup"
+    special: "OriginInfoPlaceProperties"
