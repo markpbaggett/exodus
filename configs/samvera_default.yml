@@ -34,3 +34,40 @@ mapping:
       - 'mods:note[not(@*)]'
       - 'mods:accessCondition[@type="restriction on access"]'
     property: "http://purl.org/dc/elements/1.1/description"
+
+  - name: subject
+    xpaths:
+      - 'mods:subject/mods:topic'
+      - 'mods:subject/mods:name/mods:namePart'
+    property: "http://purl.org/dc/elements/1.1/subject"
+
+  - name: identifier
+    xpaths:
+      - 'mods:identifier'
+    property: "http://purl.org/dc/terms/identifier"
+
+  - name: publisher
+    xpaths:
+      - 'mods:originInfo/mods:publisher'
+    property: "http://purl.org/dc/elements/1.1/publisher"
+
+  - name: language
+    xpaths:
+      - 'mods:language/mods:languageTerm'
+    property: "http://purl.org/dc/elements/1.1/language"
+
+  - name: related_url
+    xpaths:
+      - 'mods:relatedItem/mods:location/mods:url'
+    property: "http://www.w3.org/2000/01/rdf-schema#seeAlso"
+
+  - name: resource_type
+    xpaths:
+      - 'mods:typeOfResource'
+      - 'mods:genre'
+    property: "http://purl.org/dc/terms/type"
+
+  - name: bibliographic_citation
+    xpaths:
+      - 'mods:relatedItem[@displayLabel="Bibliographic Citation"]/mods:titleInfo/mods:title'
+    property: "http://purl.org/dc/terms/bibliographicCitation"
