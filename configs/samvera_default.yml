@@ -17,3 +17,20 @@ mapping:
     xpaths:
       - 'mods:name/mods:namePart'
     property: 'http://purl.org/dc/elements/1.1/creator'
+
+  - name: abstract
+    xpaths:
+      - 'mods:abstract'
+      - 'mods:physicalDescription/mods:form[@type="material"]'
+    property: "http://purl.org/dc/terms/abstract"
+
+  - name: description
+    xpaths:
+      - 'mods:physicalDescription/mods:note'
+      - 'mods:note[@type="handwritten"]'
+      - 'mods:note[@displayLabel="Attribution"]'
+      - 'mods:note[@displayLabel="use and reproduction"]'
+      - 'mods:note[@displayLabel="Local Rights"]'
+      - 'mods:note[not(@*)]'
+      - 'mods:accessCondition[@type="restriction on access"]'
+    property: "http://purl.org/dc/elements/1.1/description"
