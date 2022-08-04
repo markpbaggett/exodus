@@ -132,9 +132,32 @@ class ResourceIndexSearch:
         results = requests.get(f"{self.base_url}&query={sparql_query}").content.decode('utf-8').split('\n')
         return [result.split('/')[-1] for result in results if result.startswith('info')]
 
+    def __request_pids(self,request):
+        results = requests.get(f"{self.base_url}&query={request}").content.decode('utf-8').split('\n')
+        return [result.split('/')[-1] for result in results if result.startswith('info')]
+
+    def get_images_no_parts(self, collection):
+        members_of_collection_query = self.escape_query(
+            f"""SELECT ?pid FROM <#ri> WHERE {{ ?pid <info:fedora/fedora-system:def/model#hasModel> <info:fedora/islandora:sp_large_image_cmodel> ; <info:fedora/fedora-system:def/relations-external#isMemberOfCollection> <info:fedora/{collection}> . }}"""
+        )
+        members_of_collection_parts_query = self.escape_query(
+            f"""SELECT ?pid FROM <#ri> WHERE {{ ?pid <info:fedora/fedora-system:def/model#hasModel> <info:fedora/islandora:sp_large_image_cmodel> ; <info:fedora/fedora-system:def/relations-external#isMemberOfCollection> <info:fedora/{collection}> ; <info:fedora/fedora-system:def/relations-external#isConstituentOf> ?unknown. }}"""
+        )
+        members_of_collection = self.__request_pids(members_of_collection_query)
+        members_of_collection_parts = self.__request_pids(members_of_collection_parts_query)
+        members_of_collection_no_parts = [pid for pid in members_of_collection if pid not in members_of_collection_parts]
+        return members_of_collection_no_parts
+
 
 if __name__ == "__main__":
+    """Take a CSV and Add files to it"""
     # x = FileOrganizer('temp/samvera_brehm.csv')
     # x.write_csv('temp/brehm_with_files.csv')
-    x = FileSetFinder('brehm:3')
-    print(x.files)
+    """Below: Get datastreams of a PID without the ones to ignore"""
+    # x = FileSetFinder('brehm:3')
+    # print(x.files)
+    """Below: Get Large Images from a Collection with on constituent parts of a compound object"""
+    x = ResourceIndexSearch().get_images_no_parts('collections:boydcs')
+    with open('temp/things_to_download.txt', 'w') as things_to_download:
+        for pid in x:
+            things_to_download.write(f"{pid}\n")
