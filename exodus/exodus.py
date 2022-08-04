@@ -220,7 +220,12 @@ class MetadataMapping:
     def __execute(self, namespaces):
         all_file_data = []
         for file in self.all_files:
-            output_data = {}
+            output_data = {
+                'source_identifier': file.split('/')[-1],
+                'model': 'Image',
+                'file': '',
+                'parents': '',
+            }
             for rdf_property in self.mapping_data:
                 if 'special' not in rdf_property:
                     final_values = ""
@@ -261,5 +266,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', 'fixtures')
-    test.write_csv('temp/mark.csv')
+    test = MetadataMapping('configs/samvera_default.yml', 'bulkrax/csboyd/files')
+    test.write_csv('temp/csboyd.csv')
