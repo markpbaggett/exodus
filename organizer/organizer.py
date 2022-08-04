@@ -26,7 +26,7 @@ class FileOrganizer:
         initial_data = {
             'source_identifier': f"{row['source_identifier']}_{filename}",
             'model': "FileSet",
-            'file': f"{row['source_identifier'].replace('_', ':')}_{filename}",
+            'file': f"{row['source_identifier']}_{filename}",
             'title': filename,
             'description': f"{filename} for {row['source_identifier']}",
             'parents': row['source_identifier']
@@ -41,8 +41,11 @@ class FileOrganizer:
         new_csv_content = []
         for row in self.original_as_dict:
             new_csv_content.append(row)
-            new_csv_content.append(self.__add_a_file('PDF.pdf', row))
-            new_csv_content.append(self.__add_a_file('MODS.xml', row))
+            pid = row['source_identifier'].replace('_', ":")
+            all_files = FileSetFinder(pid).files
+            print(all_files)
+            for dsid in all_files:
+                new_csv_content.append(self.__add_a_file(dsid, row))
         return new_csv_content
 
     def write_csv(self, filename):
@@ -56,7 +59,7 @@ class FileOrganizer:
 
 class FileSetFinder:
     def __init__(self, pid):
-        self.universal_ignores = ('DC', 'RELS-EXT', 'TECHMD', 'PREVIEW')
+        self.universal_ignores = ('DC', 'RELS-EXT', 'TECHMD', 'PREVIEW', 'TN', 'JPG', 'JP2')
         self.pid = pid
         self.files = self.__get_all_files()
 
@@ -151,13 +154,13 @@ class ResourceIndexSearch:
 
 if __name__ == "__main__":
     """Take a CSV and Add files to it"""
-    # x = FileOrganizer('temp/samvera_brehm.csv')
-    # x.write_csv('temp/brehm_with_files.csv')
+    x = FileOrganizer('temp/csboyd_sheets.csv')
+    x.write_csv('temp/csboyd_with_files.csv')
     """Below: Get datastreams of a PID without the ones to ignore"""
     # x = FileSetFinder('brehm:3')
     # print(x.files)
     """Below: Get Large Images from a Collection with on constituent parts of a compound object"""
-    x = ResourceIndexSearch().get_images_no_parts('collections:boydcs')
-    with open('temp/things_to_download.txt', 'w') as things_to_download:
-        for pid in x:
-            things_to_download.write(f"{pid}\n")
+    # x = ResourceIndexSearch().get_images_no_parts('collections:boydcs')
+    # with open('temp/things_to_download.txt', 'w') as things_to_download:
+    #     for pid in x:
+    #         things_to_download.write(f"{pid}\n")
