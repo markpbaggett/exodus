@@ -41,9 +41,9 @@ class FileOrganizer:
         new_csv_content = []
         for row in self.original_as_dict:
             new_csv_content.append(row)
-            pid = row['source_identifier'].replace('_', ":")
+            pid = row['source_identifier'].replace('_MODS.xml', '').replace('_', ":")
             all_files = FileSetFinder(pid).files
-            print(all_files)
+            print(f"Found {str([thing for thing in all_files])} for {pid}.")
             for dsid in all_files:
                 new_csv_content.append(self.__add_a_file(dsid, row))
         return new_csv_content
@@ -154,8 +154,8 @@ class ResourceIndexSearch:
 
 if __name__ == "__main__":
     """Take a CSV and Add files to it"""
-    x = FileOrganizer('temp/csboyd_sheets.csv')
-    x.write_csv('temp/csboyd_with_files.csv')
+    x = FileOrganizer('temp/roth_small.csv')
+    x.write_csv('temp/roth_small_with_files.csv')
     """Below: Get datastreams of a PID without the ones to ignore"""
     # x = FileSetFinder('brehm:3')
     # print(x.files)
