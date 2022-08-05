@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods xmlns="http://www.loc.gov/mods/v3"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xmlns:etd="http://www.ndltd.org/standards/metadata/etdms/1.0"
+      xmlns:mods="http://www.loc.gov/mods/v3"
+      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
+      version="3.5">
+   <identifier type="filename">0012_002328_000001</identifier>
+   <note displayLabel="Transcribed from Original Collection">Sunshine</note>
+   <originInfo>
+      <dateCreated>1924</dateCreated>
+   </originInfo>
+   <relatedItem type="series" displayLabel="Project"/>
+   <relatedItem displayLabel="Collection" type="host">
+      <identifier>MS.3334</identifier>
+   </relatedItem>
+   <relatedItem displayLabel="Project" type="host"/>
+   <location>
+      <physicalLocation>University of Tennessee, Knoxville. Special Collections</physicalLocation>
+   </location>
+   <name>
+      <namePart>Roth, Albert, 1890-1974</namePart>
+      <role>
+         <roleTerm type="text"
+                   authority="marcrelators"
+                   valueURI="http://id.loc.gov/vocabulary/relators/pht.html">Photographer</roleTerm>
+      </role>
+   </name>
+   <language>
+      <languageTerm type="code" authority="iso639-2b">zxx</languageTerm>
+   </language>
+   <titleInfo supplied="yes">
+      <title>Sunshine, Tennessee</title>
+   </titleInfo>
+   <subject>
+      <topic>Mountain community</topic>
+   </subject>
+   <subject>
+      <geographic authority="geonames"
+                  valueURI="http://sws.geonames.org/4661144/about.rdf">Sunshine</geographic>
+   </subject>
+   <subject>
+      <geographic authority="geonames"
+                  valueURI="http://sws.geonames.org/4626066/about.rdf">Great Smoky Mountains</geographic>
+   </subject>
+   <physicalDescription>
+      <extent>5.5 inches x 3.5 inches</extent>
+      <form authority="aat" valueURI="http://vocab.getty.edu/aat/300127173">negatives (photographs)</form>
+   </physicalDescription>
+   <mods:note displayLabel="dpn">This object was added to the Digital Preservation Network in November 2017.</mods:note>
+   <accessCondition type="use and reproduction"
+                    xlink:href="http://rightsstatements.org/vocab/InC/1.0/">In Copyright</accessCondition>
+   <recordInfo>
+      <recordContentSource valueURI="http://id.loc.gov/authorities/names/n87808088">University
+                of Tennessee, Knoxville. Libraries</recordContentSource>
+      <languageOfCataloging>
+         <languageTerm authority="iso639-2b">eng</languageTerm>
+      </languageOfCataloging>
+   </recordInfo>
+</mods>

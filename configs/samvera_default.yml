@@ -71,3 +71,10 @@ mapping:
     xpaths:
       - 'mods:relatedItem[@displayLabel="Bibliographic Citation"]/mods:titleInfo/mods:title'
     property: "http://purl.org/dc/terms/bibliographicCitation"
+
+  - name: based_near
+    xpaths:
+      - 'mods:subject/mods:geographic/@valueURI'
+    properties:
+      - "http://xmlns.com/foaf/0.1/based_near"
+    special: "GeoNamesProperty"

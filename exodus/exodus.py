@@ -200,6 +200,19 @@ class OriginInfoPlaceProperties(XMLtoDictProperty):
         return relators
 
 
+class GeoNamesProperty(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find(self):
+        uris = [
+            uri.replace('about.rdf', '')
+            for uri in self.root.xpath('mods:subject/mods:geographic/@valueURI', namespaces=self.namespaces)
+            if uri.startswith('http://sws.geonames.org')
+        ]
+        return {'based_near': uris}
+
+
 class MetadataMapping:
     def __init__(self, path_to_mapping, file_path):
         self.path = path_to_mapping
@@ -231,12 +244,14 @@ class MetadataMapping:
                     final_values = ""
                     values = StandardProperty(file, namespaces).find(rdf_property['xpaths'])
                     if len(values) > 0:
+                        # TODO: Make delimeter configurable
                         final_values = '|'.join(values)
                     output_data[rdf_property['name']] = final_values
                 else:
                     special = self.__lookup_special_property(rdf_property['special'], file, namespaces)
                     for k, v in special.items():
-                        output_data[k] = ','.join(v)
+                        # TODO: Make delimeter configurable
+                        output_data[k] = '|'.join(v)
             self.__find_unique_fieldnames(output_data)
             all_file_data.append(output_data)
         return all_file_data
@@ -252,7 +267,8 @@ class MetadataMapping:
         special_properties = {
             "TitleProperty": TitleProperty(file, namespaces).find(),
             "NameProperty": NameProperty(file).find(),
-            "OriginInfoPlaceProperties": OriginInfoPlaceProperties(file).find()
+            "OriginInfoPlaceProperties": OriginInfoPlaceProperties(file).find(),
+            "GeoNamesProperty": GeoNamesProperty(file, namespaces).find(),
         }
         return special_properties[special_property]
 
@@ -266,5 +282,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/samvera_default.yml', 'bulkrax/csboyd/files')
-    test.write_csv('temp/csboyd.csv')
+    test = MetadataMapping('configs/samvera_default.yml', 'fixtures')
+    test.write_csv('temp/fixtures.csv')
