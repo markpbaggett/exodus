@@ -204,13 +204,20 @@ class GeoNamesProperty(BaseProperty):
     def __init__(self, path, namespaces):
         super().__init__(path, namespaces)
 
-    def find(self):
+    def find(self, name):
         uris = [
             uri.replace('about.rdf', '')
             for uri in self.root.xpath('mods:subject/mods:geographic/@valueURI', namespaces=self.namespaces)
-            if uri.startswith('http://sws.geonames.org')
         ]
-        return {'based_near': uris}
+        coordinates = [
+            data.text for data in self.root.xpath('mods:subject/mods:cartographics/mods:coordinates', namespaces=self.namespaces)
+        ]
+        all_values = []
+        for uri in uris:
+            all_values.append(uri)
+        for coordinate in coordinates:
+            all_values.append(coordinate)
+        return {name: all_values}
 
 
 class MetadataMapping:
@@ -248,7 +255,9 @@ class MetadataMapping:
                         final_values = '|'.join(values)
                     output_data[rdf_property['name']] = final_values
                 else:
-                    special = self.__lookup_special_property(rdf_property['special'], file, namespaces)
+                    special = self.__lookup_special_property(
+                        rdf_property['special'], file, namespaces, rdf_property['name']
+                    )
                     for k, v in special.items():
                         # TODO: Make delimeter configurable
                         output_data[k] = '|'.join(v)
@@ -263,12 +272,12 @@ class MetadataMapping:
         return
 
     @staticmethod
-    def __lookup_special_property(special_property, file, namespaces):
+    def __lookup_special_property(special_property, file, namespaces, name):
         special_properties = {
             "TitleProperty": TitleProperty(file, namespaces).find(),
             "NameProperty": NameProperty(file).find(),
             "OriginInfoPlaceProperties": OriginInfoPlaceProperties(file).find(),
-            "GeoNamesProperty": GeoNamesProperty(file, namespaces).find(),
+            "GeoNamesProperty": GeoNamesProperty(file, namespaces).find(name),
         }
         return special_properties[special_property]
 
@@ -282,5 +291,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/samvera_default.yml', 'fixtures')
-    test.write_csv('temp/fixtures.csv')
+    test = MetadataMapping('configs/utk_dc.yml', 'fixtures')
+    test.write_csv('temp/test2.csv')
