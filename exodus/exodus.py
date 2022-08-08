@@ -220,6 +220,21 @@ class GeoNamesProperty(BaseProperty):
         return {name: all_values}
 
 
+class DataProvider(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find(self, name):
+        values = [
+            value.text
+            for value in self.root.xpath('mods:recordInfo/mods:recordContentSource', namespaces=self.namespaces)
+        ]
+        return {
+            "provider": [value for value in values if value == "University of Tennessee, Knoxville. Libraries"],
+            "intermediate_provider": [value for value in values if value != "University of Tennessee, Knoxville. Libraries"]
+        }
+
+
 class MetadataMapping:
     def __init__(self, path_to_mapping, file_path):
         self.path = path_to_mapping
@@ -278,6 +293,7 @@ class MetadataMapping:
             "NameProperty": NameProperty(file).find(),
             "OriginInfoPlaceProperties": OriginInfoPlaceProperties(file).find(),
             "GeoNamesProperty": GeoNamesProperty(file, namespaces).find(name),
+            "DataProvider": DataProvider(file, namespaces).find(name),
         }
         return special_properties[special_property]
 

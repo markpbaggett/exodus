@@ -223,3 +223,10 @@ mapping:
     properties:
       - "http://purl.org/dc/terms/bibliographicCitation"
 
+  - name: providers
+    xpaths:
+      - "mods:recordInfo/mods:recordContentSource"
+    properties:
+      - "http://www.europeana.eu/schemas/edm/provider"
+      - "http://www.europeana.eu/schemas/edm/dataProvider"
+    special: "DataProvider"
