@@ -171,12 +171,6 @@ mapping:
     property: "http://rdaregistry.info/Elements/u/P60550"
     todo: "This needs to be special in order to capture units when they exist."
 
-  - name: form
-    xpaths:
-      - 'mods:physicalDescription/mods:form[not(@type="material")]'
-    property: "http://www.europeana.eu/schemas/edm/hasType"
-    todo: "This needs to be special in order to capture URI or string."
-
   - name: instrumentation
     xpaths:
       - 'mods:note[@type="Instrumentation"]'
@@ -250,6 +244,23 @@ mapping:
       - 'mods:subject/mods:name/@valueURI'
       - 'mods:subject[not(@valueURI)]/mods:topic[not(@valueURI)]'
       - 'mods:subject[not(@valueURI)]/mods:name[not(@valueURI)]/mods:namePart[not(@valueURI)]'
+      - 'mods:genre[@authority="aat"]/@valueURI'
+      - 'mods:genre[@authority="lcmpt"]/@valueURI'
+      - 'mods:genre[@authority="lcsh"]/@valueURI'
     property:
       - 'http://purl.org/dc/terms/subject'
     special: "SubjectProperty"
+
+  - name: types_properties
+    xpaths:
+      - "mods:genre[(not(@*) and (string() = ('cartographic', 'notated music')) or (@authority = 'dct' and (string() = ('text', 'image', 'still image')))]"
+      - "mods:typeOfResource[not(@collection)]"
+      - "mods:typeOfResource[@collection]"
+      - 'mods:genre[@authority="lcgft"]/@valueURI'
+      - "mods:genre[not(@*) and not(text()='cartographic') and not(text()='notated music')]"
+      - "mods:physicalDescription/mods:form[not(@valueURI][not(@type='material')]"
+      - "mods:physicalDescription/mods:form/@valueURI"
+    properties:
+      - 'form'
+      - 'resource_type'
+    special: "TypesProperties"

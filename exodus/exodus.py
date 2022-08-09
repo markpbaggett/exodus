@@ -290,12 +290,87 @@ class SubjectProperty(BaseProperty):
         name_value_uris = [uri for uri in self.root.xpath('mods:subject/mods:name/@valueURI', namespaces=self.namespaces)]
         non_uris_topics = [value.text for value in self.root.xpath('mods:subject[not(@valueURI)]/mods:topic[not(@valueURI)]', namespaces=self.namespaces)]
         non_uris_names = [value.text for value in self.root.xpath('mods:subject[not(@valueURI)]/mods:name[not(@valueURI)]/mods:namePart[not(@valueURI)]', namespaces=self.namespaces)]
-        all_initial_values = [subject_topic_value_uris, topic_value_uris, subject_name_value_uris, name_value_uris, non_uris_topics, non_uris_names]
+        aat_genres = [uri for uri in self.root.xpath('mods:genre[@authority="aat"]/@valueURI', namespaces=self.namespaces)]
+        lcmpt_genres = [uri for uri in self.root.xpath('mods:genre[@authority="lcmpt"]/@valueURI', namespaces=self.namespaces)]
+        lcsh_genres = [uri for uri in self.root.xpath('mods:genre[@authority="lcsh"]/@valueURI', namespaces=self.namespaces)]
+        all_initial_values = [subject_topic_value_uris, topic_value_uris, subject_name_value_uris, name_value_uris, non_uris_topics, non_uris_names, aat_genres, lcmpt_genres, lcsh_genres]
         return_values = []
         for iterable in all_initial_values:
             for value in iterable:
                 return_values.append(value)
         return {'subject': return_values}
+
+
+class TypesProperties(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find(self):
+        return {
+            'form': self.__find_edm_has_type(),
+            'resource_type': self.__find_dcterms_type()
+        }
+
+    def __find_dcterms_type(self):
+        genre_uris = {
+            "cartographic": "http://id.loc.gov/vocabulary/resourceTypes/car",
+            "image": "http://id.loc.gov/vocabulary/resourceTypes/img",
+            "notated music": "http://id.loc.gov/vocabulary/resourceTypes/not",
+            "still image": "http://id.loc.gov/vocabulary/resourceTypes/img",
+            "text": "http://id.loc.gov/vocabulary/resourceTypes/txt",
+        }
+        type_of_resource_uris = {
+            "text": "http://id.loc.gov/vocabulary/resourceTypes/txt",
+            "cartographic": "http://id.loc.gov/vocabulary/resourceTypes/car",
+            "notated music": "http://id.loc.gov/vocabulary/resourceTypes/not",
+            "sound recording-nonmusical": "http://id.loc.gov/vocabulary/resourceTypes/aun",
+            "sound recording": "http://id.loc.gov/vocabulary/resourceTypes/aud",
+            "still image": "http://id.loc.gov/vocabulary/resourceTypes/img",
+            "moving image": "http://id.loc.gov/vocabulary/resourceTypes/mov",
+            "three dimensional object": "http://id.loc.gov/vocabulary/resourceTypes/art",
+
+        }
+        # TODO: Fix this!
+        genre_to_dcterms_type = [
+            value.text
+            for value in self.root.xpath(
+                "mods:genre[not(@*) and string() = ('cartographic', 'notated music') or @authority = 'dct' and (string() = ('text', 'image', 'still image')))]", namespaces=self.namespaces
+            )
+        ]
+        type_of_resource_to_dcterms_type = [
+            value.text
+            for value in self.root.xpath(
+                "mods:typeOfResource[not(@collection)]", namespaces=self.namespaces
+            )
+        ]
+        type_of_resource_collection = [
+            value.text
+            for value in self.root.xpath(
+                "mods:typeOfResource[@collection]", namespaces=self.namespaces
+            )
+        ]
+        all_dcterms_types = []
+        for value in genre_to_dcterms_type:
+            if value in genre_uris:
+                all_dcterms_types.append(genre_uris[value])
+        for value in type_of_resource_to_dcterms_type:
+            if value in type_of_resource_uris:
+                all_dcterms_types.append(type_of_resource_uris[value])
+        if len(type_of_resource_collection > 0):
+            all_dcterms_types.append("http://id.loc.gov/vocabulary/resourceTypes/col")
+        return all_dcterms_types
+
+    def __find_edm_has_type(self):
+        lcgft_genres = [uri for uri in self.root.xpath('mods:genre[@authority="lcgft"]/@valueURI', namespaces=self.namespaces)]
+        genre_strings = [value.text for value in self.root.xpath("mods:genre[not(@*) and not(text()='cartographic') and not(text()='notated music')]", namespaces=self.namespaces)]
+        form_no_uri = [value.text for value in self.root.xpath("mods:physicalDescription/mods:form[not(@valueURI)][not(@type='material')]", namespaces=self.namespaces)]
+        form_uris = [uri for uri in self.root.xpath("mods:physicalDescription/mods:form/@valueURI", namespaces=self.namespaces)]
+        all_matches = [lcgft_genres, genre_strings, form_no_uri, form_uris]
+        return_values = []
+        for match in all_matches:
+            for value in match:
+                return_values.append(value)
+        return return_values
 
 
 class MetadataMapping:
@@ -359,6 +434,7 @@ class MetadataMapping:
             "DataProvider": DataProvider(file, namespaces).find(name),
             "PhysicalLocationsProperties": PhysicalLocationsProperties(file, namespaces).find(),
             "SubjectProperty": SubjectProperty(file, namespaces).find_topic(),
+            "TypesProperties": TypesProperties(file, namespaces).find(),
         }
         return special_properties[special_property]
 
