@@ -1,2 +1,4 @@
 temp/*
 .idea/*
+fixtures/brehm/*
+exodus/__pycache__/*
