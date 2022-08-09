@@ -162,6 +162,7 @@ mapping:
       - 'mods:note[@displayLabel="Local Rights"]'
       - 'mods:note[not(@*)]'
       - 'mods:accessCondition[@type="restriction on access"]'
+      - 'mods:location[not(mods:physicalLocation[text()[contains(., "University of Tennessee")]])]/mods:shelfLocator'
     property: "http://www.w3.org/2004/02/skos/core#note"
 
   - name: extent
