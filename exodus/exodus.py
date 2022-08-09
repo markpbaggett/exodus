@@ -220,6 +220,49 @@ class GeoNamesProperty(BaseProperty):
         return {name: all_values}
 
 
+class PhysicalLocationsProperties(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def __find_repositories(self):
+        uris = [
+            uri
+            for uri in self.root.xpath('mods:location/mods:physicalLocation/@valueURI', namespaces=self.namespaces)
+        ]
+        text_values = [
+            text.text
+            for text in self.root.xpath(
+                'mods:location/mods:physicalLocation[not(@valueURI)][not(@displayLabel="Collection")][not(@displayLabel="Address")]',
+                namespaces=self.namespaces
+            )
+        ]
+        all_repositories = []
+        for uri in uris:
+            all_repositories.append(uri)
+        for value in text_values:
+            if "University of Tennesse" not in value:
+                all_repositories.append(value)
+            elif "Special Collections" in value:
+                all_repositories.append('http://id.loc.gov/authorities/names/no2014027633')
+            else:
+                all_repositories.append('http://id.loc.gov/authorities/names/n80003889')
+        return all_repositories
+
+    def find(self):
+        return {
+            'repository': self.__find_repositories(),
+            'archival_collection': self.__find_archival_collections(),
+        }
+
+    def __find_archival_collections(self):
+        return [
+            collection for collection in self.root.xpath(
+                'mods:location/mods:physicalLocation[@displayLabel="Collection"]',
+                namespaces=self.namespaces
+            )
+        ]
+
+
 class DataProvider(BaseProperty):
     def __init__(self, path, namespaces):
         super().__init__(path, namespaces)
@@ -294,6 +337,7 @@ class MetadataMapping:
             "OriginInfoPlaceProperties": OriginInfoPlaceProperties(file).find(),
             "GeoNamesProperty": GeoNamesProperty(file, namespaces).find(name),
             "DataProvider": DataProvider(file, namespaces).find(name),
+            "PhysicalLocationsProperties": PhysicalLocationsProperties(file, namespaces).find()
         }
         return special_properties[special_property]
 

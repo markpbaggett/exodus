@@ -230,3 +230,13 @@ mapping:
       - "http://www.europeana.eu/schemas/edm/provider"
       - "http://www.europeana.eu/schemas/edm/dataProvider"
     special: "DataProvider"
+
+  - name: repository
+    xpaths:
+      - "mods:location/mods:physicalLocation/@valueURI"
+      - "mods:location/mods:physicalLocation[not(@valueURI)]"
+      - 'mods:location/mods:physicalLocation[@displayLabel="Collection"]'
+    properties:
+      - "http://id.loc.gov/vocabulary/relators/rps"
+      - "http://dbpedia.org/ontology/collection"
+    special: "PhysicalLocationsProperties"
