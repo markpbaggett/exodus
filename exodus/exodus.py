@@ -278,6 +278,26 @@ class DataProvider(BaseProperty):
         }
 
 
+class SubjectProperty(BaseProperty):
+    # TODO: Should this even exist? Can't this just be BaseProperty?
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find_topic(self):
+        subject_topic_value_uris = [uri for uri in self.root.xpath('mods:subject[mods:topic]/@valueURI', namespaces=self.namespaces)]
+        topic_value_uris = [uri for uri in self.root.xpath('mods:subject/mods:topic/@valueURI', namespaces=self.namespaces)]
+        subject_name_value_uris = [uri for uri in self.root.xpath('mods:subject[mods:name/mods:namePart]/@valueURI', namespaces=self.namespaces)]
+        name_value_uris = [uri for uri in self.root.xpath('mods:subject/mods:name/@valueURI', namespaces=self.namespaces)]
+        non_uris_topics = [value.text for value in self.root.xpath('mods:subject[not(@valueURI)]/mods:topic[not(@valueURI)]', namespaces=self.namespaces)]
+        non_uris_names = [value.text for value in self.root.xpath('mods:subject[not(@valueURI)]/mods:name[not(@valueURI)]/mods:namePart[not(@valueURI)]', namespaces=self.namespaces)]
+        all_initial_values = [subject_topic_value_uris, topic_value_uris, subject_name_value_uris, name_value_uris, non_uris_topics, non_uris_names]
+        return_values = []
+        for iterable in all_initial_values:
+            for value in iterable:
+                return_values.append(value)
+        return {'subject': return_values}
+
+
 class MetadataMapping:
     def __init__(self, path_to_mapping, file_path):
         self.path = path_to_mapping
@@ -337,7 +357,8 @@ class MetadataMapping:
             "OriginInfoPlaceProperties": OriginInfoPlaceProperties(file).find(),
             "GeoNamesProperty": GeoNamesProperty(file, namespaces).find(name),
             "DataProvider": DataProvider(file, namespaces).find(name),
-            "PhysicalLocationsProperties": PhysicalLocationsProperties(file, namespaces).find()
+            "PhysicalLocationsProperties": PhysicalLocationsProperties(file, namespaces).find(),
+            "SubjectProperty": SubjectProperty(file, namespaces).find_topic(),
         }
         return special_properties[special_property]
 

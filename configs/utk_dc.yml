@@ -241,3 +241,15 @@ mapping:
       - "http://id.loc.gov/vocabulary/relators/rps"
       - "http://dbpedia.org/ontology/collection"
     special: "PhysicalLocationsProperties"
+
+  - name: subject
+    xpaths:
+      - 'mods:subject[mods:topic]/@valueURI'
+      - 'mods:subject/mods:topic/@valueURI'
+      - 'mods:subject[mods:name/mods:namePart]/@valueURI'
+      - 'mods:subject/mods:name/@valueURI'
+      - 'mods:subject[not(@valueURI)]/mods:topic[not(@valueURI)]'
+      - 'mods:subject[not(@valueURI)]/mods:name[not(@valueURI)]/mods:namePart[not(@valueURI)]'
+    property:
+      - 'http://purl.org/dc/terms/subject'
+    special: "SubjectProperty"
