@@ -18,26 +18,40 @@ class FileOrganizer:
         return csv_content
 
     def __get_headers(self):
-        return [k for k, v in self.original_as_dict[0].items()]
+        original_headers = [k for k, v in self.original_as_dict[0].items()]
+        original_headers.append('rdf_type')
+        return original_headers
 
-    @staticmethod
-    def __add_a_file(filename, row):
-        default_headings = ('source_identifier', 'model', 'file', 'title', 'description', 'parents')
+    def __add_a_file(self, filename, row, preserve_and_obj=False):
+        default_headings = ('source_identifier', 'model', 'remote_files', 'title', 'abstract', 'parents', 'rdf_type')
         initial_data = {
             'source_identifier': f"{row['source_identifier']}_{filename}",
             'model': "FileSet",
-            'file': f"{row['source_identifier']}_{filename}",
+            'remote_files': f"https://digital.lib.utk.edu/collections/islandora/object/{row['source_identifier'].replace('_MODS.xml', '').replace('_', ':')}/datastream/{filename}",
             'title': filename,
-            'description': f"{filename} for {row['source_identifier']}",
-            'parents': row['source_identifier']
+            'abstract': f"{filename} for {row['source_identifier']}",
+            'parents': row['source_identifier'],
+            'rdf_type': self.__get_rdf_types_for_file(filename, preserve_and_obj)
         }
         for k, v in row.items():
             if k not in default_headings:
                 initial_data[k] = ''
         return initial_data
 
+    @staticmethod
+    def __get_rdf_types_for_file(dsid, preserve_and_obj):
+        if dsid == "OBJ" and preserve_and_obj is False:
+            return "http://pcdm.org/use#PreservationFile|http://pcdm.org/use#IntermediateFile"
+        elif dsid == "OBJ":
+            return "http://pcdm.org/use#IntermediateFile"
+        elif dsid == "PRESERVE":
+            return "http://pcdm.org/use#PreservationFile"
+        elif dsid == "MODS":
+            return "http://pcdm.org/file-format-types#Markup"
+        else:
+            return ""
+
     def __add_files(self):
-        # TODO: Refactor to be agnostic on files
         new_csv_content = []
         for row in self.original_as_dict:
             new_csv_content.append(row)
@@ -45,7 +59,10 @@ class FileOrganizer:
             all_files = FileSetFinder(pid).files
             print(f"Found {str([thing for thing in all_files])} for {pid}.")
             for dsid in all_files:
-                new_csv_content.append(self.__add_a_file(dsid, row))
+                if 'PRESERVE' in all_files and 'OBJ' in all_files:
+                    new_csv_content.append(self.__add_a_file(dsid, row, True))
+                else:
+                    new_csv_content.append(self.__add_a_file(dsid, row))
         return new_csv_content
 
     def write_csv(self, filename):
@@ -135,7 +152,7 @@ class ResourceIndexSearch:
         results = requests.get(f"{self.base_url}&query={sparql_query}").content.decode('utf-8').split('\n')
         return [result.split('/')[-1] for result in results if result.startswith('info')]
 
-    def __request_pids(self,request):
+    def __request_pids(self, request):
         results = requests.get(f"{self.base_url}&query={request}").content.decode('utf-8').split('\n')
         return [result.split('/')[-1] for result in results if result.startswith('info')]
 
@@ -154,8 +171,8 @@ class ResourceIndexSearch:
 
 if __name__ == "__main__":
     """Take a CSV and Add files to it"""
-    x = FileOrganizer('temp/roth_small.csv')
-    x.write_csv('temp/roth_small_with_files.csv')
+    x = FileOrganizer('temp/test_csboyd_mods.csv')
+    x.write_csv('temp/test_csboyd_mods_with_files_remote.csv')
     """Below: Get datastreams of a PID without the ones to ignore"""
     # x = FileSetFinder('brehm:3')
     # print(x.files)

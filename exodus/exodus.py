@@ -456,9 +456,9 @@ class MetadataMapping:
         all_file_data = []
         for file in self.all_files:
             output_data = {
-                'source_identifier': file.split('/')[-1],
+                'source_identifier': file.split('/')[-1].replace('_MODS.xml', ''),
                 'model': 'Image',
-                'file': '',
+                'remote_files': '',
                 'parents': '',
             }
             for rdf_property in self.mapping_data:
@@ -511,5 +511,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', 'fixtures')
-    test.write_csv('temp/test2.csv')
+    test = MetadataMapping('configs/utk_dc.yml', 'temp/csboyd_mods')
+    test.write_csv('temp/test_csboyd_mods.csv')
