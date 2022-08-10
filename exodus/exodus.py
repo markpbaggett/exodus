@@ -330,13 +330,43 @@ class TypesProperties(BaseProperty):
             "three dimensional object": "http://id.loc.gov/vocabulary/resourceTypes/art",
 
         }
-        # TODO: Fix this!
-        genre_to_dcterms_type = [
+        # TODO: Works but messy!
+        genre_to_dcterms_match_1 = [
             value.text
             for value in self.root.xpath(
-                "mods:genre[not(@*) and string() = ('cartographic', 'notated music') or @authority = 'dct' and (string() = ('text', 'image', 'still image')))]", namespaces=self.namespaces
+                "mods:genre[not(@*)][string() = 'cartographic']",
+                namespaces=self.namespaces
             )
         ]
+        genre_to_dcterms_match_2 = [
+            value.text
+            for value in self.root.xpath(
+                "mods:genre[not(@*)][string() = 'notated music']",
+                namespaces=self.namespaces
+            )
+        ]
+        genre_to_dcterms_match_3 = [
+            value.text
+            for value in self.root.xpath(
+                "mods:genre[@authority = 'dct'][string() = 'image']",
+                namespaces=self.namespaces
+            )
+        ]
+        genre_to_dcterms_match_4 = [
+            value.text
+            for value in self.root.xpath(
+                "mods:genre[@authority = 'dct'][string() = 'still image']",
+                namespaces=self.namespaces
+            )
+        ]
+        genre_to_dcterms_match_5 = [
+            value.text
+            for value in self.root.xpath(
+                "mods:genre[@authority = 'dct'][string() = 'text']",
+                namespaces=self.namespaces
+            )
+        ]
+        genre_to_dcterms_matches = (genre_to_dcterms_match_1, genre_to_dcterms_match_2, genre_to_dcterms_match_3, genre_to_dcterms_match_4, genre_to_dcterms_match_5)
         type_of_resource_to_dcterms_type = [
             value.text
             for value in self.root.xpath(
@@ -350,13 +380,15 @@ class TypesProperties(BaseProperty):
             )
         ]
         all_dcterms_types = []
-        for value in genre_to_dcterms_type:
-            if value in genre_uris:
-                all_dcterms_types.append(genre_uris[value])
+        for matches in genre_to_dcterms_matches:
+            for match in matches:
+                if match in genre_uris:
+                    all_dcterms_types.append(genre_uris[match])
         for value in type_of_resource_to_dcterms_type:
             if value in type_of_resource_uris:
                 all_dcterms_types.append(type_of_resource_uris[value])
-        if len(type_of_resource_collection > 0):
+
+        if len(type_of_resource_collection) > 0:
             all_dcterms_types.append("http://id.loc.gov/vocabulary/resourceTypes/col")
         return all_dcterms_types
 
