@@ -405,6 +405,36 @@ class TypesProperties(BaseProperty):
         return return_values
 
 
+class LanguageURIProperty(BaseProperty):
+    def __init__(self, path, namespaces):
+            super().__init__(path, namespaces)
+
+    def find_term(self):
+        terms_and_uris = {
+            "English": "http://id.loc.gov/vocabulary/iso639-2/eng",
+            "French": "http://id.loc.gov/vocabulary/iso639-2/fre",
+            "German": "http://id.loc.gov/vocabulary/iso639-2/ger",
+            "Italian": "http://id.loc.gov/vocabulary/iso639-2/ita",
+            "Latin": "http://id.loc.gov/vocabulary/iso639-2/lat",
+            "No linguistic content": "http://id.loc.gov/vocabulary/iso639-2/zxx",
+            "Russian": "http://id.loc.gov/vocabulary/iso639-2/rus",
+            "Spanish": "http://id.loc.gov/vocabulary/iso639-2/spa",
+            "Swedish": "http://id.loc.gov/vocabulary/iso639-2/swe",
+            "en": "http://id.loc.gov/vocabulary/iso639-2/eng",
+        }
+        language_terms = [
+            value.text
+            for value in self.root.xpath(
+                "mods:language/mods:languageTerm", namespaces=self.namespaces
+            )
+        ]
+        lanuage_uris = []
+        for language in language_terms:
+            if language in terms_and_uris:
+                lanuage_uris.append(terms_and_uris[language])
+        return {"language": lanuage_uris}
+
+
 class MetadataMapping:
     def __init__(self, path_to_mapping, file_path):
         self.path = path_to_mapping
@@ -467,6 +497,7 @@ class MetadataMapping:
             "PhysicalLocationsProperties": PhysicalLocationsProperties(file, namespaces).find(),
             "SubjectProperty": SubjectProperty(file, namespaces).find_topic(),
             "TypesProperties": TypesProperties(file, namespaces).find(),
+            "LanguageURIProperty": LanguageURIProperty(file, namespaces).find_term()
         }
         return special_properties[special_property]
 

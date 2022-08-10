@@ -264,3 +264,10 @@ mapping:
       - 'form'
       - 'resource_type'
     special: "TypesProperties"
+
+  - name: language
+    xpaths:
+      - "mods:language/mods:languageTerm"
+    properties:
+      - "language"
+    special: "LanguageURIProperty"
