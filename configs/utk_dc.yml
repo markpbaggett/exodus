@@ -1,5 +1,5 @@
 mapping:
-  - name: local_name
+  - name: local_identifier
     xpaths:
       - 'mods:identifier[@type="local"]'
       - 'mods:identifier[@type="Vendor ID"]'
@@ -12,7 +12,6 @@ mapping:
       - 'mods:identifier[@type="filename"]'
       - 'mods:identifier[@type="film number"]'
       - 'mods:identifier[@type="legacy"]'
-      - 'mods:identifier[@type="local"]'
       - 'mods:identifier[@type="original ID"]'
       - 'mods:identifier[@type="photograph number"]'
       - 'mods:identifier[@type="slide number"]'
@@ -261,13 +260,13 @@ mapping:
       - "mods:physicalDescription/mods:form[not(@valueURI][not(@type='material')]"
       - "mods:physicalDescription/mods:form/@valueURI"
     properties:
-      - 'form'
-      - 'resource_type'
+      - 'http://www.europeana.eu/schemas/edm/hasType'
+      - 'http://purl.org/dc/terms/type'
     special: "TypesProperties"
 
   - name: language
     xpaths:
       - "mods:language/mods:languageTerm"
     properties:
-      - "language"
+      - "http://purl.org/dc/terms/language"
     special: "LanguageURIProperty"
