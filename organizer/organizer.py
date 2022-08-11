@@ -28,7 +28,7 @@ class FileOrganizer:
             'source_identifier': f"{row['source_identifier']}_{filename}",
             'model': "FileSet",
             'remote_files': f"https://digital.lib.utk.edu/collections/islandora/object/{row['source_identifier'].replace('_MODS.xml', '').replace('_', ':')}/datastream/{filename}",
-            'title': filename,
+            'title': self.__get_filename_title(filename, preserve_and_obj, row),
             'abstract': f"{filename} for {row['source_identifier']}",
             'parents': row['source_identifier'],
             'rdf_type': self.__get_rdf_types_for_file(filename, preserve_and_obj)
@@ -37,6 +37,19 @@ class FileOrganizer:
             if k not in default_headings:
                 initial_data[k] = ''
         return initial_data
+
+    @staticmethod
+    def __get_filename_title(dsid, preserve_and_obj, row):
+        if preserve_and_obj:
+            identifier = row['local_identifier'].split('|')[0]
+            if dsid == "OBJ":
+                return f"{identifier}_i"
+            elif dsid == "PRESERVE":
+                return f"{identifier}_p"
+            else:
+                return dsid
+        else:
+            return dsid
 
     @staticmethod
     def __get_rdf_types_for_file(dsid, preserve_and_obj):
