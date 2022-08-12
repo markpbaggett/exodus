@@ -2,3 +2,7 @@ temp/*
 .idea/*
 fixtures/brehm/*
 exodus/__pycache__/*
+download_collection.py
+organizer/__pycache__/*
+design/*
+bulkrax/*
