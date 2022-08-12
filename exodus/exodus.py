@@ -95,6 +95,7 @@ class TitleProperty(BaseProperty):
         return
 
     def find(self):
+        # TODO: Gross!  This had so many needless side effects.  Fix!
         self.__find_plain_titles()
         self.__find_supplied_titles()
         self.__find_non_sorts()
@@ -131,6 +132,9 @@ class XMLtoDictProperty:
 
 
 class NameProperty(XMLtoDictProperty):
+    """
+    Used for names.
+    """
     def __init__(self, file):
         super().__init__(file)
         self.all_names = self.__find_all_names()
@@ -152,14 +156,23 @@ class NameProperty(XMLtoDictProperty):
     def find(self):
         roles_and_names = {}
         for name in self.all_names:
-            role = name['mods:role']['mods:roleTerm']['#text']
+            roles = []
+            try:
+                roles.append(name['mods:role']['mods:roleTerm']['#text'])
+            except KeyError:
+                roles.append("Contributor")
+            # TODO: A name can have multiple roles
+            except TypeError:
+                for role in name['mods:role']:
+                    roles.append(role['mods:roleTerm']['#text'])
             name_value = name['mods:namePart']
             if '@valueURI' in name:
                 name_value = name['@valueURI']
-            if role not in roles_and_names:
-                roles_and_names[role] = [name_value]
-            else:
-                roles_and_names[role].append(name_value)
+            for role in roles:
+                if role not in roles_and_names:
+                    roles_and_names[role] = [name_value]
+                else:
+                    roles_and_names[role].append(name_value)
         return roles_and_names
 
 
@@ -511,5 +524,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', 'temp/csboyd_mods')
-    test.write_csv('temp/test_csboyd_mods.csv')
+    test = MetadataMapping('configs/utk_dc.yml', 'bulkrax/volvoices/files')
+    test.write_csv('temp/test_volvoices_mods.csv')
