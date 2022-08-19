@@ -160,6 +160,7 @@ mapping:
   - name: note
     xpaths:
       - 'mods:physicalDescription/mods:shelfLocator'
+      - 'mods:physicalDescription/mods:note'
       - 'mods:note[@type="handwritten"]'
       - 'mods:note[@displayLabel="Attribution"]'
       - 'mods:note[@displayLabel="use and reproduction"]'
