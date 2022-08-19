@@ -20,6 +20,11 @@ mapping:
       - 'mods:identifier[@type="spc"]'
     property: "http://id.loc.gov/vocabulary/identifiers/local"
 
+  - name: ark
+    xpaths:
+      - 'mods:identifier[@type="ark"]'
+    property: "http://id.loc.gov/vocabulary/identifiers/ark"
+
   - name: acquisition_identifier
     xpaths:
       - 'mods:identifier[@type="acquisition"]'
@@ -154,7 +159,7 @@ mapping:
 
   - name: note
     xpaths:
-      - 'mods:physicalDescription/mods:note'
+      - 'mods:physicalDescription/mods:shelfLocator'
       - 'mods:note[@type="handwritten"]'
       - 'mods:note[@displayLabel="Attribution"]'
       - 'mods:note[@displayLabel="use and reproduction"]'
