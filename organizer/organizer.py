@@ -1,5 +1,6 @@
 import csv
 import requests
+from tqdm import tqdm
 
 
 class FileOrganizer:
@@ -66,11 +67,10 @@ class FileOrganizer:
 
     def __add_files(self):
         new_csv_content = []
-        for row in self.original_as_dict:
+        for row in tqdm(self.original_as_dict):
             new_csv_content.append(row)
             pid = row['source_identifier'].replace('_MODS.xml', '').replace('_', ":")
             all_files = FileSetFinder(pid).files
-            print(f"Found {str([thing for thing in all_files])} for {pid}.")
             for dsid in all_files:
                 if 'PRESERVE' in all_files and 'OBJ' in all_files:
                     new_csv_content.append(self.__add_a_file(dsid, row, True))
@@ -184,8 +184,8 @@ class ResourceIndexSearch:
 
 if __name__ == "__main__":
     """Take a CSV and Add files to it"""
-    x = FileOrganizer('temp/test_csboyd_mods.csv')
-    x.write_csv('temp/test_csboyd_mods_with_files_remote.csv')
+    x = FileOrganizer('temp/test_csboyd_mods_initial.csv')
+    x.write_csv('temp/test_csboyd_mods_initial_with_files_remote2.csv')
     """Below: Get datastreams of a PID without the ones to ignore"""
     # x = FileSetFinder('brehm:3')
     # print(x.files)
