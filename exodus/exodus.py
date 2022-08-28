@@ -3,6 +3,7 @@ import yaml
 import xmltodict
 import os
 import csv
+from tqdm import tqdm
 
 
 class BaseProperty:
@@ -160,6 +161,7 @@ class NameProperty(XMLtoDictProperty):
             try:
                 roles.append(name['mods:role']['mods:roleTerm']['#text'])
             except KeyError:
+                print(name)
                 roles.append("Contributor")
             # TODO: A name can have multiple roles
             except TypeError:
@@ -449,13 +451,13 @@ class LanguageURIProperty(BaseProperty):
 
 
 class MetadataMapping:
-    def __init__(self, path_to_mapping, file_path):
+    def __init__(self, path_to_mapping, file_path, parents):
         self.path = path_to_mapping
         self.fieldnames = []
         self.all_files = self.__get_all_files(file_path)
         self.mapping_data = yaml.safe_load(open(path_to_mapping, "r"))['mapping']
         self.namespaces = {"mods": "http://www.loc.gov/mods/v3", "xlink": "http://www.w3.org/1999/xlink"}
-        self.output_data = self.__execute(self.namespaces)
+        self.output_data = self.__execute(self.namespaces, parents)
 
     @staticmethod
     def __get_all_files(path):
@@ -465,14 +467,15 @@ class MetadataMapping:
                 all_files.append(os.path.join(root, name))
         return all_files
 
-    def __execute(self, namespaces):
+    def __execute(self, namespaces, parents):
         all_file_data = []
-        for file in self.all_files:
+        for file in tqdm(self.all_files):
+            # TODO: Ultimately, parents should be populated based on relationship.
             output_data = {
                 'source_identifier': file.split('/')[-1].replace('_MODS.xml', ''),
                 'model': 'Image',
                 'remote_files': '',
-                'parents': '',
+                'parents': parents,
             }
             for rdf_property in self.mapping_data:
                 if 'special' not in rdf_property:
@@ -524,5 +527,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', 'bulkrax/volvoices/files')
-    test.write_csv('temp/test_volvoices_mods.csv')
+    test = MetadataMapping('configs/utk_dc.yml', 'bulkrax/volvoices/files', 'collection_volvoices')
+    test.write_csv('temp/test_volvoices_mods_initial.csv')
