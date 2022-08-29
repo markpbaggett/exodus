@@ -158,22 +158,30 @@ class NameProperty(XMLtoDictProperty):
         roles_and_names = {}
         for name in self.all_names:
             roles = []
+            local_roles = []
             try:
                 roles.append(name['mods:role']['mods:roleTerm']['#text'])
+                local_roles.append(f"Local {name['mods:role']['mods:roleTerm']['#text'].lower()}")
             except KeyError:
                 print(name)
-                roles.append("Contributor")
             # TODO: A name can have multiple roles
             except TypeError:
                 for role in name['mods:role']:
                     roles.append(role['mods:roleTerm']['#text'])
+                    local_roles.append(f"Local {name['mods:role']['mods:roleTerm']['#text'].lower()}")
+            # TODO: Rework this.  It's not pretty but it works.
             name_value = name['mods:namePart']
             if '@valueURI' in name:
                 name_value = name['@valueURI']
             for role in roles:
-                if role not in roles_and_names:
+                if role not in roles_and_names and name_value.startswith('http'):
                     roles_and_names[role] = [name_value]
-                else:
+                elif name_value.startswith('http'):
+                    roles_and_names[role].append(name_value)
+            for role in local_roles:
+                if role not in roles_and_names and not name_value.startswith('http'):
+                    roles_and_names[role] = [name_value]
+                elif not name_value.startswith('http'):
                     roles_and_names[role].append(name_value)
         return roles_and_names
 
@@ -527,5 +535,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', 'bulkrax/volvoices/files', 'collection_volvoices')
-    test.write_csv('temp/test_volvoices_mods_initial.csv')
+    test = MetadataMapping('configs/utk_dc.yml', '/home/mark/metadata/sheet_music/cleaned_data/modsbyPID', 'collection_sheet_music')
+    test.write_csv('temp/test_sheet_music.csv')
