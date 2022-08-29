@@ -276,3 +276,15 @@ mapping:
     properties:
       - "http://purl.org/dc/terms/language"
     special: "LanguageURIProperty"
+
+  - name: sheetmusic_hostitem
+    xpaths:
+      - "mods:relatedItem/mods:identifier[@type='catalog']"
+    properties:
+      - "http://opaquenamespace.org/ns/sheetmusic_hostItem"
+
+  - name: ark
+    xpaths:
+      - "mods:identifier[@type='ark']"
+    properties:
+      - "http://purl.org/dc/terms/identifier"
