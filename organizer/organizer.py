@@ -59,11 +59,17 @@ class FileOrganizer:
         elif dsid == "OBJ":
             return "http://pcdm.org/use#IntermediateFile"
         elif dsid == "PRESERVE":
-            return "http://pcdm.org/use#PreservationFile"
+            return "http://pcdm.org/use#OriginalFile"
         elif dsid == "MODS":
             return "http://pcdm.org/file-format-types#Markup"
+        elif dsid == "POLICY":
+            return "http://pcdm.org/file-format-types#StructuredText"
+        elif dsid == "OCR":
+            return "http://pcdm.org/use#ExtractedText"
+        elif dsid == "HOCR":
+            return "http://pcdm.org/file-format-types#HTML"
         else:
-            return ""
+            return "http://pcdm.org/use#OriginalFile"
 
     def __add_files(self):
         new_csv_content = []
