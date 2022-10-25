@@ -168,7 +168,7 @@ class NameProperty(XMLtoDictProperty):
             except TypeError:
                 for role in name['mods:role']:
                     roles.append(role['mods:roleTerm']['#text'])
-                    local_roles.append(f"Local {name['mods:role']['mods:roleTerm']['#text'].lower()}")
+                    local_roles.append(f"Local {role['mods:roleTerm']['#text'].lower()}")
             # TODO: Rework this.  It's not pretty but it works.
             name_value = name['mods:namePart']
             if '@valueURI' in name:
@@ -480,7 +480,7 @@ class MetadataMapping:
         for file in tqdm(self.all_files):
             # TODO: Ultimately, parents should be populated based on relationship.
             output_data = {
-                'source_identifier': file.split('/')[-1].replace('_MODS.xml', ''),
+                'source_identifier': file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', ''),
                 'model': 'Image',
                 'remote_files': '',
                 'parents': parents,
@@ -535,5 +535,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', '/home/mark/metadata/sheet_music/cleaned_data/modsbyPID', 'collection_sheet_music')
-    test.write_csv('temp/test_sheet_music.csv')
+    test = MetadataMapping('configs/utk_dc.yml', '/home/mark/metadata/volvoices_image/MODS', 'collection_volvoices')
+    test.write_csv('temp/shaina_volvoices.csv')
