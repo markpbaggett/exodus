@@ -26,12 +26,12 @@ class FileOrganizer:
     def __add_a_file(self, filename, row, preserve_and_obj=False):
         default_headings = ('source_identifier', 'model', 'remote_files', 'title', 'abstract', 'parents', 'rdf_type')
         initial_data = {
-            'source_identifier': f"{row['source_identifier']}_{filename}",
+            'source_identifier': f"{row['source_identifier'].replace('.xml', '')}_{filename}",
             'model': "FileSet",
-            'remote_files': f"https://digital.lib.utk.edu/collections/islandora/object/{row['source_identifier'].replace('_MODS.xml', '').replace('_', ':')}/datastream/{filename}",
+            'remote_files': f"https://digital.lib.utk.edu/collections/islandora/object/{row['source_identifier'].replace('_MODS.xml', '').replace('_', ':').replace('.xml', '')}/datastream/{filename}",
             'title': self.__get_filename_title(filename, preserve_and_obj, row),
             'abstract': f"{filename} for {row['source_identifier']}",
-            'parents': row['source_identifier'],
+            'parents': row['source_identifier'].replace('.xml', ''),
             'rdf_type': self.__get_rdf_types_for_file(filename, preserve_and_obj)
         }
         for k, v in row.items():
@@ -90,7 +90,7 @@ class FileOrganizer:
 class FileSetFinder:
     def __init__(self, pid):
         self.universal_ignores = ('DC', 'RELS-EXT', 'TECHMD', 'PREVIEW', 'TN', 'JPG', 'JP2')
-        self.pid = pid
+        self.pid = pid.replace('.xml', '')
         self.files = self.__get_all_files()
 
     def __get_all_files(self):
@@ -184,10 +184,10 @@ class ResourceIndexSearch:
 
 if __name__ == "__main__":
     """Take a CSV and Add files to it"""
-    x = FileOrganizer('temp/test_csboyd_mods_initial.csv')
-    x.write_csv('temp/test_csboyd_mods_initial_with_files_remote2.csv')
+    x = FileOrganizer('temp/shaina_volvoices.csv')
+    x.write_csv('temp/shaina_volvoices_with_files.csv')
     """Below: Get datastreams of a PID without the ones to ignore"""
-    # x = FileSetFinder('brehm:3')
+    # x = FileSetFinder('heilman:150')
     # print(x.files)
     """Below: Get Large Images from a Collection with on constituent parts of a compound object"""
     # x = ResourceIndexSearch().get_images_no_parts('collections:boydcs')
