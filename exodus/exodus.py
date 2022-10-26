@@ -4,6 +4,7 @@ import xmltodict
 import os
 import csv
 from tqdm import tqdm
+from helpers import *
 
 
 class BaseProperty:
@@ -459,13 +460,13 @@ class LanguageURIProperty(BaseProperty):
 
 
 class MetadataMapping:
-    def __init__(self, path_to_mapping, file_path, parents):
+    def __init__(self, path_to_mapping, file_path):
         self.path = path_to_mapping
         self.fieldnames = []
         self.all_files = self.__get_all_files(file_path)
         self.mapping_data = yaml.safe_load(open(path_to_mapping, "r"))['mapping']
         self.namespaces = {"mods": "http://www.loc.gov/mods/v3", "xlink": "http://www.w3.org/1999/xlink"}
-        self.output_data = self.__execute(self.namespaces, parents)
+        self.output_data = self.__execute(self.namespaces)
 
     @staticmethod
     def __get_all_files(path):
@@ -475,7 +476,7 @@ class MetadataMapping:
                 all_files.append(os.path.join(root, name))
         return all_files
 
-    def __execute(self, namespaces, parents):
+    def __execute(self, namespaces):
         all_file_data = []
         for file in tqdm(self.all_files):
             # TODO: Ultimately, parents should be populated based on relationship.
@@ -483,7 +484,7 @@ class MetadataMapping:
                 'source_identifier': file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', ''),
                 'model': 'Image',
                 'remote_files': '',
-                'parents': parents,
+                'parents': '|'.join(ResourceIndexSearch().get_parent_collections(file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', '')),)
             }
             for rdf_property in self.mapping_data:
                 if 'special' not in rdf_property:
@@ -535,5 +536,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', '/home/mark/metadata/volvoices_image/MODS', 'collection_volvoices')
-    test.write_csv('temp/shaina_volvoices.csv')
+    test = MetadataMapping('configs/utk_dc.yml', '/home/mark/metadata/volvoices_image/boydcs')
+    test.write_csv('temp/shana_boydcs.csv')
