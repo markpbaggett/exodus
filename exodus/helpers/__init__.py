@@ -1,0 +1,1 @@
+from .risearch import ResourceIndexSearch
