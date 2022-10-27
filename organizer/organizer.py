@@ -26,9 +26,25 @@ class FileOrganizer:
     def __add_a_file(self, filename, row, preserve_and_obj=False):
         default_headings = ('source_identifier', 'model', 'remote_files', 'title', 'abstract', 'parents', 'rdf_type')
         initial_data = {
-            'source_identifier': f"{row['source_identifier'].replace('.xml', '')}_{filename}",
+            'source_identifier': f"{row['source_identifier'].replace('.xml', '')}_{filename}_fileset",
             'model': "FileSet",
             'remote_files': f"https://digital.lib.utk.edu/collections/islandora/object/{row['source_identifier'].replace('_MODS.xml', '').replace('_', ':').replace('.xml', '')}/datastream/{filename}",
+            'title': self.__get_filename_title(filename, preserve_and_obj, row),
+            'abstract': f"{filename} for {row['source_identifier']}",
+            'parents': f"{row['source_identifier'].replace('.xml', '')}_{filename}",
+            'rdf_type': self.__get_rdf_types_for_file(filename, preserve_and_obj)
+        }
+        for k, v in row.items():
+            if k not in default_headings:
+                initial_data[k] = ''
+        return initial_data
+
+    def __add_an_attachment(self, filename, row, preserve_and_obj=False):
+        default_headings = ('source_identifier', 'model', 'remote_files', 'title', 'abstract', 'parents', 'rdf_type')
+        initial_data = {
+            'source_identifier': f"{row['source_identifier'].replace('.xml', '')}_{filename}",
+            'model': "Attachment",
+            'remote_files': "",
             'title': self.__get_filename_title(filename, preserve_and_obj, row),
             'abstract': f"{filename} for {row['source_identifier']}",
             'parents': row['source_identifier'].replace('.xml', ''),
@@ -79,8 +95,10 @@ class FileOrganizer:
             all_files = FileSetFinder(pid).files
             for dsid in all_files:
                 if 'PRESERVE' in all_files and 'OBJ' in all_files:
+                    new_csv_content.append(self.__add_an_attachment(dsid, row, True))
                     new_csv_content.append(self.__add_a_file(dsid, row, True))
                 else:
+                    new_csv_content.append(self.__add_an_attachment(dsid, row))
                     new_csv_content.append(self.__add_a_file(dsid, row))
         return new_csv_content
 
@@ -190,8 +208,8 @@ class ResourceIndexSearch:
 
 if __name__ == "__main__":
     """Take a CSV and Add files to it"""
-    x = FileOrganizer('temp/shaina_volvoices.csv')
-    x.write_csv('temp/shaina_volvoices_with_files.csv')
+    x = FileOrganizer('temp/shana_boydcs.csv')
+    x.write_csv('temp/shana_boydcs_with_filesets_and_attachments.csv')
     """Below: Get datastreams of a PID without the ones to ignore"""
     # x = FileSetFinder('heilman:150')
     # print(x.files)
