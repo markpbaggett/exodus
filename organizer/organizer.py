@@ -58,7 +58,7 @@ class FileOrganizer:
     @staticmethod
     def __get_filename_title(dsid, preserve_and_obj, row):
         if preserve_and_obj:
-            identifier = row['local_identifier'].split('|')[0]
+            identifier = row['local_identifier'].split(' | ')[0]
             if dsid == "OBJ":
                 return f"{identifier}_i"
             elif dsid == "PRESERVE":
@@ -71,7 +71,7 @@ class FileOrganizer:
     @staticmethod
     def __get_rdf_types_for_file(dsid, preserve_and_obj):
         if dsid == "OBJ" and preserve_and_obj is False:
-            return "http://pcdm.org/use#PreservationFile|http://pcdm.org/use#IntermediateFile"
+            return "http://pcdm.org/use#PreservationFile | http://pcdm.org/use#IntermediateFile"
         elif dsid == "OBJ":
             return "http://pcdm.org/use#IntermediateFile"
         elif dsid == "PRESERVE":
@@ -208,8 +208,8 @@ class ResourceIndexSearch:
 
 if __name__ == "__main__":
     """Take a CSV and Add files to it"""
-    x = FileOrganizer('temp/shana_boydcs.csv')
-    x.write_csv('temp/shana_boydcs_with_filesets_and_attachments.csv')
+    x = FileOrganizer('temp/tiny_bcpl.csv')
+    x.write_csv('temp/tiny_bcpl_with_filesets_and_attachments.csv')
     """Below: Get datastreams of a PID without the ones to ignore"""
     # x = FileSetFinder('heilman:150')
     # print(x.files)

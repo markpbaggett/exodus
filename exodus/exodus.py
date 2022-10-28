@@ -484,7 +484,7 @@ class MetadataMapping:
                 'source_identifier': file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', ''),
                 'model': 'Image',
                 'remote_files': '',
-                'parents': '|'.join(ResourceIndexSearch().get_parent_collections(file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', '')),)
+                'parents': ' | '.join(ResourceIndexSearch().get_parent_collections(file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', '')),)
             }
             for rdf_property in self.mapping_data:
                 if 'special' not in rdf_property:
@@ -492,7 +492,7 @@ class MetadataMapping:
                     values = StandardProperty(file, namespaces).find(rdf_property['xpaths'])
                     if len(values) > 0:
                         # TODO: Make delimeter configurable
-                        final_values = '|'.join(values)
+                        final_values = ' | '.join(values)
                     output_data[rdf_property['name']] = final_values
                 else:
                     special = self.__lookup_special_property(
@@ -500,7 +500,7 @@ class MetadataMapping:
                     )
                     for k, v in special.items():
                         # TODO: Make delimeter configurable
-                        output_data[k] = '|'.join(v)
+                        output_data[k] = ' | '.join(v)
             self.__find_unique_fieldnames(output_data)
             all_file_data.append(output_data)
         return all_file_data
@@ -536,5 +536,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', '/home/mark/metadata/volvoices_image/boydcs')
-    test.write_csv('temp/shana_boydcs.csv')
+    test = MetadataMapping('configs/utk_dc.yml', '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/tiny_bcpl')
+    test.write_csv('temp/tiny_bcpl.csv')

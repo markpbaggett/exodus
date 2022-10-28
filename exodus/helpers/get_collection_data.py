@@ -15,7 +15,7 @@ class CollectionMetadata:
         }
 
     def __simplify_xpath(self, xpath):
-        return "|".join([value.text for value in self.mods.xpath(xpath, namespaces=self.namespaces)])
+        return " | ".join([value.text for value in self.mods.xpath(xpath, namespaces=self.namespaces)])
 
     def grab_all_metadata(self):
         return {
@@ -103,4 +103,4 @@ class CollectionOrganizer:
 
 
 if __name__ == "__main__":
-    CollectionOrganizer('temp/shana_boydcs_with_filesets_and_attachments.csv').write_csv('temp/shana_boydcs_with_collections.csv')
+    CollectionOrganizer('temp/tiny_bcpl_with_filesets_and_attachments.csv').write_csv('temp/tiny_bcpl_with_collections.csv')
