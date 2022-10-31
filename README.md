@@ -34,3 +34,5 @@ A complex property might look like this:
 ```
 
 An agnostic property must always have the `property` property while a complex property may have `property` or `properties`.
+
+## Generating Metadata
