@@ -75,7 +75,7 @@ class FileOrganizer:
         elif dsid == "OBJ":
             return "http://pcdm.org/use#IntermediateFile"
         elif dsid == "PRESERVE":
-            return "http://pcdm.org/use#OriginalFile"
+            return "http://pcdm.org/use#PreservationFile"
         elif dsid == "MODS":
             return "http://pcdm.org/file-format-types#Markup"
         elif dsid == "POLICY":
@@ -208,8 +208,8 @@ class ResourceIndexSearch:
 
 if __name__ == "__main__":
     """Take a CSV and Add files to it"""
-    x = FileOrganizer('temp/tiny_bcpl.csv')
-    x.write_csv('temp/tiny_bcpl_with_filesets_and_attachments.csv')
+    x = FileOrganizer('temp/example.csv')
+    x.write_csv('temp/example_with_filesets_and_attachments.csv')
     """Below: Get datastreams of a PID without the ones to ignore"""
     # x = FileSetFinder('heilman:150')
     # print(x.files)
