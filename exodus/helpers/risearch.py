@@ -5,7 +5,7 @@ class ResourceIndexSearch:
     def __init__(self, language="sparql", riformat="CSV", ri_endpoint="https://porter.lib.utk.edu/fedora/risearch"):
         self.risearch_endpoint = ri_endpoint
         self.valid_languages = ("itql", "sparql")
-        self.valid_formats = ("CSV", "Simple", "Sparql", "TSV")
+        self.valid_formats = ("CSV", "Simple", "Sparql", "TSV", "JSON")
         self.language = self.validate_language(language)
         self.format = self.validate_format(riformat)
         self.base_url = (
@@ -72,6 +72,9 @@ class ResourceIndexSearch:
         results = requests.get(f"{self.base_url}&query={request}").content.decode('utf-8').split('\n')
         return [result.split('/')[-1] for result in results if result.startswith('info')]
 
+    def __request_json(self, request):
+        return requests.get(f"{self.base_url}&query={request}").json()
+
     def get_images_no_parts(self, collection):
         members_of_collection_query = self.escape_query(
             f"""SELECT ?pid FROM <#ri> WHERE {{ ?pid <info:fedora/fedora-system:def/model#hasModel> <info:fedora/islandora:sp_large_image_cmodel> ; <info:fedora/fedora-system:def/relations-external#isMemberOfCollection> <info:fedora/{collection}> . }}"""
@@ -90,6 +93,13 @@ class ResourceIndexSearch:
         )
         collections = self.__request_pids(query)
         return collections
+
+    def get_members_types_and_collections(self, pid):
+        query = self.escape_query(
+            f"""SELECT ?pid ?work_type ?collection FROM <#ri> WHERE {{?pid <info:fedora/fedora-system:def/relations-external#isMemberOfCollection> <info:fedora/{pid}> ;<info:fedora/fedora-system:def/model#hasModel> ?work_type ;<info:fedora/fedora-system:def/relations-external#isMemberOfCollection> ?collection .}}"""
+        )
+        results = self.__request_json(query)
+        return results
 
 
 if __name__ == "__main__":

@@ -2,7 +2,6 @@ import requests
 from lxml import etree
 from io import BytesIO
 import csv
-import tqdm
 
 
 class CollectionMetadata:
@@ -103,4 +102,4 @@ class CollectionOrganizer:
 
 
 if __name__ == "__main__":
-    CollectionOrganizer('temp/tiny_bcpl_with_filesets_and_attachments.csv').write_csv('temp/tiny_bcpl_with_collections.csv')
+    CollectionOrganizer('temp/gamble_with_filesets_and_attachments.csv').write_csv('temp/gamble_with_collections.csv')
