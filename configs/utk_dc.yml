@@ -247,14 +247,19 @@ mapping:
       - 'mods:subject/mods:topic/@valueURI'
       - 'mods:subject[mods:name/mods:namePart]/@valueURI'
       - 'mods:subject/mods:name/@valueURI'
-      - 'mods:subject[not(@valueURI)]/mods:topic[not(@valueURI)]'
-      - 'mods:subject[not(@valueURI)]/mods:name[not(@valueURI)]/mods:namePart[not(@valueURI)]'
       - 'mods:genre[@authority="aat"]/@valueURI'
       - 'mods:genre[@authority="lcmpt"]/@valueURI'
       - 'mods:genre[@authority="lcsh"]/@valueURI'
     property:
       - 'http://purl.org/dc/terms/subject'
     special: "SubjectProperty"
+
+  - name: keyword
+    xpaths:
+      - 'mods:subject[not(@valueURI)]/mods:topic[not(@valueURI)]'
+      - 'mods:subject[not(@valueURI)]/mods:name[not(@valueURI)]/mods:namePart[not(@valueURI)]'
+    property:
+      - 'https://w3id.org/idsa/core/keyword'
 
   - name: types_properties
     xpaths:

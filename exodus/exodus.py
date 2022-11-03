@@ -312,18 +312,29 @@ class SubjectProperty(BaseProperty):
         topic_value_uris = [uri for uri in self.root.xpath('mods:subject/mods:topic/@valueURI', namespaces=self.namespaces)]
         subject_name_value_uris = [uri for uri in self.root.xpath('mods:subject[mods:name/mods:namePart]/@valueURI', namespaces=self.namespaces)]
         name_value_uris = [uri for uri in self.root.xpath('mods:subject/mods:name/@valueURI', namespaces=self.namespaces)]
-        non_uris_topics = [value.text for value in self.root.xpath('mods:subject[not(@valueURI)]/mods:topic[not(@valueURI)]', namespaces=self.namespaces)]
-        non_uris_names = [value.text for value in self.root.xpath('mods:subject[not(@valueURI)]/mods:name[not(@valueURI)]/mods:namePart[not(@valueURI)]', namespaces=self.namespaces)]
         aat_genres = [uri for uri in self.root.xpath('mods:genre[@authority="aat"]/@valueURI', namespaces=self.namespaces)]
         lcmpt_genres = [uri for uri in self.root.xpath('mods:genre[@authority="lcmpt"]/@valueURI', namespaces=self.namespaces)]
         lcsh_genres = [uri for uri in self.root.xpath('mods:genre[@authority="lcsh"]/@valueURI', namespaces=self.namespaces)]
-        all_initial_values = [subject_topic_value_uris, topic_value_uris, subject_name_value_uris, name_value_uris, non_uris_topics, non_uris_names, aat_genres, lcmpt_genres, lcsh_genres]
+        all_initial_values = [subject_topic_value_uris, topic_value_uris, subject_name_value_uris, name_value_uris, aat_genres, lcmpt_genres, lcsh_genres]
         return_values = []
         for iterable in all_initial_values:
             for value in iterable:
                 return_values.append(value)
         return {'subject': return_values}
 
+class KeywordProperty(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find_topic(self):
+        non_uris_topics = [value.text for value in self.root.xpath('mods:subject[not(@valueURI)]/mods:topic[not(@valueURI)]', namespaces=self.namespaces)]
+        non_uris_names = [value.text for value in self.root.xpath('mods:subject[not(@valueURI)]/mods:name[not(@valueURI)]/mods:namePart[not(@valueURI)]', namespaces=self.namespaces)]
+        all_initial_values = [non_uris_topics, non_uris_names]
+        return_values = []
+        for iterable in all_initial_values:
+            for value in iterable:
+                return_values.append(value)
+        return {'keyword': return_values}
 
 class TypesProperties(BaseProperty):
     def __init__(self, path, namespaces):
@@ -460,8 +471,9 @@ class LanguageURIProperty(BaseProperty):
 
 
 class MetadataMapping:
-    def __init__(self, path_to_mapping, file_path):
+    def __init__(self, path_to_mapping, file_path, membership_details=None):
         self.path = path_to_mapping
+        self.membership_details = membership_details
         self.fieldnames = []
         self.all_files = self.__get_all_files(file_path)
         self.mapping_data = yaml.safe_load(open(path_to_mapping, "r"))['mapping']
@@ -521,6 +533,7 @@ class MetadataMapping:
             "DataProvider": DataProvider(file, namespaces).find(name),
             "PhysicalLocationsProperties": PhysicalLocationsProperties(file, namespaces).find(),
             "SubjectProperty": SubjectProperty(file, namespaces).find_topic(),
+            "KeywordProperty": KeywordProperty(file, namespaces).find_topic(),
             "TypesProperties": TypesProperties(file, namespaces).find(),
             "LanguageURIProperty": LanguageURIProperty(file, namespaces).find_term()
         }
@@ -536,5 +549,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/tiny_bcpl')
-    test.write_csv('temp/tiny_bcpl.csv')
+    test = MetadataMapping('configs/utk_dc.yml', '/Users/markbaggett/PycharmProjects/exodus/metadata/small_gamble/')
+    test.write_csv('temp/small_gamble.csv')
