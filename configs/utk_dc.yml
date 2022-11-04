@@ -148,14 +148,27 @@ mapping:
       - 'mods:originInfo/mods:dateOther'
     property: "http://purl.org/dc/terms/date"
 
-  - name: origin_info_places
+  - name: publisher
     xpaths:
-      - 'mods:originInfo/mods:place/mods:placeTerm'
-      - 'mods:originInfo/mods:place/mods:placeTerm'
-    properties:
-      - "http://id.loc.gov/vocabulary/relators/pbl"
-      - "http://id.loc.gov/vocabulary/relators/pup"
-    special: "OriginInfoPlaceProperties"
+      - 'mods:originInfo/mods:publisher/@valueURI'
+    property: 'http://id.loc.gov/vocabulary/relators/pbl'
+    special: PublisherProperty
+
+  - name: utk_publisher
+    xpaths:
+      - 'mods:originInfo/mods:publisher[not(@valueURI)]'
+    property: 'https://ontology.lib.utk.edu/roles#pbl'
+
+  - name: place_of_publication
+    xpaths:
+      - 'mods:originInfo/mods:place/mods:placeTerm/@valueURI'
+    property: 'https://id.loc.gov/vocabulary/relators/pup'
+    special: PublicationPlaceProperty
+
+  - name: utk_place_of_publication
+    xpaths:
+      - 'mods:originInfo/mods:place/mods:placeTerm[not(@valueURI)]'
+    property: 'https://ontology.lib.utk.edu/roles#pup'
 
   - name: note
     xpaths:
@@ -260,6 +273,7 @@ mapping:
       - 'mods:subject[not(@valueURI)]/mods:name[not(@valueURI)]/mods:namePart[not(@valueURI)]'
     property:
       - 'https://w3id.org/idsa/core/keyword'
+    special: "KeywordProperty"
 
   - name: types_properties
     xpaths:

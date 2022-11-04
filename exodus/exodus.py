@@ -187,43 +187,6 @@ class NameProperty(XMLtoDictProperty):
         return roles_and_names
 
 
-class OriginInfoPlaceProperties(XMLtoDictProperty):
-    def __init__(self, file):
-        super().__init__(file)
-        self.all_values = self.__find_all_values()
-
-    def __find_all_values(self):
-        if 'mods:originInfo' in self.doc['mods:mods']:
-            all_values = self.doc['mods:mods']['mods:originInfo']
-            if type(all_values) == list:
-                return all_values
-            elif type(all_values) == dict:
-                return [all_values]
-            elif type(all_values) == str:
-                return [all_values]
-            else:
-                return ['Problem']
-        else:
-            return []
-
-    @staticmethod
-    def __find_publication_place(place):
-        if '@valueURI' in place['placeTerm']:
-            return place['placeTerm']['@valueURI']
-        else:
-            return place['placeTerm']
-
-    def find(self):
-        relators = {}
-        for value in self.all_values:
-            if 'place' in value:
-                place = self.__find_publication_place(value['place'])
-                relators['place'] = place
-            if 'publisher' in value:
-                relators['publisher'] = value['publisher']
-        return relators
-
-
 class GeoNamesProperty(BaseProperty):
     def __init__(self, path, namespaces):
         super().__init__(path, namespaces)
@@ -321,6 +284,7 @@ class SubjectProperty(BaseProperty):
             for value in iterable:
                 return_values.append(value)
         return {'subject': return_values}
+
 
 class KeywordProperty(BaseProperty):
     def __init__(self, path, namespaces):
@@ -440,9 +404,25 @@ class TypesProperties(BaseProperty):
         return return_values
 
 
+class PublisherProperty(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find(self):
+        return {"publisher": [uri for uri in self.root.xpath('mods:originInfo/mods:publisher/@valueURI', namespaces=self.namespaces)]}
+
+
+class PublicationPlaceProperty(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find(self):
+        return {"place_of_publication": [uri for uri in self.root.xpath('mods:originInfo/mods:place/mods:placeTerm/@valueURI', namespaces=self.namespaces)]}
+
+
 class LanguageURIProperty(BaseProperty):
     def __init__(self, path, namespaces):
-            super().__init__(path, namespaces)
+        super().__init__(path, namespaces)
 
     def find_term(self):
         terms_and_uris = {
@@ -528,14 +508,15 @@ class MetadataMapping:
         special_properties = {
             "TitleProperty": TitleProperty(file, namespaces).find(),
             "NameProperty": NameProperty(file).find(),
-            "OriginInfoPlaceProperties": OriginInfoPlaceProperties(file).find(),
             "GeoNamesProperty": GeoNamesProperty(file, namespaces).find(name),
             "DataProvider": DataProvider(file, namespaces).find(name),
             "PhysicalLocationsProperties": PhysicalLocationsProperties(file, namespaces).find(),
             "SubjectProperty": SubjectProperty(file, namespaces).find_topic(),
             "KeywordProperty": KeywordProperty(file, namespaces).find_topic(),
             "TypesProperties": TypesProperties(file, namespaces).find(),
-            "LanguageURIProperty": LanguageURIProperty(file, namespaces).find_term()
+            "LanguageURIProperty": LanguageURIProperty(file, namespaces).find_term(),
+            "PublisherProperty": PublisherProperty(file, namespaces).find(),
+            "PublicationPlaceProperty": PublicationPlaceProperty(file, namespaces).find(),
         }
         return special_properties[special_property]
 
