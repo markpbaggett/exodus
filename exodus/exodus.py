@@ -196,14 +196,9 @@ class GeoNamesProperty(BaseProperty):
             uri.replace('about.rdf', '')
             for uri in self.root.xpath('mods:subject/mods:geographic/@valueURI', namespaces=self.namespaces)
         ]
-        coordinates = [
-            data.text for data in self.root.xpath('mods:subject/mods:cartographics/mods:coordinates', namespaces=self.namespaces)
-        ]
         all_values = []
         for uri in uris:
             all_values.append(uri)
-        for coordinate in coordinates:
-            all_values.append(coordinate)
         return {name: all_values}
 
 
@@ -530,5 +525,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', '/Users/markbaggett/PycharmProjects/exodus/metadata/small_gamble/')
+    test = MetadataMapping('configs/utk_dc.yml', '/Users/markbaggett/PycharmProjects/exodus/fixtures/')
     test.write_csv('temp/small_gamble.csv')
