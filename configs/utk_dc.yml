@@ -208,7 +208,10 @@ mapping:
   - name: rights
     xpaths:
       - 'mods:accessCondition[not(@type="restriction on access")]/@xlink:href'
-    property: 'http://www.europeana.eu/schemas/edm/rights'
+    properties:
+      - 'http://www.europeana.eu/schemas/edm/rights'
+      - 'http://purl.org/dc/terms/license'
+    special: RightsOrLicenseProperties
 
   - name: spatial
     xpaths:

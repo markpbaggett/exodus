@@ -407,6 +407,22 @@ class PublisherProperty(BaseProperty):
         return {"publisher": [uri for uri in self.root.xpath('mods:originInfo/mods:publisher/@valueURI', namespaces=self.namespaces)]}
 
 
+class RightsOrLicenseProperties(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find(self):
+        final = {}
+        rights = [uri for uri in self.root.xpath('mods:accessCondition[not(@type="restriction on access")]/@xlink:href', namespaces=self.namespaces) if "rightsstatements.org" in uri]
+        licenses = [uri for uri in self.root.xpath('mods:accessCondition[not(@type="restriction on access")]/@xlink:href', namespaces=self.namespaces) if "creativecommons.org" in uri]
+        if len(rights) > 0:
+            final['rights_statement'] = rights
+        if len(licenses) > 0:
+            final['license'] = licenses
+        print(final)
+        return final
+
+
 class PublicationPlaceProperty(BaseProperty):
     def __init__(self, path, namespaces):
         super().__init__(path, namespaces)
@@ -487,7 +503,8 @@ class MetadataMapping:
                     )
                     for k, v in special.items():
                         # TODO: Make delimeter configurable
-                        output_data[k] = ' | '.join(v)
+                        if v != [[]]:
+                            output_data[k] = ' | '.join(v)
             self.__find_unique_fieldnames(output_data)
             all_file_data.append(output_data)
         return all_file_data
@@ -512,6 +529,7 @@ class MetadataMapping:
             "LanguageURIProperty": LanguageURIProperty(file, namespaces).find_term(),
             "PublisherProperty": PublisherProperty(file, namespaces).find(),
             "PublicationPlaceProperty": PublicationPlaceProperty(file, namespaces).find(),
+            "RightsOrLicenseProperties": RightsOrLicenseProperties(file, namespaces).find()
         }
         return special_properties[special_property]
 
