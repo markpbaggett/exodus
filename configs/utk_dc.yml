@@ -314,3 +314,9 @@ mapping:
       - "mods:identifier[@type='ark']"
     properties:
       - "http://purl.org/dc/terms/identifier"
+
+  - name: is_part_of
+    xpaths:
+      - "mods:relatedItem[@displayLabel='Collection']/mods:location/mods:url"
+    properties:
+      - "http://purl.org/dc/terms/isPartOf"
