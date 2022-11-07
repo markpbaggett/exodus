@@ -186,8 +186,9 @@ mapping:
   - name: extent
     xpaths:
       - 'mods:physicalDescription/mods:extent'
-    property: "http://rdaregistry.info/Elements/u/P60550"
-    todo: "This needs to be special in order to capture units when they exist."
+    properties:
+      - "http://rdaregistry.info/Elements/u/P60550"
+    special: ExtentProperty
 
   - name: instrumentation
     xpaths:

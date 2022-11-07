@@ -419,7 +419,6 @@ class RightsOrLicenseProperties(BaseProperty):
             final['rights_statement'] = rights
         if len(licenses) > 0:
             final['license'] = licenses
-        print(final)
         return final
 
 
@@ -459,6 +458,22 @@ class LanguageURIProperty(BaseProperty):
             if language in terms_and_uris:
                 lanuage_uris.append(terms_and_uris[language])
         return {"language": lanuage_uris}
+
+
+class ExtentProperty(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find(self):
+        no_units = [text.text for text in self.root.xpath('mods:physicalDescription/mods:extent[not(@unit)]', namespaces=self.namespaces)]
+        with_units = [node for node in self.root.xpath('mods:physicalDescription/mods:extent[@unit]', namespaces=self.namespaces)]
+        final_extent = []
+        if len(with_units) > 0:
+            for unit in with_units:
+                final_extent.append(f"{unit.text} {unit.attrib['unit']}")
+        for unit in no_units:
+            final_extent.append(unit)
+        return {"extent": final_extent}
 
 
 class MetadataMapping:
@@ -529,7 +544,8 @@ class MetadataMapping:
             "LanguageURIProperty": LanguageURIProperty(file, namespaces).find_term(),
             "PublisherProperty": PublisherProperty(file, namespaces).find(),
             "PublicationPlaceProperty": PublicationPlaceProperty(file, namespaces).find(),
-            "RightsOrLicenseProperties": RightsOrLicenseProperties(file, namespaces).find()
+            "RightsOrLicenseProperties": RightsOrLicenseProperties(file, namespaces).find(),
+            "ExtentProperty": ExtentProperty(file, namespaces).find()
         }
         return special_properties[special_property]
 
@@ -543,5 +559,5 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', '/Users/markbaggett/PycharmProjects/exodus/fixtures/')
+    test = MetadataMapping('configs/utk_dc.yml', '/home/mark/PycharmProjects/utk_digital_collections_migration/fixtures/')
     test.write_csv('temp/small_gamble.csv')
