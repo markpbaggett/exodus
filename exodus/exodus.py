@@ -302,7 +302,8 @@ class TypesProperties(BaseProperty):
     def find(self):
         return {
             'form': self.__find_edm_has_type(),
-            'resource_type': self.__find_dcterms_type()
+            'resource_type': self.__find_dcterms_type(),
+            'form_local': self.__find_local_form()
         }
 
     def __find_dcterms_type(self):
@@ -388,10 +389,22 @@ class TypesProperties(BaseProperty):
 
     def __find_edm_has_type(self):
         lcgft_genres = [uri for uri in self.root.xpath('mods:genre[@authority="lcgft"]/@valueURI', namespaces=self.namespaces)]
-        genre_strings = [value.text for value in self.root.xpath("mods:genre[not(@*) and not(text()='cartographic') and not(text()='notated music')]", namespaces=self.namespaces)]
-        form_no_uri = [value.text for value in self.root.xpath("mods:physicalDescription/mods:form[not(@valueURI)][not(@type='material')]", namespaces=self.namespaces)]
         form_uris = [uri for uri in self.root.xpath("mods:physicalDescription/mods:form/@valueURI", namespaces=self.namespaces)]
-        all_matches = [lcgft_genres, genre_strings, form_no_uri, form_uris]
+        all_matches = [lcgft_genres, form_uris]
+        return_values = []
+        for match in all_matches:
+            for value in match:
+                return_values.append(value)
+        return return_values
+
+    def __find_local_form(self):
+        form_no_uri = [value.text for value in
+                       self.root.xpath("mods:physicalDescription/mods:form[not(@valueURI)][not(@type='material')]",
+                                       namespaces=self.namespaces)]
+        genre_strings = [value.text for value in self.root.xpath(
+            "mods:genre[not(@*) and not(text()='cartographic') and not(text()='notated music')]",
+            namespaces=self.namespaces)]
+        all_matches = [form_no_uri, genre_strings]
         return_values = []
         for match in all_matches:
             for value in match:
