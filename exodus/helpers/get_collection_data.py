@@ -16,6 +16,9 @@ class CollectionMetadata:
     def __simplify_xpath(self, xpath):
         return " | ".join([value.text for value in self.mods.xpath(xpath, namespaces=self.namespaces)])
 
+    def __get_valueURIs(self, xpath):
+        return " | ".join([value for value in self.mods.xpath(xpath, namespaces=self.namespaces)])
+
     def grab_all_metadata(self):
         return {
             "source_identifier": self.pid,
@@ -25,20 +28,20 @@ class CollectionMetadata:
             "abstract": self.__simplify_xpath('mods:abstract'),
             "contributor": "",
             "utk_contributor": "",
-            "creator": "",
-            "utk_creator": "",
+            "creator": self.__simplify_xpath('mods:name/@valueURI'),
+            "utk_creator": self.__simplify_xpath('mods:name[not(@valueURI)]/mods:namePart'),
             "date_created": self.__simplify_xpath('mods:originInfo/mods:dateCreated[not(@edtf)]'),
             "date_issued": self.__simplify_xpath('mods:originInfo/mods:dateIssued[not(@edtf)]'),
             "date_created_d": self.__simplify_xpath('mods:originInfo/mods:dateCreated[@edtf]'),
             "date_issued_d": self.__simplify_xpath('mods:originInfo/mods:dateIssued[@edtf]'),
             "utk_publisher": self.__simplify_xpath('mods:originInfo/mods:publisher[not(@valueURI)]'),
-            "publisher": self.__simplify_xpath('mods:originInfo/mods:publisher/@valueURI'),
+            "publisher": self.__get_valueURIs('mods:originInfo/mods:publisher/@valueURI'),
             "publication_place": self.__simplify_xpath('mods:originInfo/mods:place/mods:placeTerm[@valueURI]'),
             "extent": self.__simplify_xpath('mods:physicalDescription/mods:extent'),
             "form": self.__simplify_xpath('mods:physicalDescription/mods:form[@valueURI]'),
-            "subject": "",
-            "keyword": "",
-            "spatial": "",
+            "subject": self.__get_valueURIs('mods:subject[mods:topic]/@valueURI'),
+            "keyword": self.__simplify_xpath('mods:subject[not(@valueURI)]/mods:topic'),
+            "spatial": self.__get_valueURIs('mods:subject/mods:geographic/@valueURI'),
             "resource_type": self.__simplify_xpath('mods:typeOfResource'),
             "repository": self.__simplify_xpath('mods:location/mods:physicalLocation[@valueURI]'),
             "note": self.__simplify_xpath('mods:note'),
@@ -102,4 +105,4 @@ class CollectionOrganizer:
 
 
 if __name__ == "__main__":
-    CollectionOrganizer('temp/gamble_with_filesets_and_attachments.csv').write_csv('temp/gamble_with_collections.csv')
+    CollectionOrganizer('temp/tiny_gamble_new_with_filesets_and_attachments.csv').write_csv('temp/tiny_gamble_new_with_collections.csv')
