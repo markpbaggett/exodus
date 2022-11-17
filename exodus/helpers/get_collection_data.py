@@ -38,12 +38,12 @@ class CollectionMetadata:
             "publisher": self.__get_valueURIs('mods:originInfo/mods:publisher/@valueURI'),
             "publication_place": self.__simplify_xpath('mods:originInfo/mods:place/mods:placeTerm[@valueURI]'),
             "extent": self.__simplify_xpath('mods:physicalDescription/mods:extent'),
-            "form": self.__simplify_xpath('mods:physicalDescription/mods:form[@valueURI]'),
+            "form": self.__get_valueURIs('mods:physicalDescription/mods:form/@valueURI'),
             "subject": self.__get_valueURIs('mods:subject[mods:topic]/@valueURI'),
             "keyword": self.__simplify_xpath('mods:subject[not(@valueURI)]/mods:topic'),
             "spatial": self.__get_valueURIs('mods:subject/mods:geographic/@valueURI'),
-            "resource_type": self.__simplify_xpath('mods:typeOfResource'),
-            "repository": self.__simplify_xpath('mods:location/mods:physicalLocation[@valueURI]'),
+            "resource_type": "",
+            "repository": self.__get_valueURIs('mods:location/mods:physicalLocation/@valueURI'),
             "note": self.__simplify_xpath('mods:note'),
             "collection_link": ""
         }
@@ -105,4 +105,4 @@ class CollectionOrganizer:
 
 
 if __name__ == "__main__":
-    CollectionOrganizer('temp/tiny_gamble_new_with_filesets_and_attachments.csv').write_csv('temp/tiny_gamble_new_with_collections.csv')
+    CollectionOrganizer('temp/gamble_good_with_filesets_and_attachments.csv').write_csv('temp/gamble_good_with_collections.csv')
