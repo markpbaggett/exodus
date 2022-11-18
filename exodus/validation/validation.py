@@ -25,9 +25,19 @@ class ValidateMigration:
                 self.all_exceptions.append(f'{row["source_identifier"]} has invalid model {row["model"]}.')
         return
 
+    def validate_values(self, row):
+        system_fields = ("source_identifier", "model", "remote_files", "parents")
+        for k, v in row.items():
+            if k not in system_fields and row['model'] != "FileSet" and row['model'] != "Collection":
+                self.check_available_on(row, k, v)
+
+    def check_available_on(self, row, key, value):
+        print(self.loaded_m3['properties'][key])
+
     def iterate(self):
         for row in self.loaded_csv:
             self.validate_model(row)
+            self.validate_values(row)
         separator = "\n"
         if len(self.all_exceptions) > 0:
             raise Exception(f"Migration spreadsheet has {len(self.all_exceptions)} problems: {separator.join(self.all_exceptions)}")
