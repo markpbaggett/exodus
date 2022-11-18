@@ -44,8 +44,7 @@ class CollectionMetadata:
             "spatial": self.__get_valueURIs('mods:subject/mods:geographic/@valueURI'),
             "resource_type": "",
             "repository": self.__get_valueURIs('mods:location/mods:physicalLocation/@valueURI'),
-            "note": self.__simplify_xpath('mods:note'),
-            "collection_link": ""
+            "note": self.__simplify_xpath('mods:note')
         }
 
     @staticmethod
@@ -105,4 +104,4 @@ class CollectionOrganizer:
 
 
 if __name__ == "__main__":
-    CollectionOrganizer('temp/gamble_good_with_filesets_and_attachments.csv').write_csv('temp/gamble_good_with_collections.csv')
+    CollectionOrganizer('temp/gamble_good2_with_filesets_and_attachments.csv').write_csv('temp/gamble_good2_with_collections.csv')
