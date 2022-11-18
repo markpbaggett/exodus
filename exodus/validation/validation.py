@@ -30,9 +30,14 @@ class ValidateMigration:
         for k, v in row.items():
             if k not in system_fields and row['model'] != "FileSet" and row['model'] != "Collection":
                 self.check_available_on(row, k, v)
+        return
 
     def check_available_on(self, row, key, value):
-        print(self.loaded_m3['properties'][key])
+        if key not in self.loaded_m3['properties']:
+            self.all_exceptions.append(f"{key} is not listed in the m3 profile.")
+        elif row['model'] not in self.loaded_m3['properties'][key]['available_on']['class'] and value != "":
+            self.all_exceptions.append(f"{key} is not available on {row['model']}")
+        return
 
     def iterate(self):
         for row in self.loaded_csv:
