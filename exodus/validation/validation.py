@@ -34,6 +34,7 @@ class ValidateMigration:
                     available_on = self.check_available_on(row, k, v)
                     if available_on:
                         self.check_cardinality(row, k, v)
+                        self.check_range(k, v)
         return
 
     def check_available_on(self, row, key, value):
@@ -60,6 +61,18 @@ class ValidateMigration:
             self.all_exceptions.append(f'{key} has {len(all_values)} values but maximum is {maximum}.')
         if len(all_values) < minimum:
             self.all_exceptions.append(f'{key} has {len(all_values)} values but minimum is {minimum} on {row["model"]}.')
+        return
+
+    def check_range(self, key, value):
+        all_values = [thing for thing in value.split(' | ') if thing != '']
+        property_range = self.loaded_m3['properties'][key]['range']
+        for value in all_values:
+            if property_range == "http://www.w3.org/2001/XMLSchema#anyURI":
+                if not(value.startswith('http')):
+                    self.all_exceptions.append(f'{value} is not a URI.')
+            else:
+                if value.startswith('http:'):
+                    self.all_exceptions.append(f'{value} may be a URI.')
         return
 
     def iterate(self):
