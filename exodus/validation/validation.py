@@ -29,14 +29,32 @@ class ValidateMigration:
         system_fields = ("source_identifier", "model", "remote_files", "parents")
         for k, v in row.items():
             if k not in system_fields and row['model'] != "FileSet" and row['model'] != "Collection":
-                self.check_available_on(row, k, v)
+                review_property = self.check_property(k)
+                if review_property:
+                    self.check_available_on(row, k, v)
+                    self.check_cardinality(k, v)
         return
 
     def check_available_on(self, row, key, value):
+        if row['model'] not in self.loaded_m3['properties'][key]['available_on']['class'] and value != "":
+            self.all_exceptions.append(f"{key} is not available on {row['model']}")
+        return
+
+    def check_property(self, key):
         if key not in self.loaded_m3['properties']:
             self.all_exceptions.append(f"{key} is not listed in the m3 profile.")
-        elif row['model'] not in self.loaded_m3['properties'][key]['available_on']['class'] and value != "":
-            self.all_exceptions.append(f"{key} is not available on {row['model']}")
+            return False
+        else:
+            return True
+
+    def check_cardinality(self, key, value):
+        maximum = self.loaded_m3['properties'][key]['cardinality']['maximum'] if 'maximum' in self.loaded_m3['properties'][key]['cardinality'] else 1000
+        minimum = self.loaded_m3['properties'][key]['cardinality']['minimum'] if 'minimum' in self.loaded_m3['properties'][key]['cardinality'] else 0
+        all_values = [thing for thing in value.split(' | ') if thing != '']
+        if len(all_values) > maximum:
+            self.all_exceptions.append(f'{key} has {len(all_values)} values but maximum is {maximum}.')
+        if len(all_values) < minimum:
+            self.all_exceptions.append(f'{key} has {len(all_values)} values but minimum is {minimum}.')
         return
 
     def iterate(self):
