@@ -161,7 +161,7 @@ class NameProperty(XMLtoDictProperty):
             roles = []
             local_roles = []
             try:
-                roles.append(name['mods:role']['mods:roleTerm']['#text'])
+                roles.append(name['mods:role']['mods:roleTerm']['#text'].lower())
                 local_roles.append(f"Local {name['mods:role']['mods:roleTerm']['#text'].lower()}")
             except KeyError:
                 print(name)
@@ -294,6 +294,7 @@ class KeywordProperty(BaseProperty):
             for value in iterable:
                 return_values.append(value)
         return {'keyword': return_values}
+
 
 class TypesProperties(BaseProperty):
     def __init__(self, path, namespaces):
@@ -440,7 +441,7 @@ class PublicationPlaceProperty(BaseProperty):
         super().__init__(path, namespaces)
 
     def find(self):
-        return {"place_of_publication": [uri for uri in self.root.xpath('mods:originInfo/mods:place/mods:placeTerm/@valueURI', namespaces=self.namespaces)]}
+        return {"publication_place": [uri for uri in self.root.xpath('mods:originInfo/mods:place/mods:placeTerm/@valueURI', namespaces=self.namespaces)]}
 
 
 class LanguageURIProperty(BaseProperty):
@@ -572,5 +573,10 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
-    test = MetadataMapping('configs/utk_dc.yml', '/home/mark/PycharmProjects/utk_digital_collections_migration/fixtures/')
-    test.write_csv('temp/small_gamble.csv')
+    test = MetadataMapping(
+        'configs/utk_dc.yml',
+        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/gamble_good2'
+    )
+    test.write_csv(
+        'temp/gamble_good2.csv'
+    )

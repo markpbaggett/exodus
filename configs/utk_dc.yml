@@ -174,7 +174,7 @@ mapping:
       - 'mods:originInfo/mods:publisher[not(@valueURI)]'
     property: 'https://ontology.lib.utk.edu/roles#pbl'
 
-  - name: place_of_publication
+  - name: publication_place
     xpaths:
       - 'mods:originInfo/mods:place/mods:placeTerm/@valueURI'
     property: 'https://id.loc.gov/vocabulary/relators/pup'
