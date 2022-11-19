@@ -31,14 +31,19 @@ class ValidateMigration:
             if k not in system_fields and row['model'] != "FileSet" and row['model'] != "Collection":
                 review_property = self.check_property(k)
                 if review_property:
-                    self.check_available_on(row, k, v)
-                    self.check_cardinality(k, v)
+                    available_on = self.check_available_on(row, k, v)
+                    if available_on:
+                        self.check_cardinality(row, k, v)
         return
 
     def check_available_on(self, row, key, value):
         if row['model'] not in self.loaded_m3['properties'][key]['available_on']['class'] and value != "":
             self.all_exceptions.append(f"{key} is not available on {row['model']}")
-        return
+            return False
+        elif row['model'] not in self.loaded_m3['properties'][key]['available_on']['class']:
+            return False
+        else:
+            return True
 
     def check_property(self, key):
         if key not in self.loaded_m3['properties']:
@@ -47,14 +52,14 @@ class ValidateMigration:
         else:
             return True
 
-    def check_cardinality(self, key, value):
+    def check_cardinality(self, row, key, value):
         maximum = self.loaded_m3['properties'][key]['cardinality']['maximum'] if 'maximum' in self.loaded_m3['properties'][key]['cardinality'] else 1000
         minimum = self.loaded_m3['properties'][key]['cardinality']['minimum'] if 'minimum' in self.loaded_m3['properties'][key]['cardinality'] else 0
         all_values = [thing for thing in value.split(' | ') if thing != '']
         if len(all_values) > maximum:
             self.all_exceptions.append(f'{key} has {len(all_values)} values but maximum is {maximum}.')
         if len(all_values) < minimum:
-            self.all_exceptions.append(f'{key} has {len(all_values)} values but minimum is {minimum}.')
+            self.all_exceptions.append(f'{key} has {len(all_values)} values but minimum is {minimum} on {row["model"]}.')
         return
 
     def iterate(self):
