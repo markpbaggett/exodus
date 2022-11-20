@@ -34,12 +34,12 @@ class ValidateMigration:
                     available_on = self.check_available_on(row, k, v)
                     if available_on:
                         self.check_cardinality(row, k, v)
-                        self.check_range(k, v)
+                        self.check_range(k, v, row)
         return
 
     def check_available_on(self, row, key, value):
         if row['model'] not in self.loaded_m3['properties'][key]['available_on']['class'] and value != "":
-            self.all_exceptions.append(f"{key} is not available on {row['model']}")
+            self.all_exceptions.append(f"{key} is not available on {row['model']} for {row['source_identifier']}.")
             return False
         elif row['model'] not in self.loaded_m3['properties'][key]['available_on']['class']:
             return False
@@ -63,16 +63,16 @@ class ValidateMigration:
             self.all_exceptions.append(f'{key} has {len(all_values)} values but minimum is {minimum} on {row["model"]}.')
         return
 
-    def check_range(self, key, value):
+    def check_range(self, key, value, row):
         all_values = [thing for thing in value.split(' | ') if thing != '']
         property_range = self.loaded_m3['properties'][key]['range']
         for value in all_values:
             if property_range == "http://www.w3.org/2001/XMLSchema#anyURI":
                 if not(value.startswith('http')):
-                    self.all_exceptions.append(f'{value} is not a URI.')
+                    self.all_exceptions.append(f'{value} is not a URI for {row["source_identifier"]}.')
             else:
                 if value.startswith('http:'):
-                    self.all_exceptions.append(f'{value} may be a URI.')
+                    self.all_exceptions.append(f'{value} may be a URI for {row["source_identifier"]}.')
         return
 
     def iterate(self):
@@ -81,7 +81,7 @@ class ValidateMigration:
             self.validate_values(row)
         separator = "\n"
         if len(self.all_exceptions) > 0:
-            raise Exception(f"Migration spreadsheet has {len(self.all_exceptions)} problems: {separator.join(self.all_exceptions)}")
+            raise Exception(f"Migration spreadsheet has at least {len(self.all_exceptions)} problems: {separator.join(self.all_exceptions)}")
         else:
             print("Sheet passes all tests.")
 
