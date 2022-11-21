@@ -162,7 +162,7 @@ class NameProperty(XMLtoDictProperty):
             local_roles = []
             try:
                 roles.append(name['mods:role']['mods:roleTerm']['#text'].lower())
-                local_roles.append(f"Local {name['mods:role']['mods:roleTerm']['#text'].lower()}")
+                local_roles.append(f"utk_{name['mods:role']['mods:roleTerm']['#text'].lower().replace(' ', '_')}")
             except KeyError:
                 print(name)
             # TODO: A name can have multiple roles
@@ -577,8 +577,8 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/gamble_good2'
+        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/gamble'
     )
     test.write_csv(
-        'temp/gamble_good2.csv'
+        'temp/gamble_full.csv'
     )
