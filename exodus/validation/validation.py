@@ -58,9 +58,9 @@ class ValidateMigration:
         minimum = self.loaded_m3['properties'][key]['cardinality']['minimum'] if 'minimum' in self.loaded_m3['properties'][key]['cardinality'] else 0
         all_values = [thing for thing in value.split(' | ') if thing != '']
         if len(all_values) > maximum:
-            self.all_exceptions.append(f'{key} has {len(all_values)} values but maximum is {maximum}.')
+            self.all_exceptions.append(f'{key} has {len(all_values)} values but maximum is {maximum} on {row["source_identifier"]}.')
         if len(all_values) < minimum:
-            self.all_exceptions.append(f'{key} has {len(all_values)} values but minimum is {minimum} on {row["model"]}.')
+            self.all_exceptions.append(f'{key} has {len(all_values)} values but minimum is {minimum} on {row["model"]} on {row["source_identifier"]}.')
         return
 
     def check_range(self, key, value, row):
@@ -86,5 +86,5 @@ class ValidateMigration:
             print("Sheet passes all tests.")
 
 
-x = ValidateMigration(profile='temp/utk.yml', migration_sheet='temp/gamble_good2_with_collections.csv')
+x = ValidateMigration(profile='temp/utk.yml', migration_sheet='temp/gamble_full.csv')
 x.iterate()
