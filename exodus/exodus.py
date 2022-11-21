@@ -207,27 +207,29 @@ class PhysicalLocationsProperties(BaseProperty):
         super().__init__(path, namespaces)
 
     def __find_repositories(self):
-        uris = [
-            uri
-            for uri in self.root.xpath('mods:location/mods:physicalLocation/@valueURI', namespaces=self.namespaces)
+        with_repository_designation = [
+            thing.text
+            for thing in self.root.xpath(
+                'mods:location/mods:physicalLocation[@displayLabel="Repository"]',
+                namespaces=self.namespaces
+            )
         ]
-        text_values = [
-            text.text
-            for text in self.root.xpath(
-                'mods:location/mods:physicalLocation[not(@valueURI)][not(@displayLabel="Collection")][not(@displayLabel="Address")]',
+        others = [
+            thing.text
+            for thing in self.root.xpath
+            (
+                'mods:location/mods:physicalLocation[not(@displayLabel)]',
                 namespaces=self.namespaces
             )
         ]
         all_repositories = []
-        for uri in uris:
-            all_repositories.append(uri)
-        for value in text_values:
-            if "University of Tennesse" not in value:
-                all_repositories.append(value)
-            elif "Special Collections" in value:
-                all_repositories.append('http://id.loc.gov/authorities/names/no2014027633')
+        for value in with_repository_designation:
+            all_repositories.append(value)
+        for value in others:
+            if "University of Tennesse" in value:
+                all_repositories.append("University of Tennessee, Knoxville. Special Collections.")
             else:
-                all_repositories.append('http://id.loc.gov/authorities/names/n80003889')
+                all_repositories.append(value)
         return all_repositories
 
     def find(self):

@@ -274,8 +274,8 @@ mapping:
 
   - name: repository
     xpaths:
-      - "mods:location/mods:physicalLocation/@valueURI"
-      - "mods:location/mods:physicalLocation[not(@valueURI)]"
+      - 'mods:location/mods:physicalLocation[not(@displayLabel)]'
+      - 'mods:location/mods:physicalLocation[@displayLabel="Repository"]'
       - 'mods:location/mods:physicalLocation[@displayLabel="Collection"]'
     properties:
       - "http://id.loc.gov/vocabulary/relators/rps"
