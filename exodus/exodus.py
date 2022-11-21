@@ -161,7 +161,7 @@ class NameProperty(XMLtoDictProperty):
             roles = []
             local_roles = []
             try:
-                roles.append(name['mods:role']['mods:roleTerm']['#text'].lower())
+                roles.append(name['mods:role']['mods:roleTerm']['#text'].lower().replace(' ', '_'))
                 local_roles.append(f"utk_{name['mods:role']['mods:roleTerm']['#text'].lower().replace(' ', '_')}")
             except KeyError:
                 print(name)
@@ -260,6 +260,40 @@ class DataProvider(BaseProperty):
             "provider": [value for value in values if value == "University of Tennessee, Knoxville. Libraries"],
             "intermediate_provider": [value for value in values if value != "University of Tennessee, Knoxville. Libraries"]
         }
+
+
+class MachineDate(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find(self):
+        date_created = [
+            value.text
+            for value in self.root.xpath('mods:originInfo/mods:dateCreated[@encoding="edtf"]', namespaces=self.namespaces)
+        ]
+        date_issued = [
+            value.text
+            for value in
+            self.root.xpath('mods:originInfo/mods:dateIssued[@encoding="edtf"]', namespaces=self.namespaces)
+        ]
+        date_other = [
+            value.text
+            for value in
+            self.root.xpath('mods:originInfo/mods:dateOther[@encoding="edtf"]', namespaces=self.namespaces)
+        ]
+        return {
+            "date_created_d": self.__sort_if_range(date_created),
+            "date_issued_d": self.__sort_if_range(date_issued),
+            "date_other_d": self.__sort_if_range(date_other),
+        }
+
+    @staticmethod
+    def __sort_if_range(values):
+        if len(values) == 2:
+            values.sort()
+            return [f"{values[0]}/{values[1]}"]
+        else:
+            return values
 
 
 class SubjectProperty(BaseProperty):
@@ -561,7 +595,8 @@ class MetadataMapping:
             "PublisherProperty": PublisherProperty(file, namespaces).find(),
             "PublicationPlaceProperty": PublicationPlaceProperty(file, namespaces).find(),
             "RightsOrLicenseProperties": RightsOrLicenseProperties(file, namespaces).find(),
-            "ExtentProperty": ExtentProperty(file, namespaces).find()
+            "ExtentProperty": ExtentProperty(file, namespaces).find(),
+            "MachineDate": MachineDate(file, namespaces).find()
         }
         return special_properties[special_property]
 
@@ -577,8 +612,8 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/gamble'
+        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/webster_full'
     )
     test.write_csv(
-        'temp/gamble_full.csv'
+        'temp/webster.csv'
     )
