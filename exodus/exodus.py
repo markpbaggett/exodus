@@ -247,8 +247,8 @@ class PhysicalLocationsProperties(BaseProperty):
             )
         ]
         primary_archival_collections = [
-            collection.text for collection in self.root.xpath(
-                'mods:relatedItem[@displayLabel="Collection"]/mods:titleInfo/mods:title',
+            collection for collection in self.root.xpath(
+                'mods:relatedItem[@displayLabel="Collection"][mods:titleInfo]',
                 namespaces=self.namespaces
             )
         ]
@@ -256,10 +256,25 @@ class PhysicalLocationsProperties(BaseProperty):
             if collection not in all_archival_collections:
                 all_archival_collections.append(collection)
         for collection in primary_archival_collections:
-            if collection not in all_archival_collections:
-                all_archival_collections.append(collection)
+            identifier = ""
+            title = ""
+            output = ""
+            for child in collection:
+                if child.tag == f"{{http://www.loc.gov/mods/v3}}identifier":
+                    identifier = child.text
+                elif child.tag == f"{{http://www.loc.gov/mods/v3}}titleInfo":
+                    for sub_child in child:
+                        if sub_child.tag == f"{{http://www.loc.gov/mods/v3}}title":
+                            title = sub_child.text
+            if title != "" and identifier != "":
+                output = f"{title}, {identifier}"
+            elif identifier != "":
+                output = identifier
+            elif title != "":
+                output = title
+            if output != "":
+                all_archival_collections.append(output)
         return all_archival_collections
-
 
 
 class DataProvider(BaseProperty):
@@ -639,7 +654,7 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/roth_full'
+        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/acwiley_full'
     )
     test.write_csv(
         'temp/roth_full.csv'
