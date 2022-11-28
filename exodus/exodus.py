@@ -227,7 +227,7 @@ class PhysicalLocationsProperties(BaseProperty):
             all_repositories.append(value)
         for value in others:
             if "University of Tennesse" in value:
-                all_repositories.append("University of Tennessee, Knoxville. Special Collections.")
+                all_repositories.append("University of Tennessee, Knoxville. Special Collections")
             else:
                 all_repositories.append(value)
         return all_repositories
@@ -239,12 +239,27 @@ class PhysicalLocationsProperties(BaseProperty):
         }
 
     def __find_archival_collections(self):
-        return [
+        all_archival_collections = []
+        other_archival_collections = [
             collection for collection in self.root.xpath(
                 'mods:location/mods:physicalLocation[@displayLabel="Collection"]',
                 namespaces=self.namespaces
             )
         ]
+        primary_archival_collections = [
+            collection for collection in self.root.xpath(
+                'mods:relatedItem[@displayLabel="Collection]/mods:titleInfo/mods:title',
+                namespaces=self.namespaces
+            )
+        ]
+        for collection in other_archival_collections:
+            if collection not in all_archival_collections:
+                all_archival_collections.append(collection)
+        for collection in primary_archival_collections:
+            if collection not in all_archival_collections:
+                all_archival_collections.append(collection)
+        return all_archival_collections
+
 
 
 class DataProvider(BaseProperty):

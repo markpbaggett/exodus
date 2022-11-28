@@ -273,6 +273,7 @@ mapping:
       - 'mods:location/mods:physicalLocation[not(@displayLabel)]'
       - 'mods:location/mods:physicalLocation[@displayLabel="Repository"]'
       - 'mods:location/mods:physicalLocation[@displayLabel="Collection"]'
+      - 'mods:relatedItem[@displayLabel="Collection]/mods:titleInfo/mods:title'
     properties:
       - "http://id.loc.gov/vocabulary/relators/rps"
       - "http://dbpedia.org/ontology/collection"
