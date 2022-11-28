@@ -241,14 +241,14 @@ class PhysicalLocationsProperties(BaseProperty):
     def __find_archival_collections(self):
         all_archival_collections = []
         other_archival_collections = [
-            collection for collection in self.root.xpath(
+            collection.text for collection in self.root.xpath(
                 'mods:location/mods:physicalLocation[@displayLabel="Collection"]',
                 namespaces=self.namespaces
             )
         ]
         primary_archival_collections = [
-            collection for collection in self.root.xpath(
-                'mods:relatedItem[@displayLabel="Collection]/mods:titleInfo/mods:title',
+            collection.text for collection in self.root.xpath(
+                'mods:relatedItem[@displayLabel="Collection"]/mods:titleInfo/mods:title',
                 namespaces=self.namespaces
             )
         ]
@@ -639,8 +639,8 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/50yrcove_small'
+        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/roth_full'
     )
     test.write_csv(
-        'temp/50yrcove_small.csv'
+        'temp/roth_full.csv'
     )
