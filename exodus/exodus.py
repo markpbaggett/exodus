@@ -251,13 +251,13 @@ class DataProvider(BaseProperty):
     def __init__(self, path, namespaces):
         super().__init__(path, namespaces)
 
-    def find(self, name):
+    def find(self):
         values = [
             value.text
             for value in self.root.xpath('mods:recordInfo/mods:recordContentSource', namespaces=self.namespaces)
         ]
         return {
-            "provider": [value for value in values if value == "University of Tennessee, Knoxville. Libraries"],
+            "provider": ["University of Tennessee, Knoxville. Libraries"],
             "intermediate_provider": [value for value in values if value != "University of Tennessee, Knoxville. Libraries"]
         }
 
@@ -582,23 +582,35 @@ class MetadataMapping:
 
     @staticmethod
     def __lookup_special_property(special_property, file, namespaces, name):
-        special_properties = {
-            "TitleProperty": TitleProperty(file, namespaces).find(),
-            "NameProperty": NameProperty(file).find(),
-            "GeoNamesProperty": GeoNamesProperty(file, namespaces).find(name),
-            "DataProvider": DataProvider(file, namespaces).find(name),
-            "PhysicalLocationsProperties": PhysicalLocationsProperties(file, namespaces).find(),
-            "SubjectProperty": SubjectProperty(file, namespaces).find_topic(),
-            "KeywordProperty": KeywordProperty(file, namespaces).find_topic(),
-            "TypesProperties": TypesProperties(file, namespaces).find(),
-            "LanguageURIProperty": LanguageURIProperty(file, namespaces).find_term(),
-            "PublisherProperty": PublisherProperty(file, namespaces).find(),
-            "PublicationPlaceProperty": PublicationPlaceProperty(file, namespaces).find(),
-            "RightsOrLicenseProperties": RightsOrLicenseProperties(file, namespaces).find(),
-            "ExtentProperty": ExtentProperty(file, namespaces).find(),
-            "MachineDate": MachineDate(file, namespaces).find()
-        }
-        return special_properties[special_property]
+        match special_property:
+            case "TitleProperty":
+                return TitleProperty(file, namespaces).find()
+            case "NameProperty":
+                return NameProperty(file).find()
+            case "GeoNamesProperty":
+                return GeoNamesProperty(file, namespaces).find(name)
+            case "DataProvider":
+                return DataProvider(file, namespaces).find()
+            case "PhysicalLocationsProperties":
+                return PhysicalLocationsProperties(file, namespaces).find()
+            case "SubjectProperty":
+                return SubjectProperty(file, namespaces).find_topic()
+            case "KeywordProperty":
+                return KeywordProperty(file, namespaces).find_topic()
+            case "TypesProperties":
+                return TypesProperties(file, namespaces).find()
+            case "LanguageURIProperty":
+                return LanguageURIProperty(file, namespaces).find_term()
+            case "PublisherProperty":
+                return PublisherProperty(file, namespaces).find()
+            case "PublicationPlaceProperty":
+                return PublicationPlaceProperty(file, namespaces).find()
+            case "RightsOrLicenseProperties":
+                return RightsOrLicenseProperties(file, namespaces).find()
+            case "ExtentProperty":
+                return ExtentProperty(file, namespaces).find()
+            case "MachineDate":
+                return MachineDate(file, namespaces).find()
 
     def write_csv(self, filename):
         with open(filename, 'w', newline='') as bulkrax_sheet:
@@ -612,8 +624,8 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/webster_full'
+        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/50yrcove_small'
     )
     test.write_csv(
-        'temp/webster.csv'
+        'temp/50yrcove_small.csv'
     )
