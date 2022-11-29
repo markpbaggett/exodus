@@ -28,7 +28,7 @@ class CollectionMetadata:
             "abstract": self.__simplify_xpath('mods:abstract'),
             "contributor": "",
             "utk_contributor": "",
-            "creator": self.__simplify_xpath('mods:name/@valueURI'),
+            "creator": self.__get_valueURIs('mods:name/@valueURI'),
             "utk_creator": self.__simplify_xpath('mods:name[not(@valueURI)]/mods:namePart'),
             "date_created": self.__simplify_xpath('mods:originInfo/mods:dateCreated[not(@edtf)]'),
             "date_issued": self.__simplify_xpath('mods:originInfo/mods:dateIssued[not(@edtf)]'),
@@ -104,4 +104,4 @@ class CollectionOrganizer:
 
 
 if __name__ == "__main__":
-    CollectionOrganizer('temp/gamble_good2_with_filesets_and_attachments.csv').write_csv('temp/gamble_good2_with_collections.csv')
+    CollectionOrganizer('temp/acwiley_full_with_filesets_and_attachments.csv').write_csv('temp/acwiley_full_with_collections.csv')
