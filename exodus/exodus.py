@@ -175,12 +175,26 @@ class NameProperty(XMLtoDictProperty):
             if '@valueURI' in name:
                 name_value = name['@valueURI']
             for role in roles:
-                if role not in roles_and_names and name_value.startswith('http'):
+                if type(name_value) is list:
+                    for part in name_value:
+                        if type(part) is str:
+                            if role not in roles_and_names:
+                                roles_and_names[role] = [part]
+                            else:
+                                roles_and_names[role].append(part)
+                elif role not in roles_and_names and name_value.startswith('http'):
                     roles_and_names[role] = [name_value]
                 elif name_value.startswith('http'):
                     roles_and_names[role].append(name_value)
             for role in local_roles:
-                if role not in roles_and_names and not name_value.startswith('http'):
+                if type(name_value) is list:
+                    for part in name_value:
+                        if type(part) is str:
+                            if role not in roles_and_names:
+                                roles_and_names[role] = [part]
+                            else:
+                                roles_and_names[role].append(part)
+                elif role not in roles_and_names and not name_value.startswith('http'):
                     roles_and_names[role] = [name_value]
                 elif not name_value.startswith('http'):
                     roles_and_names[role].append(name_value)
@@ -311,6 +325,7 @@ class MachineDate(BaseProperty):
             for value in
             self.root.xpath('mods:originInfo/mods:dateOther[@encoding="edtf"]', namespaces=self.namespaces)
         ]
+        print(self.path)
         return {
             "date_created_d": self.__sort_if_range(date_created),
             "date_issued_d": self.__sort_if_range(date_issued),
