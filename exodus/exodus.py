@@ -582,7 +582,8 @@ class MetadataMapping:
                 'source_identifier': file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', ''),
                 'model': 'Image',
                 'remote_files': '',
-                'parents': ' | '.join(ResourceIndexSearch().get_parent_collections(file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', '')),)
+                'parents': ' | '.join(ResourceIndexSearch().get_parent_collections(file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', '')),),
+                'has_work_type': 'https://ontology.lib.utk.edu/works#ImageWork',
             }
             for rdf_property in self.mapping_data:
                 if 'special' not in rdf_property:
@@ -654,8 +655,8 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/acwiley_full'
+        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/archivision_full'
     )
     test.write_csv(
-        'temp/roth_full.csv'
+        'temp/archivision_full.csv'
     )
