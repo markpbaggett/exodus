@@ -339,7 +339,7 @@ class MachineDate(BaseProperty):
         elif len(values) == 2:
             for value in values:
                 if value is not None:
-                    return value
+                    return [value]
         else:
             return values
 
@@ -676,5 +676,5 @@ if __name__ == "__main__":
         '/home/mark/PycharmProjects/utk_digital_collections_migration/fixtures'
     )
     test.write_csv(
-        'temp/archivision_full.csv'
+        'temp/fixtures.csv'
     )
