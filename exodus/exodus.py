@@ -168,20 +168,21 @@ class NameProperty(XMLtoDictProperty):
             # TODO: A name can have multiple roles
             except TypeError:
                 for role in name['mods:role']:
-                    roles.append(role['mods:roleTerm']['#text'])
-                    local_roles.append(f"Local {role['mods:roleTerm']['#text'].lower()}")
+                    roles.append(role['mods:roleTerm']['#text'].lower().replace(' ', '_'))
+                    local_roles.append(f"Local {role['mods:roleTerm']['#text'].lower().replace(' ', '_')}")
             # TODO: Rework this.  It's not pretty but it works.
+            print(local_roles)
             name_value = name['mods:namePart']
             if '@valueURI' in name:
                 name_value = name['@valueURI']
             for role in roles:
                 if type(name_value) is list:
                     for part in name_value:
-                        if type(part) is str:
+                        if type(part) is dict and '@valueURI' in part:
                             if role not in roles_and_names:
-                                roles_and_names[role] = [part]
+                                roles_and_names[role] = [part['@valueURI']]
                             else:
-                                roles_and_names[role].append(part)
+                                roles_and_names[role].append([part['@valueURI']])
                 elif role not in roles_and_names and name_value.startswith('http'):
                     roles_and_names[role] = [name_value]
                 elif name_value.startswith('http'):
@@ -189,7 +190,7 @@ class NameProperty(XMLtoDictProperty):
             for role in local_roles:
                 if type(name_value) is list:
                     for part in name_value:
-                        if type(part) is str:
+                        if type(part) is str and not part.startswith('http'):
                             if role not in roles_and_names:
                                 roles_and_names[role] = [part]
                             else:
