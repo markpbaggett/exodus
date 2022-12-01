@@ -325,7 +325,6 @@ class MachineDate(BaseProperty):
             for value in
             self.root.xpath('mods:originInfo/mods:dateOther[@encoding="edtf"]', namespaces=self.namespaces)
         ]
-        print(self.path)
         return {
             "date_created_d": self.__sort_if_range(date_created),
             "date_issued_d": self.__sort_if_range(date_issued),
@@ -334,9 +333,13 @@ class MachineDate(BaseProperty):
 
     @staticmethod
     def __sort_if_range(values):
-        if len(values) == 2:
+        if len(values) == 2 and None not in values:
             values.sort()
             return [f"{values[0]}/{values[1]}"]
+        elif len(values) == 2:
+            for value in values:
+                if value is not None:
+                    return value
         else:
             return values
 
@@ -670,7 +673,7 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/archivision_full'
+        '/home/mark/PycharmProjects/utk_digital_collections_migration/fixtures'
     )
     test.write_csv(
         'temp/archivision_full.csv'
