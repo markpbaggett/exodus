@@ -56,7 +56,7 @@ class TitleProperty(BaseProperty):
 
     def __find_plain_titles(self):
         self.various_titles['plain'] = [thing.text for thing in self.root.xpath(
-            'mods:titleInfo[not(@supplied)]/mods:title',
+            'mods:titleInfo[not(@supplied)][not(@type="alternative")]/mods:title',
             namespaces=self.namespaces
         )]
         return
@@ -171,7 +171,6 @@ class NameProperty(XMLtoDictProperty):
                     roles.append(role['mods:roleTerm']['#text'].lower().replace(' ', '_'))
                     local_roles.append(f"Local {role['mods:roleTerm']['#text'].lower().replace(' ', '_')}")
             # TODO: Rework this.  It's not pretty but it works.
-            print(local_roles)
             name_value = name['mods:namePart']
             if '@valueURI' in name:
                 name_value = name['@valueURI']
@@ -241,7 +240,7 @@ class PhysicalLocationsProperties(BaseProperty):
         for value in with_repository_designation:
             all_repositories.append(value)
         for value in others:
-            if "University of Tennesse" in value:
+            if value is None or "University of Tennesse" in value:
                 all_repositories.append("University of Tennessee, Knoxville. Special Collections")
             else:
                 all_repositories.append(value)
@@ -674,8 +673,8 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/home/mark/PycharmProjects/utk_digital_collections_migration/fixtures'
+        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/garner_images'
     )
     test.write_csv(
-        'temp/fixtures.csv'
+        'temp/garner_images.csv'
     )
