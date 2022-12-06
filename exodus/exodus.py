@@ -169,7 +169,7 @@ class NameProperty(XMLtoDictProperty):
             except TypeError:
                 for role in name['mods:role']:
                     roles.append(role['mods:roleTerm']['#text'].lower().replace(' ', '_'))
-                    local_roles.append(f"Local {role['mods:roleTerm']['#text'].lower().replace(' ', '_')}")
+                    local_roles.append(f"utk_{role['mods:roleTerm']['#text'].lower().replace(' ', '_')}")
             # TODO: Rework this.  It's not pretty but it works.
             name_value = name['mods:namePart']
             if '@valueURI' in name:
@@ -618,7 +618,10 @@ class MetadataMapping:
                     for k, v in special.items():
                         # TODO: Make delimeter configurable
                         if v != [[]]:
-                            output_data[k] = ' | '.join(v)
+                            try:
+                                output_data[k] = ' | '.join(v)
+                            except TypeError:
+                                print(f"{TypeError}: {file}")
             self.__find_unique_fieldnames(output_data)
             all_file_data.append(output_data)
         return all_file_data
@@ -673,8 +676,8 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/garner_images'
+        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/rfta_art'
     )
     test.write_csv(
-        'temp/garner_images.csv'
+        'temp/rfta_art_images.csv'
     )
