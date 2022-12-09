@@ -29,7 +29,21 @@ class FileCurator:
                 writer.writerow(data)
         return
 
+    def __write_sheet(self, filename, values, newline=''):
+        with open(filename, 'w', newline=newline) as bulkrax_sheet:
+            writer = csv.DictWriter(bulkrax_sheet, fieldnames=self.headers)
+            writer.writeheader()
+            for data in values:
+                writer.writerow(data)
+        return
+
+    def write_files_and_attachments_only_2(self, base_filename, multi_sheets=False, attachments_per_sheet=500):
+        if multi_sheets:
+            bundles = [self.files_and_attachments[i:i + attachments_per_sheet] for i in range(0, len(self.files_and_attachments), attachments_per_sheet)]
+            for bundle in bundles:
+                print(len(bundle))
+
 
 if __name__ == "__main__":
-    x = FileCurator('temp/wcc_just_filesets_and_attachments.csv')
-    x.write_files_and_attachments_only('temp/wcc_just_filesets_and_attachments_only.csv')
+    x = FileCurator('migrations/arrpgimg_just_filesets_and_attachments.csv')
+    x.write_files_and_attachments_only_2('temp/wcc_just_filesets_and_attachments_only.csv', multi_sheets=True)
