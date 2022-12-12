@@ -9,7 +9,6 @@ class FileCurator:
 
     def __get_headers(self):
         original_headers = [k for k, v in self.files_and_attachments[0].items()]
-        original_headers.append('rdf_type')
         return original_headers
 
     def __get_files_and_attachments_only(self):
@@ -40,10 +39,16 @@ class FileCurator:
     def write_files_and_attachments_only_2(self, base_filename, multi_sheets=False, attachments_per_sheet=500):
         if multi_sheets:
             bundles = [self.files_and_attachments[i:i + attachments_per_sheet] for i in range(0, len(self.files_and_attachments), attachments_per_sheet)]
+            i = 0
             for bundle in bundles:
-                print(len(bundle))
+                self.__write_sheet(f"{base_filename.replace('.csv', '')}_{i}.csv", values=bundle)
+                i += 1
+            return
+        else:
+            self.__write_sheet(base_filename, values=self.files_and_attachments)
+            return
 
 
 if __name__ == "__main__":
-    x = FileCurator('migrations/arrpgimg_just_filesets_and_attachments.csv')
-    x.write_files_and_attachments_only_2('temp/wcc_just_filesets_and_attachments_only.csv', multi_sheets=True)
+    x = FileCurator('temp/example_with_filesets_and_attachments.csv')
+    x.write_files_and_attachments_only_2('temp/example_just_filesets_and_attachments_only.csv', multi_sheets=True, attachments_per_sheet=800)
