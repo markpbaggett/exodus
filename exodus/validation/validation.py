@@ -25,6 +25,11 @@ class ValidateMigration:
                 self.all_exceptions.append(f'{row["source_identifier"]} has invalid model {row["model"]}.')
         return
 
+    def validate_license(self, row):
+        if 'license' in row and row['license'] != "":
+            if 'http://' not in row['license']:
+                self.all_exceptions.append(f'{row["source_identifier"]} has invalid license: {row["license"]}.')
+
     def validate_values(self, row):
         system_fields = ("source_identifier", "model", "remote_files", "parents")
         for k, v in row.items():
@@ -79,6 +84,7 @@ class ValidateMigration:
         for row in self.loaded_csv:
             self.validate_model(row)
             self.validate_values(row)
+            self.validate_license(row)
         separator = "\n"
         if len(self.all_exceptions) > 0:
             raise Exception(f"Migration spreadsheet has at least {len(self.all_exceptions)} problems: {separator.join(self.all_exceptions)}")
@@ -86,5 +92,5 @@ class ValidateMigration:
             print("Sheet passes all tests.")
 
 
-x = ValidateMigration(profile='temp/utk.yml', migration_sheet='temp/gamble_full.csv')
+x = ValidateMigration(profile='temp/utk.yml', migration_sheet='migrations/heilman_full_with_collections.csv')
 x.iterate()
