@@ -512,7 +512,7 @@ class RightsOrLicenseProperties(BaseProperty):
     def find(self):
         final = {}
         rights = [uri for uri in self.root.xpath('mods:accessCondition[not(@type="restriction on access")]/@xlink:href', namespaces=self.namespaces) if "rightsstatements.org" in uri]
-        licenses = [uri for uri in self.root.xpath('mods:accessCondition[not(@type="restriction on access")]/@xlink:href', namespaces=self.namespaces) if "creativecommons.org" in uri]
+        licenses = [uri.replace('https://', 'http://') for uri in self.root.xpath('mods:accessCondition[not(@type="restriction on access")]/@xlink:href', namespaces=self.namespaces) if "creativecommons.org" in uri]
         if len(rights) > 0:
             final['rights_statement'] = rights
         if len(licenses) > 0:
@@ -676,8 +676,8 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/home/mark/PycharmProjects/utk_digital_collections_migration/metadata/rfta_art'
+        '/Users/markbaggett/PycharmProjects/exodus/metadata/heilman_full'
     )
     test.write_csv(
-        'temp/rfta_art_images.csv'
+        'temp/heilman_full.csv'
     )
