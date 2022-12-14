@@ -596,13 +596,15 @@ class MetadataMapping:
         all_file_data = []
         for file in tqdm(self.all_files):
             # TODO: Ultimately, parents should be populated based on relationship.
+            model = self.__dereference_islandora_type(file)
             output_data = {
                 'source_identifier': file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', ''),
-                'model': 'Image',
+                'model': model,
                 'remote_files': '',
                 'parents': ' | '.join(ResourceIndexSearch().get_parent_collections(file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', '')),),
-                'has_work_type': 'https://ontology.lib.utk.edu/works#ImageWork',
+                'has_work_type': self.__get_utk_ontology_value(model),
             }
+            self.__dereference_islandora_type(file)
             for rdf_property in self.mapping_data:
                 if 'special' not in rdf_property:
                     final_values = ""
@@ -631,6 +633,30 @@ class MetadataMapping:
             if k not in self.fieldnames:
                 self.fieldnames.append(k)
         return
+
+    def __dereference_islandora_type(self, file):
+        islandora_types = {
+            "info:fedora/islandora:sp-audioCModel": "Audio",
+            "info:fedora/islandora:bookCModel": "Book",
+            "info:fedora/islandora:binaryObjectCModel": "Generic",
+            "info:fedora/islandora:sp_large_image_cmodel": "Image",
+            "info:fedora/islandora:sp_basic_image": "Image",
+            "info:fedora/islandora:sp_pdf": "PDF",
+            "info:fedora/islandora:sp_videoCModel": "Video",
+        }
+        x = ResourceIndexSearch().get_islandora_work_type(file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', ''))
+        return islandora_types[x]
+
+    def __get_utk_ontology_value(self, model):
+        ontology_values ={
+            "Audio": "https://ontology.lib.utk.edu/works#AudioWork",
+            "Book": "https://ontology.lib.utk.edu/works#BookWork",
+            "Generic": "https://ontology.lib.utk.edu/works#GenericWork",
+            "Image": "https://ontology.lib.utk.edu/works#ImageWork",
+            "PDF": "https://ontology.lib.utk.edu/works#PDFWork",
+            "Video": "https://ontology.lib.utk.edu/works#VideoWork",
+        }
+        return ontology_values[model]
 
     @staticmethod
     def __lookup_special_property(special_property, file, namespaces, name):
@@ -676,8 +702,8 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/Users/markbaggett/PycharmProjects/exodus/metadata/heilman_full'
+        '/Users/markbaggett/PycharmProjects/exodus/metadata/rfta_attachment_testing'
     )
     test.write_csv(
-        'temp/heilman_full.csv'
+        'temp/rfta_quick.csv'
     )
