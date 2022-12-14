@@ -101,6 +101,13 @@ class ResourceIndexSearch:
         results = self.__request_json(query)
         return results
 
+    def get_islandora_work_type(self, pid):
+        query = self.escape_query(
+            f"""SELECT ?work_type FROM <#ri> WHERE {{<info:fedora/{pid}> <info:fedora/fedora-system:def/model#hasModel> ?work_type .}}"""
+        )
+        results = requests.get(f"{self.base_url}&query={query}").content.decode('utf-8')
+        return [result.strip() for result in results.split('\n') if "info:fedora/fedora-system:FedoraObject-3.0" not in result ][1]
+
 
 if __name__ == "__main__":
-    print(ResourceIndexSearch().get_parent_collections('rftaart:54'))
+    print(ResourceIndexSearch().get_islandora_work_type('rftaart:54'))
