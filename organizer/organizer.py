@@ -32,7 +32,7 @@ class FileOrganizer:
             'title': self.__get_filename_title(filename, preserve_and_obj, row),
             'abstract': f"{filename} for {row['source_identifier']}",
             'parents': f"{row['source_identifier'].replace('.xml', '')}_{filename}",
-            'rdf_type': self.__get_rdf_types_for_file(filename, preserve_and_obj)
+            'rdf_type': RDFTypeGenerator(row['model']).find_file_types(filename, preserve_and_obj),
         }
         for k, v in row.items():
             if k not in default_headings:
@@ -48,7 +48,7 @@ class FileOrganizer:
             'title': self.__get_filename_title(filename, preserve_and_obj, row),
             'abstract': f"{filename} for {row['source_identifier']}",
             'parents': row['source_identifier'].replace('.xml', ''),
-            'rdf_type': self.__get_rdf_types_for_file(filename, preserve_and_obj)
+            'rdf_type': RDFTypeGenerator(row['model']).find_file_types(filename, preserve_and_obj),
         }
         for k, v in row.items():
             if k not in default_headings:
@@ -93,13 +93,32 @@ class FileOrganizer:
             new_csv_content.append(row)
             pid = row['source_identifier'].replace('_MODS.xml', '').replace('_', ":")
             all_files = FileSetFinder(pid).files
-            for dsid in all_files:
-                if 'PRESERVE' in all_files and 'OBJ' in all_files:
-                    new_csv_content.append(self.__add_an_attachment(dsid, row, True))
-                    new_csv_content.append(self.__add_a_file(dsid, row, True))
-                else:
-                    new_csv_content.append(self.__add_an_attachment(dsid, row))
-                    new_csv_content.append(self.__add_a_file(dsid, row))
+            if row['model'] == "Image":
+                for dsid in all_files:
+                    if 'PRESERVE' in all_files and 'OBJ' in all_files:
+                        new_csv_content.append(self.__add_an_attachment(dsid, row, True))
+                        new_csv_content.append(self.__add_a_file(dsid, row, True))
+                    else:
+                        new_csv_content.append(self.__add_an_attachment(dsid, row))
+                        new_csv_content.append(self.__add_a_file(dsid, row))
+            elif row['model'] == "Audio":
+                for dsid in all_files:
+                    if 'OBJ' in all_files and 'PROXY_MP3' in all_files:
+                        new_csv_content.append(self.__add_an_attachment(dsid, row, True))
+                        new_csv_content.append(self.__add_a_file(dsid, row, True))
+                    else:
+                        new_csv_content.append(self.__add_an_attachment(dsid, row))
+                        new_csv_content.append(self.__add_a_file(dsid, row))
+            elif row['model'] == "Video":
+                for dsid in all_files:
+                    if 'OBJ' in all_files and 'MP4' in all_files:
+                        new_csv_content.append(self.__add_an_attachment(dsid, row, True))
+                        new_csv_content.append(self.__add_a_file(dsid, row, True))
+                    else:
+                        new_csv_content.append(self.__add_an_attachment(dsid, row))
+                        new_csv_content.append(self.__add_a_file(dsid, row))
+            else:
+                raise Exception(f"Unknown work type on {row['source_identifier']}: {row['model']}")
         return new_csv_content
 
     def write_csv(self, filename):
@@ -206,10 +225,86 @@ class ResourceIndexSearch:
         return members_of_collection_no_parts
 
 
+class RDFTypeGenerator:
+    def __init__(self, parent_type):
+        self.parent_type = parent_type
+
+    def find_file_types(self, dsid, preserve_and_obj):
+        if self.parent_type == "Image":
+            return self.__get_rdf_types_for_file_on_image(dsid, preserve_and_obj)
+        elif self.parent_type == "Audio":
+            return self.__get_rdf_types_for_file_on_an_audio_work(dsid, preserve_and_obj)
+        elif self.parent_type == "Video":
+            return self.__get_rdf_types_for_file_on_a_video_work(dsid, preserve_and_obj)
+        else:
+            raise Exception(f"Parent type unknown: {self.parent_type}")
+
+    @staticmethod
+    def __get_rdf_types_for_file_on_an_image(dsid, preserve_and_obj):
+        if dsid == "OBJ" and preserve_and_obj is False:
+            return "http://pcdm.org/use#PreservationFile | http://pcdm.org/use#IntermediateFile"
+        elif dsid == "OBJ":
+            return "http://pcdm.org/use#IntermediateFile"
+        elif dsid == "PRESERVE":
+            return "http://pcdm.org/use#PreservationFile"
+        elif dsid == "MODS":
+            return "http://pcdm.org/file-format-types#Markup"
+        elif dsid == "POLICY":
+            return "http://pcdm.org/file-format-types#StructuredText"
+        elif dsid == "OCR":
+            return "http://pcdm.org/use#ExtractedText"
+        elif dsid == "HOCR":
+            return "http://pcdm.org/file-format-types#HTML"
+        else:
+            return "http://pcdm.org/use#OriginalFile"
+
+    @staticmethod
+    def __get_rdf_types_for_file_on_an_audio_work(dsid, preserve_and_obj):
+        if dsid == "OBJ" and preserve_and_obj is False:
+            return "http://pcdm.org/use#PreservationFile | http://pcdm.org/use#IntermediateFile"
+        elif dsid == "OBJ":
+            return "http://pcdm.org/use#PreservationFile"
+        elif dsid == "PROXY_MP3":
+            return "http://pcdm.org/use#IntermediateFile"
+        elif dsid == "POLICY":
+            return "http://pcdm.org/file-format-types#StructuredText"
+        elif dsid == "MODS":
+            return "http://pcdm.org/file-format-types#Markup"
+        elif dsid == "TRANSCRIPT":
+            return "http://pcdm.org/use#Transcript"
+        elif dsid == "TRANSCRIPT-ES":
+            return "http://pcdm.org/use#Transcript"
+        elif dsid == "TN":
+            return "http://pcdm.org/use#ThumbnailImage"
+        else:
+            return "http://pcdm.org/use#OriginalFile"
+
+    @staticmethod
+    def __get_rdf_types_for_file_on_a_video_work(dsid, preserve_and_obj):
+        if dsid == "OBJ" and preserve_and_obj is False:
+            return "http://pcdm.org/use#PreservationFile | http://pcdm.org/use#IntermediateFile"
+        elif dsid == "OBJ":
+            return "http://pcdm.org/use#PreservationFile"
+        elif dsid == "MP4":
+            return "http://pcdm.org/use#IntermediateFile"
+        elif dsid == "POLICY":
+            return "http://pcdm.org/file-format-types#StructuredText"
+        elif dsid == "MODS":
+            return "http://pcdm.org/file-format-types#Markup"
+        elif dsid == "TRANSCRIPT":
+            return "http://pcdm.org/use#Transcript"
+        elif dsid == "TRANSCRIPT-ES":
+            return "http://pcdm.org/use#Transcript"
+        elif dsid == "TN":
+            return "http://pcdm.org/use#ThumbnailImage"
+        else:
+            return "http://pcdm.org/use#OriginalFile"
+
+
 if __name__ == "__main__":
     """Take a CSV and Add files to it"""
-    x = FileOrganizer('temp/example.csv')
-    x.write_csv('temp/example_with_filesets_and_attachments.csv')
+    x = FileOrganizer('temp/rfta_quick.csv')
+    x.write_csv('temp/rfta_quick_with_filesets_and_attachments.csv')
     """Below: Get datastreams of a PID without the ones to ignore"""
     # x = FileSetFinder('heilman:150')
     # print(x.files)
