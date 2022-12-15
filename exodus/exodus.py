@@ -517,6 +517,11 @@ class RightsOrLicenseProperties(BaseProperty):
             final['rights_statement'] = rights
         if len(licenses) > 0:
             final['license'] = licenses
+        if len(rights) == 0:
+            if licenses[0] == 'http://creativecommons.org/publicdomain/zero/1.0/':
+                final['rights_statement'] = ['http://rightsstatements.org/vocab/NKC/1.0/']
+            else:
+                final['rights_statement'] = ['http://rightsstatements.org/vocab/InC/1.0/']
         return final
 
 
@@ -702,8 +707,8 @@ class MetadataMapping:
 if __name__ == "__main__":
     test = MetadataMapping(
         'configs/utk_dc.yml',
-        '/Users/markbaggett/PycharmProjects/exodus/metadata/rfta_attachment_testing'
+        '/Users/markbaggett/PycharmProjects/exodus/metadata/heilman_full'
     )
     test.write_csv(
-        'temp/rfta_quick.csv'
+        'migrations/heilman_full.csv'
     )
