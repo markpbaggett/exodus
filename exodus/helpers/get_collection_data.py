@@ -104,4 +104,18 @@ class CollectionOrganizer:
 
 
 if __name__ == "__main__":
-    CollectionOrganizer('temp/acwiley_full_with_filesets_and_attachments.csv').write_csv('temp/acwiley_full_with_collections.csv')
+    import argparse
+    parser = argparse.ArgumentParser(description='Add collections to sheet.')
+    parser.add_argument("-s", "--sheet", dest="sheet", help="Specify the initial sheet.", required=True)
+    parser.add_argument(
+        "-c", "--collections_sheet", dest="collections_sheet", help="Optional: specify collections sheet."
+    )
+    args = parser.parse_args()
+    collections_sheet = f"{args.sheet.replace('.csv', '')}_with_collections.csv"
+    if args.collections_sheet:
+        collections_sheet = args.collections_sheet
+    CollectionOrganizer(
+        args.sheet
+    ).write_csv(
+        collections_sheet
+    )
