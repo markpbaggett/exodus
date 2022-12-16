@@ -101,5 +101,14 @@ class ValidateMigration:
             print("Sheet passes all tests.")
 
 
-x = ValidateMigration(profile='temp/utk.yml', migration_sheet='migrations/heilman_full_filesets_and_attachments_only_0.csv')
-x.iterate()
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description='Choose sheet to validate..')
+    parser.add_argument("-s", "--sheet", dest="sheet", help="Specify csv to test.", required=True)
+    parser.add_argument("-p", "--profile", dest="profile", help="Specify a profile.", default="temp/utk.yml")
+    args = parser.parse_args()
+    x = ValidateMigration(
+        profile=args.profile,
+        migration_sheet=args.sheet
+    )
+    x.iterate()
