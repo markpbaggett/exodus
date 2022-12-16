@@ -50,5 +50,32 @@ class FileCurator:
 
 
 if __name__ == "__main__":
-    x = FileCurator('temp/example_with_filesets_and_attachments.csv')
-    x.write_files_and_attachments_only_2('temp/example_just_filesets_and_attachments_only.csv', multi_sheets=True, attachments_per_sheet=800)
+    import argparse
+    parser = argparse.ArgumentParser(description='Add collections to sheet.')
+    parser.add_argument("-s", "--sheet", dest="sheet", help="Specify the initial sheet.", required=True)
+    parser.add_argument(
+        "-f", "--files_sheet", dest="files_sheet", help="Optional: specify files sheet or files sheet pattern."
+    )
+    parser.add_argument(
+        "-m", "--multi_sheets",
+        dest="multi_sheets",
+        help="multi or single", default="multi"
+    )
+    parser.add_argument(
+        "-t", "--total_size",
+        dest="total_size",
+        help="If multisheet, the number of attachments and filesets. Must be even.", default=800
+    )
+    args = parser.parse_args()
+    files_sheet = f"{args.sheet.replace('.csv', '')}_with_filesheets_and_attachments_only.csv"
+    if args.files_sheet:
+        files_sheet = args.files_sheet
+    multi_sheet = True
+    if args.multi_sheets == "single":
+        multi_sheet = False
+    x = FileCurator(args.sheet)
+    x.write_files_and_attachments_only_2(
+        files_sheet,
+        multi_sheets=multi_sheet,
+        attachments_per_sheet=int(args.total_size)
+    )
