@@ -315,9 +315,21 @@ class RDFTypeGenerator:
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description='Add files to a CSV.')
+    parser.add_argument("-s", "--sheet", dest="sheet", help="Specify original csv.", required=True)
+    parser.add_argument(
+        "-f", "--files_sheet", dest="files_sheet", help="Optional: specify files sheet."
+    )
+    args = parser.parse_args()
+    files_sheet = f"{args.sheet.replace('.csv', '')}_with_filesets_and_attachments.csv"
+    if args.files_sheet:
+        files_sheet = args.files_sheet
     """Take a CSV and Add files to it"""
-    x = FileOrganizer('migrations/heilman_full.csv')
-    x.write_csv('temp/heilman_full_with_filesets_and_attachments.csv')
+    x = FileOrganizer(
+        args.sheet
+    )
+    x.write_csv(files_sheet)
     """Below: Get datastreams of a PID without the ones to ignore"""
     # x = FileSetFinder('heilman:150')
     # print(x.files)
