@@ -705,10 +705,16 @@ class MetadataMapping:
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description='Build migration works sheet.')
+    parser.add_argument("-s", "--sheet", dest="sheet", help="Specify csv to test.", required=True)
+    parser.add_argument("-c", "--config", dest="config", help="Specify a config.", default="configs/utk_dc.yml")
+    parser.add_argument("-p", "--path", dest="path_to_files", help="Specify path to metadata files.", required=True)
+    args = parser.parse_args()
     test = MetadataMapping(
-        'configs/utk_dc.yml',
-        '/Users/markbaggett/PycharmProjects/exodus/metadata/heilman_full'
+        args.config,
+        args.path_to_files
     )
     test.write_csv(
-        'migrations/heilman_full.csv'
+        args.sheet
     )
