@@ -21,6 +21,7 @@ class FileOrganizer:
     def __get_headers(self):
         original_headers = [k for k, v in self.original_as_dict[0].items()]
         original_headers.append('rdf_type')
+        original_headers.append('file_language')
         return original_headers
 
     def __add_a_file(self, filename, row, preserve_and_obj=False):
@@ -33,10 +34,16 @@ class FileOrganizer:
             'abstract': f"{filename} for {row['source_identifier']}",
             'parents': f"{row['source_identifier'].replace('.xml', '')}_{filename}",
             'rdf_type': RDFTypeGenerator(row['model']).find_file_types(filename, preserve_and_obj),
+            'file_language': ''
         }
         for k, v in row.items():
             if k not in default_headings:
                 initial_data[k] = ''
+        if row['model'] == "Audio" or row['model'] == "Video":
+            if filename == "TRANSCRIPT":
+                initial_data['file_language'] = 'en'
+            elif filename == "TRANSCRIPT-ES":
+                initial_data['file_language'] = 'es'
         return initial_data
 
     def __add_an_attachment(self, filename, row, preserve_and_obj=False):
@@ -49,10 +56,16 @@ class FileOrganizer:
             'abstract': f"{filename} for {row['source_identifier']}",
             'parents': row['source_identifier'].replace('.xml', ''),
             'rdf_type': RDFTypeGenerator(row['model']).find_file_types(filename, preserve_and_obj),
+            'file_language': ''
         }
         for k, v in row.items():
             if k not in default_headings:
                 initial_data[k] = ''
+        if row['model'] == "Audio" or row['model'] == "Video":
+            if filename == "TRANSCRIPT":
+                initial_data['file_language'] = 'en'
+            elif filename == "TRANSCRIPT-ES":
+                initial_data['file_language'] = 'es'
         return initial_data
 
     @staticmethod
@@ -231,7 +244,7 @@ class RDFTypeGenerator:
 
     def find_file_types(self, dsid, preserve_and_obj):
         if self.parent_type == "Image":
-            return self.__get_rdf_types_for_file_on_image(dsid, preserve_and_obj)
+            return self.__get_rdf_types_for_file_on_an_image(dsid, preserve_and_obj)
         elif self.parent_type == "Audio":
             return self.__get_rdf_types_for_file_on_an_audio_work(dsid, preserve_and_obj)
         elif self.parent_type == "Video":
@@ -303,8 +316,8 @@ class RDFTypeGenerator:
 
 if __name__ == "__main__":
     """Take a CSV and Add files to it"""
-    x = FileOrganizer('temp/rfta_quick.csv')
-    x.write_csv('temp/rfta_quick_with_filesets_and_attachments.csv')
+    x = FileOrganizer('migrations/heilman_full.csv')
+    x.write_csv('temp/heilman_full_with_filesets_and_attachments.csv')
     """Below: Get datastreams of a PID without the ones to ignore"""
     # x = FileSetFinder('heilman:150')
     # print(x.files)
