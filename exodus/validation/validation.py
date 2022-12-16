@@ -80,11 +80,20 @@ class ValidateMigration:
                     self.all_exceptions.append(f'{value} may be a URI for {row["source_identifier"]}.')
         return
 
+    def check_required_fields_are_present(self, row):
+        for k , v in self.loaded_m3['properties'].items():
+            if 'minimum' in v['cardinality']:
+                if v['cardinality']['minimum'] > 0 and row['model'] in v['available_on']['class']:
+                    keys = [key for key, value in row.items()]
+                    if k not in keys:
+                        self.all_exceptions.append(f'{row["source_identifier"]} has no {k} but {k} required on {row["model"]}')
+
     def iterate(self):
         for row in self.loaded_csv:
             self.validate_model(row)
             self.validate_values(row)
             self.validate_license(row)
+            self.check_required_fields_are_present(row)
         separator = "\n"
         if len(self.all_exceptions) > 0:
             raise Exception(f"Migration spreadsheet has at least {len(self.all_exceptions)} problems: {separator.join(self.all_exceptions)}")
@@ -92,5 +101,5 @@ class ValidateMigration:
             print("Sheet passes all tests.")
 
 
-x = ValidateMigration(profile='temp/utk.yml', migration_sheet='migrations/heilman_full_with_collections.csv')
+x = ValidateMigration(profile='temp/utk.yml', migration_sheet='migrations/heilman_full_filesets_and_attachments_only_0.csv')
 x.iterate()
