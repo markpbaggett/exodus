@@ -35,8 +35,17 @@ class FailuresFinder:
 
 
 if __name__ == "__main__":
-    x = FailuresFinder(
-        'migrations/roth_full_just_filesets_and_attachments_with_filesheets_and_attachments_only_6.csv',
-        'temp/91.txt'
+    import argparse
+    parser = argparse.ArgumentParser(description='Copy failures data from import sheet.')
+    parser.add_argument(
+        "-s", "--sheet", dest="sheet", help="Specify the initial sheet.", required=True
     )
-    x.write_new_import_file_with_failures_only('temp/91.csv')
+    parser.add_argument(
+        "-f", "--failures", dest="failures", help="Specify list of files that failed to import."
+    )
+    args = parser.parse_args()
+    x = FailuresFinder(
+        args.sheet,
+        args.failures
+    )
+    x.write_new_import_file_with_failures_only(f'failures/{args.sheet.split("/")[-1].replace(".txt", ".csv")}')
