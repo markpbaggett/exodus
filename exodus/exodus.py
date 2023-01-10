@@ -210,7 +210,13 @@ class GeoNamesProperty(BaseProperty):
             uri.replace('about.rdf', '')
             for uri in self.root.xpath('mods:subject/mods:geographic/@valueURI', namespaces=self.namespaces)
         ]
+        lc_uris = [
+            uri
+            for uri in self.root.xpath('mods:subject[mods:geographic]@valueURI', namespaces=self.namespaces)
+        ]
         all_values = []
+        for uri in lc_uris:
+            all_values.append(uri)
         for uri in uris:
             all_values.append(uri)
         return {name: all_values}
