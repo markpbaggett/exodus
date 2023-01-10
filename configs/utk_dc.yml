@@ -228,6 +228,7 @@ mapping:
   - name: spatial
     xpaths:
       - 'mods:subject/mods:geographic/@valueURI'
+      - 'mods:subject[mods:geographic]/@valueURI'
     properties:
       - "http://purl.org/dc/terms/spatial"
     special: "GeoNamesProperty"
@@ -235,7 +236,8 @@ mapping:
   - name: spatial_local
     xpaths:
       - 'mods:subject/mods:geographic[not(@valueURI)]'
-    property: "http://purl.org/dc/terms/spatial"
+      - 'mods:subject[not(@valueURI)]/mods:geographic'
+    property: "http://id.loc.gov/ontologies/bibframe/geographicCoverage"
 
   - name: coordinates
     xpaths:
