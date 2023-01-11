@@ -228,7 +228,6 @@ mapping:
   - name: spatial
     xpaths:
       - 'mods:subject/mods:geographic/@valueURI'
-      - 'mods:subject[mods:geographic]/@valueURI'
     properties:
       - "http://purl.org/dc/terms/spatial"
     special: "GeoNamesProperty"
