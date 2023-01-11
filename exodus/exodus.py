@@ -212,7 +212,7 @@ class GeoNamesProperty(BaseProperty):
         ]
         lc_uris = [
             uri
-            for uri in self.root.xpath('mods:subject[mods:geographic]@valueURI', namespaces=self.namespaces)
+           for uri in self.root.xpath('mods:subject[mods:geographic]/@valueURI', namespaces=self.namespaces)
         ]
         all_values = []
         for uri in lc_uris:
