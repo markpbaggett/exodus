@@ -235,7 +235,7 @@ mapping:
   - name: spatial_local
     xpaths:
       - 'mods:subject/mods:geographic[not(@valueURI)]'
-      - 'mods:subject[not(@valueURI)]/mods:geographic'
+      - 'mods:subject[not(@valueURI)]/mods:geographic[not(@valueURI)]'
     property: "http://id.loc.gov/ontologies/bibframe/geographicCoverage"
 
   - name: coordinates
