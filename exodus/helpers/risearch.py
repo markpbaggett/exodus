@@ -110,4 +110,7 @@ class ResourceIndexSearch:
 
 
 if __name__ == "__main__":
-    print(ResourceIndexSearch().get_islandora_work_type('rftaart:54'))
+    results = ResourceIndexSearch().get_images_no_parts('collections:gamble')
+    with open('temp/gamble.txt', 'w') as all_results:
+        for result in results:
+            all_results.write(f'{result}\n')

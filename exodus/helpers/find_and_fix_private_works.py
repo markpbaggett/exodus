@@ -58,6 +58,6 @@ class ImportReader:
 
 
 if __name__ == "__main__":
-    x = ImportReader('archivision/archivision_institution_only_filesheets_and_attachments_0.csv')
+    x = ImportReader('archivision/archivision_institution_only_filesheets_and_attachments_0_restricted.csv')
     #x.write('archvision_0.txt')
     x.write_csv('archivision_cleanup/archivision_institution_only_filesheets_and_attachments_0.csv')
