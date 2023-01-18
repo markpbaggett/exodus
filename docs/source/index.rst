@@ -3,12 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Exodus's documentation!
-==================================
+Exodus
+======
+
+This portal contains documentation and scripts for migrating UTK data from Islandora 7 to Hyku.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
+   :glob:
+
+   contents/*
+
 
 
 
