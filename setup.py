@@ -17,8 +17,8 @@ setup(
     packages=find_packages(),
     extras_require={
         "docs": [
-            "sphinx >= 5.0.2",
-            "sphinx-rtd-theme >= 1.0.0",
+            "sphinx >= 5.3.0",
+            "sphinx-rtd-theme >= 1.1.1",
         ]
     },
     classifiers=[
