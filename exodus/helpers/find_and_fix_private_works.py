@@ -2,8 +2,9 @@ import csv
 import tqdm
 
 class ImportReader:
-    def __init__(self, csv_file):
+    def __init__(self, csv_file, pattern='archivision_5'):
         self.csv_file = csv_file
+        self.pattern = pattern
         self.original_as_dict = self.__read()
         self.headers = self.__get_headers()
         self.objs = self.__get_objs()
@@ -32,7 +33,7 @@ class ImportReader:
         for row in self.original_as_dict:
             if row['remote_files'] != "" and 'OBJ' in row['title']:
                 pid = row['remote_files'].split('/')[6]
-                row['remote_files'] = f'https://dlweb.lib.utk.edu/dlwebtemp/archivision_0/{pid}.tif'
+                row['remote_files'] = f'https://dlweb.lib.utk.edu/dlwebtemp/{self.pattern}/{pid}.tif'
                 new_csv_content.append(row)
             else:
                 new_csv_content.append(row)
@@ -58,6 +59,15 @@ class ImportReader:
 
 
 if __name__ == "__main__":
-    x = ImportReader('archivision/archivision_institution_only_filesheets_and_attachments_0_restricted.csv')
-    #x.write('archvision_0.txt')
-    x.write_csv('archivision_cleanup/archivision_institution_only_filesheets_and_attachments_0.csv')
+    import argparse
+    parser = argparse.ArgumentParser(description='Change URLs for Filesets.')
+    parser.add_argument("-s", "--sheet", dest="sheet", help="Specify original csv.", required=True)
+    parser.add_argument("-p", "--pattern", dest="pattern", help="Specify pattern part.", required=True)
+    parser.add_argument(
+        "-o", "--output_sheet", dest="output_sheet", help="Specify output sheet.", required=True
+    )
+    args = parser.parse_args()
+    #x = ImportReader('archivision/archivision_institution_only_filesheets_and_attachments_0_restricted.csv')
+    x = ImportReader(args.sheet, args.pattern)
+    #x.write_csv('archivision_new_cleanup/archivision_institution_only_filesheets_and_attachments_5.csv')
+    x.write_csv(args.output_sheet)

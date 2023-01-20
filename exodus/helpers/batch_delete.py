@@ -4,7 +4,10 @@ import tqdm
 
 class BatchDelete:
     def __init__(self, csv):
-        self.csv = csv
+        self.original_csv = csv
+        self.original_as_dict = self.__read()
+        self.headers = self.__get_headers()
+        self.new_csv_with_files = self.__add_new_objects()
 
     def __read(self):
         csv_content = []
@@ -21,7 +24,7 @@ class BatchDelete:
 
     def __add_new_objects(self):
         new_csv_content = []
-        for row in tqdm(self.original_as_dict):
+        for row in self.original_as_dict:
             current_data = {}
             for k, v in row.items():
                 current_data[k] = v
@@ -37,6 +40,7 @@ class BatchDelete:
             for data in self.new_csv_with_files:
                 writer.writerow(data)
         return
+
 
 if __name__ == "__main__":
     import argparse
