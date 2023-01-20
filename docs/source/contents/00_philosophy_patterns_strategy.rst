@@ -87,11 +87,13 @@ Migration Philosophy
 ====================
 
 UTK's philosophy for migration is to automate as much of the migration as possible without touching metadata or files by
-hand.
+hand. In order to prepare for migration, UTK developed a `metadata mapping <https://utk-mods-to-rdf.readthedocs.io/>`_
+from MODS to RDF that informs migration utilities how to read in descriptive metadata in MODS and write it to the correct
+RDF field.
 
-In order to do this, UTK starts by defining a machine-readable config for working with its descriptive metadata. The
-machine readable file is in yaml. The yaml file has 1 property called :code:`mapping` with an array of properties that
-align with our m3 profile or another m3 profile.
+In order to align code with this metadata mapping, UTK starts by defining a machine-readable config for working with its
+descriptive metadata. The machine readable file is in yaml. The yaml file has 1 property called :code:`mapping` with an
+array of properties that align with our m3 profile or another m3 profile.
 
 There are two patterns for properties:  :code:`basic` and :code:`special`.
 
@@ -135,3 +137,115 @@ A special property may look like this:
           - "https://dbpedia.org/ontology/completionDate"
         special: MachineDate
 
+The properties listed in the yaml closely correlate to code found in this repository.  A :code:`basic` property aligns
+with the :code:`StandardProperty` class found `here <https://github.com/markpbaggett/exodus/blob/main/exodus/exodus.py#L18>`_.
+Note that code here only allows a standard XPATH for an attribute if it is specified.  This should be improved:
+
+.. code-block:: python
+
+    class StandardProperty(BaseProperty):
+        def __init__(self, path, namespaces):
+            super().__init__(path, namespaces)
+
+        def find(self, xpaths):
+            all_values = []
+            for xpath in xpaths:
+                matches = self.root.xpath(xpath, namespaces=self.namespaces)
+                for match in matches:
+                    if not xpath.endswith('@xlink:href') and match.text is not None:
+                        all_values.append(match.text)
+                    elif xpath.endswith('@xlink:href'):
+                        all_values.append(match)
+            return all_values
+
+All :code:`special` properties align with the class that is listed in their :code:`special` property in the yaml. For
+instance, :code:`titleInfo` expectations are expressed `here <https://utk-mods-to-rdf.readthedocs.io/en/latest/contents/4_mapping.html#titleinfo>`_.
+Note that a text node in just :code:`mods:titleInfo/mods:title` or :code:`titleInfo[@supplied="yes"]/title` should be
+mapped to :code:`dcterms:title`, but if both :code:`mods:titleInfo/mods:title` and :code:`titleInfo[@supplied="yes"]/title`
+exist, the former should be mapped to :code:`dcterms:title` and the latter to :code:`dcterms:alternative`. Because the
+logic here is difficult to express in basic XPATH, special classes are defined and utilized.
+
+.. code-block:: python
+
+    class TitleProperty(BaseProperty):
+        """
+        Used for Titles.
+        If just `titleInfo/title`, map to dcterms:title.
+        If just `titleInfo[@supplied="yes"]/title`, map to dcterms:title.
+        If `titleInfo[@supplied="yes"]/title` and `titleInfo/title`, map the former to dcterms:title, and the latter to
+        dcterms:alternative.
+        If `titleInfo/partName`, concat to `titleInfo/title` in dcterms:title with a `,`.
+        If `titleInfo/partNumber`, concat to `titleInfo[@supplied="yes"]` in dcterms:alternative (this is going to be hard).
+        If `titleInfo/nonSort`, concat to `titleInfo/title` in dcterms:title.
+        If `titleInfo[@type="alternative"]`, map to dcterms:alternative.
+        """
+        def __init__(self, path, namespaces):
+            super().__init__(path, namespaces)
+            self.various_titles = {}
+
+        def __find_plain_titles(self):
+            self.various_titles['plain'] = [thing.text for thing in self.root.xpath(
+                'mods:titleInfo[not(@supplied)][not(@type="alternative")]/mods:title',
+                namespaces=self.namespaces
+            )]
+            return
+
+        def __find_supplied_titles(self):
+            self.various_titles['supplied'] = [thing.text for thing in self.root.xpath(
+                'mods:titleInfo[@supplied]/mods:title',
+                namespaces=self.namespaces
+            )]
+            return
+
+        def __find_part_names(self):
+            self.various_titles['part_names'] = [thing.text for thing in self.root.xpath(
+                'mods:titleInfo/mods:partName',
+                namespaces=self.namespaces
+            )]
+            return
+
+        def __find_part_numbers(self):
+            self.various_titles['part_numbers'] = [thing.text for thing in self.root.xpath(
+                'mods:titleInfo/mods:partNumber',
+                namespaces=self.namespaces
+            )]
+            return
+
+        def __find_non_sorts(self):
+            self.various_titles['non_sorts'] = [thing.text for thing in self.root.xpath(
+                'mods:titleInfo/mods:nonSort',
+                namespaces=self.namespaces
+            )]
+            return
+
+        def __find_alternatives(self):
+            self.various_titles['alternatives'] = [thing.text for thing in self.root.xpath(
+                'mods:titleInfo[@type="alternative"]/mods:title',
+                namespaces=self.namespaces
+            )]
+            return
+
+        def find(self):
+            # TODO: Gross!  This had so many needless side effects.  Fix!
+            self.__find_plain_titles()
+            self.__find_supplied_titles()
+            self.__find_non_sorts()
+            self.__find_part_numbers()
+            self.__find_part_names()
+            self.__find_alternatives()
+            # TODO: for now, just handle supplied, alternatives, and normal titles.
+            titles = []
+            alternatives = []
+            if len(self.various_titles['supplied']) > 0 and len(self.various_titles['plain']) > 0:
+                for title in self.various_titles['supplied']:
+                    titles.append(title)
+                for title in self.various_titles['plain']:
+                    alternatives.append(title)
+            else:
+                for title in self.various_titles['supplied']:
+                    titles.append(title)
+                for title in self.various_titles['plain']:
+                    titles.append(title)
+            for title in self.various_titles['alternatives']:
+                alternatives.append(title)
+            return {'title': titles, 'alternative_title': alternatives}
