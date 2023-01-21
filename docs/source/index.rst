@@ -3,24 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Exodus
-======
+UTK Hyku Workflows
+==================
 
 This portal contains documentation and scripts for migrating UTK data from Islandora 7 to Hyku.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Migration:
    :glob:
 
    contents/*
 
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
