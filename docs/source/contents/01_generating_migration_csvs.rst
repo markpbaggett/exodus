@@ -63,3 +63,47 @@ An easy to use script with arg parsing is included:
 .. code-block:: shell
 
     python exodus/helpers/risearch.py -c "gsmrc:roth" -o roth.txt
+
+Using the contents of the output of the above text file, you can now use the API to get the metadata you need to build
+an import sheet. One approach with Python could be to run a script like this against the file:
+
+.. code-block:: python
+
+    import requests
+
+    class FedoraObject:
+        def __init__(self, auth, fedora_uri):
+            self.auth = auth
+            self.fedora_uri = fedora_uri
+
+        def getDatastream(self, pid, dsid, output):
+            mimetypes = {
+                'image/tiff': 'tif',
+                'image/jp2': 'jp2',
+                'application/xml': 'xml'
+            }
+            r = requests.get(f"{self.fedora_uri}/objects/{pid}/datastreams/{dsid}/content", auth=self.auth, allow_redirects=True)
+            if r.status_code == 200:
+                open(f'{output}/{pid}.{mimetypes[r.headers["Content-Type"]]}', 'wb').write(r.content)
+            else:
+                print(f'{r.status_code} on {pid}.')
+
+
+    with open('roth.txt', 'r') as my_list:
+        for line in my_list:
+            x = FedoraObject(auth=("username", "password"), fedora_uri='http://localhost:8080/fedora')
+            x.getDatastream(pid=f"{line.replace('info:fedora/','').strip()}", dsid='MODS', output='roth_mods')
+
+Generating an Importer with Metadata
+====================================
+
+Once you have metadata, you can generate a fresh importer with :code:`exodus/exodus.py`. This assumes that you've
+defined a config and any special classes to work with complex fields.
+
+To generate the importer, one could run the code below by pointing at the path to the mods in question, adding where you want
+to write your importer csv, and declaring with config to pull your rules from:
+
+.. code-block:: shell
+
+    python exodus/exodus.py -s roth.csv -p roth_mods -c configs/utk_dc.yml
+
