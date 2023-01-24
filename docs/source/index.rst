@@ -6,7 +6,7 @@
 UTK Hyku Workflows
 ==================
 
-This portal contains documentation and scripts for migrating UTK data from Islandora 7 to Hyku.
+This section contains documentation and scripts for migrating UTK data from Islandora 7 to Hyku.
 
 .. toctree::
    :maxdepth: 1
@@ -15,3 +15,9 @@ This portal contains documentation and scripts for migrating UTK data from Islan
 
    contents/*
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Importers and Sidekiq
+   :glob:
+
+   importers/*
