@@ -21,3 +21,24 @@ with works and an output path.
 .. code-block:: shell
 
     python organizer/organizer.py -s roth.csv -f roth_with_files.csv
+
+Curating FileSets and Attachments
+=================================
+
+Sometimes, you may need to create an importer with just the FileSets and Attachments -- no works or collections or take
+an importer with just filesets and attachments and split it into separate import. The :code:`curate_for_filesets_attachments.py`
+helper can handle this. This helper allows you to build an importer that has all filesheets and attachments in a sheet
+or split all the filesets and attachments into multiple sheets.
+
+If you wanted to generate a sheets of 3000 items (1500 attachments / 1500 filesets) from an import sheet, you could use
+the script like this:
+
+.. code-block:: shell
+
+    python exodus/helpers/find_and_fix_private_works.py -s roth_with_filesets_and_attachments.csv -t 3000 -f roth_just_filesets_and_attachments.csv
+
+This would generate sheets in this pattern:  :code:`roth_just_filesets_and_attachments{n}.csv`
+
+
+
+
