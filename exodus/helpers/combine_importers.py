@@ -1,5 +1,6 @@
 import csv
-import tqdm
+import argparse
+import os
 
 
 class Combiner:
@@ -58,6 +59,15 @@ class Importer:
 
 
 if __name__ == "__main__":
-    sheets = ['errored_entries/import_14.csv', 'errored_entries/import_16.csv', 'errored_entries/import_17.csv']
+    parser = argparse.ArgumentParser(description='Combine Import Sheets')
+    parser.add_argument("-d", "--directory", dest="directory", help="Specify directory with import sheets", required=True)
+    parser.add_argument(
+        "-o", "--output_sheet", dest="output_sheet", help="Specify output sheet.", required=True
+    )
+    args = parser.parse_args()
+    sheets = []
+    for path, directories, files in os.walk(args.directory):
+        for filename in files:
+            sheets.append(f'{path}/{filename}')
     x = Combiner(sheets)
-    x.write_csv('errored_entries/test.csv')
+    x.write_csv(args.output_sheet)
