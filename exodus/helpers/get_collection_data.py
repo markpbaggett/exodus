@@ -33,7 +33,7 @@ class CollectionMetadata:
             "date_created": self.__simplify_xpath('mods:originInfo/mods:dateCreated[not(@encoding)]'),
             "date_issued": self.__simplify_xpath('mods:originInfo/mods:dateIssued[not(@encoding)]'),
             "date_created_d": self.__simplify_xpath('mods:originInfo/mods:dateCreated[@encoding]'),
-            "date_issued_d": self.__simplify_xpath('mods:originInfo/mods:dateIssued[@eencoding]'),
+            "date_issued_d": self.__simplify_xpath('mods:originInfo/mods:dateIssued[@encoding]'),
             "utk_publisher": self.__simplify_xpath('mods:originInfo/mods:publisher[not(@valueURI)]'),
             "publisher": self.__get_valueURIs('mods:originInfo/mods:publisher/@valueURI'),
             "publication_place": self.__simplify_xpath('mods:originInfo/mods:place/mods:placeTerm[@valueURI]'),
