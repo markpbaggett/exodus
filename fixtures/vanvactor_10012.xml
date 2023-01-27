@@ -1,0 +1,78 @@
+
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+  <identifier type="local">0012_003979_000409</identifier>
+  <identifier type="pid">vanvactor:10012</identifier>
+  <titleInfo>
+    <title>3 song [sic] for soprano, alto flute in G, English horn and bass clarinet in B flat</title>
+  </titleInfo>
+  <titleInfo type="alternative">
+    <title>Three song [sic] for soprano, alto flute in G, English horn and bass clarinet in B flat</title>
+  </titleInfo>
+  <abstract>Pencil score.</abstract>
+  <tableOfContents>Nonentity - Baby asleep after pain - After the opera</tableOfContents>
+  <note type="instrumentation">For soprano, alto flute, English horn, bass clarinet, and piano.</note>
+  <genre authority="lcmpt" valueURI="http://id.loc.gov/authorities/performanceMediums/mp2013015666">soprano voice</genre>
+  <genre authority="lcmpt" valueURI="http://id.loc.gov/authorities/performanceMediums/mp2013015012">alto flute</genre>
+  <genre authority="lcmpt" valueURI="http://id.loc.gov/authorities/performanceMediums/mp2013015251">English horn</genre>
+  <genre authority="lcmpt" valueURI="http://id.loc.gov/authorities/performanceMediums/mp2013015064">bass clarinet</genre>
+  <genre authority="lcmpt" valueURI="http://id.loc.gov/authorities/performanceMediums/mp2013015550">piano</genre>
+  <originInfo>
+    <dateCreated>1976</dateCreated>
+    <dateCreated encoding="edtf" keyDate="yes">1976</dateCreated>
+  </originInfo>
+  <physicalDescription>
+    <form authority="aat" valueURI="http://vocab.getty.edu/aat/300026427">scores (documents for music)</form>
+    <extent>9 pages</extent>
+    <internetMediaType>pdf</internetMediaType>
+  </physicalDescription>
+  <note type="First line">The stars that open and shut follow my shallow brest [sic] like stars in a pool.</note>
+  <name valueURI="http://id.loc.gov/authorities/names/n82001311">
+    <namePart>Van Vactor, David, 1906-1994</namePart>
+    <role>
+      <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/cmp">Composer</roleTerm>
+    </role>
+  </name>
+  <name authority="naf" valueURI="http://id.loc.gov/authorities/names/n79018450">
+    <namePart>Lawrence, D. H. (David Herbert), 1885-1930</namePart>
+    <role>
+      <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/lyr">Lyricist</roleTerm>
+    </role>
+  </name>
+  <subject authority="lcsh" valueURI="http://id.loc.gov/authorities/subjects/sh85125142">
+    <topic>Songs (High voice) with instrumental ensemble</topic>
+  </subject>
+  <subject authority="lcsh" valueURI="http://id.loc.gov/authorities/subjects/sh85088803">
+    <topic>Music--Manuscripts</topic>
+  </subject>
+  <genre authority="lcgft" valueURI="http://id.loc.gov/authorities/genreForms/gf2014027103">Songs</genre>
+  <genre authority="lcgft" valueURI="http://id.loc.gov/authorities/genreForms/gf2014026704">Chamber music</genre>
+  <genre authority="lcgft" valueURI="http://id.loc.gov/authorities/subjects/sh99001779">Scores</genre>
+  <relatedItem type="otherVersion">
+    <titleInfo>
+      <title>Three songs for soprano, alto flute, English horn, and bass clarinet</title>
+    </titleInfo>
+    <identifier type="catalog">M120</identifier>
+  </relatedItem>
+  <typeOfResource>notated music</typeOfResource>
+  <relatedItem displayLabel="Project" type="host">
+    <titleInfo>
+      <title>David Van Vactor Music Collection</title>
+    </titleInfo>
+  </relatedItem>
+  <relatedItem displayLabel="Collection" type="host">
+    <titleInfo>
+      <title>David Van Vactor Papers</title>
+    </titleInfo>
+    <identifier>MS.1942</identifier>
+    <location>
+      <url>https://n2t.net/ark:/87290/v8pz5703</url>
+    </location>
+  </relatedItem>
+  <location>
+    <physicalLocation valueURI="http://id.loc.gov/authorities/names/no2014027633">University of Tennessee, Knoxville. Special Collections</physicalLocation>
+  </location>
+  <recordInfo>
+    <recordContentSource valueURI="http://id.loc.gov/authorities/names/n87808088">University of Tennessee, Knoxville. Libraries</recordContentSource>
+  </recordInfo>
+  <accessCondition type="use and reproduction" xlink:href="http://rightsstatements.org/vocab/InC/1.0/">In Copyright</accessCondition>
+</mods>

@@ -2,7 +2,17 @@ temp/*
 .idea/*
 fixtures/brehm/*
 exodus/__pycache__/*
+exodus/helpers/__pycache__/*
+exodus/special_properties/*
 download_collection.py
 organizer/__pycache__/*
 design/*
 bulkrax/*
+archivision/*
+archivision_cleanup/*
+archivision_new_cleanup/*
+completed_migrations/*
+metadata/*
+arch*
+migrations/*
+failures/*

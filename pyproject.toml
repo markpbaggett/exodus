@@ -5,13 +5,15 @@ description = "Scripts to aid in the exodus from the islands to the mainland"
 authors = ["Mark Baggett <mbagget1@utk.edu>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.8"
 requests = "^2.28.1"
 lxml = "^4.9.1"
 xmltodict = "^0.13.0"
 PyYAML = "^6.0"
 argparse = "^1.4.0"
 tqdm = "^4.64.0"
+sphinx = "^5.3.0"
+sphinx-rtd-theme = "^1.1.1"
 
 [tool.poetry.dev-dependencies]
 

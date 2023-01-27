@@ -110,4 +110,14 @@ class ResourceIndexSearch:
 
 
 if __name__ == "__main__":
-    print(ResourceIndexSearch().get_islandora_work_type('rftaart:54'))
+    import argparse
+    parser = argparse.ArgumentParser(description='Find things to download.')
+    parser.add_argument("-c", "--sheet", dest="collection", help="Specify collection pid.", required=True)
+    parser.add_argument(
+        "-o", "--output_file", dest="output", help="Specify output file.", required=True
+    )
+    args = parser.parse_args()
+    results = ResourceIndexSearch().get_images_no_parts(args.collection)
+    with open(args.output, 'w') as all_results:
+        for result in results:
+            all_results.write(f'{result}\n')
