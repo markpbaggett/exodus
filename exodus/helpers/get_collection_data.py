@@ -39,7 +39,7 @@ class CollectionMetadata:
             "publication_place": self.__simplify_xpath('mods:originInfo/mods:place/mods:placeTerm[@valueURI]'),
             "extent": self.__simplify_xpath('mods:physicalDescription/mods:extent'),
             "form": self.__get_valueURIs('mods:physicalDescription/mods:form/@valueURI'),
-            "subject": self.__get_valueURIs('mods:subject[mods:topic]/@valueURI'),
+            "subject": self.__get_valueURIs('mods:subject[mods:topic]/@valueURI' OR 'mods:subject/mods:topic/@valueURI'),
             "keyword": self.__simplify_xpath('mods:subject[not(@valueURI)]/mods:topic'),
             "spatial": self.__get_valueURIs('mods:subject/mods:geographic/@valueURI' OR 'mods:subject[mods:geographic]/@valueURI'),
             "resource_type": "",
