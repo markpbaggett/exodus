@@ -19,6 +19,12 @@ class CollectionMetadata:
     def __get_valueURIs(self, xpath):
         return " | ".join([value for value in self.mods.xpath(xpath, namespaces=self.namespaces)])
 
+    def __get_valueURIs_from_multiple_xpaths(self, xpaths):
+        all_matches = []
+        for xpath in xpaths:
+            all_matches.extend([value for value in self.mods.xpath(xpath, namespaces=self.namespaces)])
+        return " | ".join(all_matches)
+
     def grab_all_metadata(self):
         return {
             "source_identifier": self.pid,
@@ -39,9 +45,19 @@ class CollectionMetadata:
             "publication_place": self.__simplify_xpath('mods:originInfo/mods:place/mods:placeTerm[@valueURI]'),
             "extent": self.__simplify_xpath('mods:physicalDescription/mods:extent'),
             "form": self.__get_valueURIs('mods:physicalDescription/mods:form/@valueURI'),
-            "subject": self.__get_valueURIs('mods:subject[mods:topic]/@valueURI'),
+            "subject": self.__get_valueURIs_from_multiple_xpaths(
+                [
+                    'mods:subject/mods:topic/@valueURI',
+                    'mods:subject[mods:topic]/@valueURI'
+                ]
+            ),
             "keyword": self.__simplify_xpath('mods:subject[not(@valueURI)]/mods:topic'),
-            "spatial": self.__get_valueURIs('mods:subject/mods:geographic/@valueURI'),
+            "spatial": self.__get_valueURIs_from_multiple_xpaths(
+                [
+                    'mods:subject/mods:geographic/@valueURI',
+                    'mods:subject[mods:geographic]/@valueURI'
+                ]
+            ),
             "resource_type": "",
             "repository": self.__get_valueURIs('mods:location/mods:physicalLocation/@valueURI'),
             "note": self.__simplify_xpath('mods:note')
