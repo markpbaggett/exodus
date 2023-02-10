@@ -21,4 +21,15 @@ class MembershipDetails:
 
 
 if __name__ == "__main__":
-    x = MembershipDetails("collections:boydcs").results
+    import argparse
+    parser = argparse.ArgumentParser(description='Find unique work types in collection.')
+    parser.add_argument(
+        "-c", "--collection", dest="collection", help="Specify collection.", required=True
+    )
+    args = parser.parse_args()
+    unique_work_types = []
+    x = MembershipDetails(args.collection).results
+    for k, v in x.items():
+        if v['work_type'] not in unique_work_types:
+            unique_work_types.append(v['work_type'])
+    print(unique_work_types)
