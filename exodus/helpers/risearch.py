@@ -108,6 +108,23 @@ class ResourceIndexSearch:
         results = requests.get(f"{self.base_url}&query={query}").content.decode('utf-8')
         return [result.strip() for result in results.split('\n') if "info:fedora/fedora-system:FedoraObject-3.0" not in result ][1]
 
+    def count_books_and_pages_in_collection(self, collection):
+        pages = []
+        query = self.escape_query(
+            f"""SELECT ?pid FROM <#ri> WHERE {{ ?pid <info:fedora/fedora-system:def/relations-external#isMemberOfCollection> <info:fedora/{collection}>; <info:fedora/fedora-system:def/model#hasModel> <info:fedora/islandora:bookCModel> .}}"""
+        )
+        results = requests.get(f"{self.base_url}&query={query}").json()
+        books = [result['pid'] for result in results['results']]
+        for book in books:
+            query = self.escape_query(
+                f"""SELECT ?page FROM <#ri> WHERE {{?page <http://islandora.ca/ontology/relsext#isPageOf> <{book}>.}}"""
+            )
+            page_results = requests.get(f"{self.base_url}&query={query}").json()
+            for page in page_results['results']:
+                pages.append(page)
+        return (len(books), len(pages))
+        # return books
+
 
 if __name__ == "__main__":
     import argparse
