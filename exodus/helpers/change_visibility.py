@@ -29,7 +29,7 @@ class InstitutionOnlyGenerator:
             current_data = {}
             for k, v in row.items():
                 current_data[k] = v
-                current_data['visibility'] = 'authenticated'
+                current_data['visibility'] = visibility
             new_csv_content.append(current_data)
         return new_csv_content
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         "-o", "--output_sheet", dest="output_sheet", help="Specify output sheet.", required=True
     )
     parser.add_argument(
-        "-v", "--visibility", dest="visibility", help="Specify visibiility.", required=True,
+        "-v", "--visibility", dest="visibility", help="Specify visibility.", required=True,
         choices=['public', 'private', 'authenticated']
     )
     args = parser.parse_args()
