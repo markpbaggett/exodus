@@ -3,11 +3,12 @@ from tqdm import tqdm
 
 
 class InstitutionOnlyGenerator:
-    def __init__(self, original_csv):
+    def __init__(self, original_csv, visibilty):
+        self.visibility = visibilty
         self.original_csv = original_csv
         self.original_as_dict = self.__read()
         self.headers = self.__get_headers()
-        self.new_csv_with_files = self.__add_new_objects()
+        self.new_csv_with_files = self.__add_new_objects(visibilty)
 
     def __read(self):
         csv_content = []
@@ -22,7 +23,7 @@ class InstitutionOnlyGenerator:
         original_headers.append('visibility')
         return original_headers
 
-    def __add_new_objects(self):
+    def __add_new_objects(self, visibility):
         new_csv_content = []
         for row in tqdm(self.original_as_dict):
             current_data = {}
@@ -48,6 +49,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "-o", "--output_sheet", dest="output_sheet", help="Specify output sheet.", required=True
     )
+    parser.add_argument(
+        "-v", "--visibility", dest="visibility", help="Specify visibiility.", required=True,
+        choices=['public', 'private', 'authenticated']
+    )
     args = parser.parse_args()
-    x = InstitutionOnlyGenerator(args.sheet)
+    x = InstitutionOnlyGenerator(args.sheet, args.visibility)
     x.write_csv(args.output_sheet)
