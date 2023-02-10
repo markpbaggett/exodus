@@ -51,7 +51,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-v", "--visibility", dest="visibility", help="Specify visibility.", required=True,
-        choices=['public', 'private', 'authenticated']
+        choices=['open', 'restricted', 'authenticated']
     )
     args = parser.parse_args()
     x = InstitutionOnlyGenerator(args.sheet, args.visibility)
