@@ -4,11 +4,11 @@ from tqdm import tqdm
 
 
 class FileOrganizer:
-    def __init__(self, csv):
+    def __init__(self, csv, what_to_add=['filesets', 'attachments']):
         self.original_csv = csv
         self.original_as_dict = self.__read()
         self.headers = self.__get_headers()
-        self.new_csv_with_files = self.__add_files()
+        self.new_csv_with_files = self.__add_files(what_to_add)
 
     def __read(self):
         csv_content = []
@@ -100,7 +100,7 @@ class FileOrganizer:
         else:
             return "http://pcdm.org/use#OriginalFile"
 
-    def __add_files(self):
+    def __add_files(self, what_to_add=['filesets', 'attachments']):
         new_csv_content = []
         for row in tqdm(self.original_as_dict):
             new_csv_content.append(row)
@@ -109,11 +109,15 @@ class FileOrganizer:
             if row['model'] == "Image":
                 for dsid in all_files:
                     if 'PRESERVE' in all_files and 'OBJ' in all_files:
-                        new_csv_content.append(self.__add_an_attachment(dsid, row, True))
-                        new_csv_content.append(self.__add_a_file(dsid, row, True))
+                        if 'attachments' in what_to_add:
+                            new_csv_content.append(self.__add_an_attachment(dsid, row, True))
+                        if 'filesets' in what_to_add:
+                            new_csv_content.append(self.__add_a_file(dsid, row, True))
                     else:
-                        new_csv_content.append(self.__add_an_attachment(dsid, row))
-                        new_csv_content.append(self.__add_a_file(dsid, row))
+                        if 'attachments' in what_to_add:
+                            new_csv_content.append(self.__add_an_attachment(dsid, row))
+                        if 'filesets' in what_to_add:
+                            new_csv_content.append(self.__add_a_file(dsid, row))
             elif row['model'] == "Audio":
                 for dsid in all_files:
                     if 'OBJ' in all_files and 'PROXY_MP3' in all_files:
@@ -145,7 +149,7 @@ class FileOrganizer:
 
 class FileSetFinder:
     def __init__(self, pid):
-        self.universal_ignores = ('DC', 'RELS-EXT', 'TECHMD', 'PREVIEW', 'TN', 'JPG', 'JP2')
+        self.universal_ignores = ('DC', 'RELS-EXT', 'TECHMD', 'PREVIEW', 'TN', 'JPG', 'JP2', 'MEDIUM_SIZE')
         self.pid = pid.replace('.xml', '')
         self.files = self.__get_all_files()
 
@@ -321,13 +325,20 @@ if __name__ == "__main__":
     parser.add_argument(
         "-f", "--files_sheet", dest="files_sheet", help="Optional: specify files sheet."
     )
+    parser.add_argument(
+        '-w', "--what_to_add", dest="what_to_add", help="What To Add to Sheet", default="everything"
+    )
     args = parser.parse_args()
     files_sheet = f"{args.sheet.replace('.csv', '')}_with_filesets_and_attachments.csv"
+    what_to_add = ['filesets', 'attachments']
     if args.files_sheet:
         files_sheet = args.files_sheet
+    if args.what_to_add != 'everything':
+        what_to_add = [args.what_to_add]
     """Take a CSV and Add files to it"""
     x = FileOrganizer(
-        args.sheet
+        args.sheet,
+        what_to_add
     )
     x.write_csv(files_sheet)
     """Below: Get datastreams of a PID without the ones to ignore"""
