@@ -134,6 +134,8 @@ class FileOrganizer:
                     else:
                         new_csv_content.append(self.__add_an_attachment(dsid, row))
                         new_csv_content.append(self.__add_a_file(dsid, row))
+            elif row['model'] == "Collection":
+                pass
             else:
                 raise Exception(f"Unknown work type on {row['source_identifier']}: {row['model']}")
         return new_csv_content
@@ -149,7 +151,7 @@ class FileOrganizer:
 
 class FileSetFinder:
     def __init__(self, pid):
-        self.universal_ignores = ('DC', 'RELS-EXT', 'TECHMD', 'PREVIEW', 'TN', 'JPG', 'JP2', 'MEDIUM_SIZE')
+        self.universal_ignores = ('DC', 'RELS-EXT', 'TECHMD', 'PREVIEW', 'TN', 'JPG', 'JP2', 'MEDIUM_SIZE', 'POLICY')
         self.pid = pid.replace('.xml', '')
         self.files = self.__get_all_files()
 
