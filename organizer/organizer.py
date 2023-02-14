@@ -136,6 +136,18 @@ class FileOrganizer:
                         new_csv_content.append(self.__add_a_file(dsid, row))
             elif row['model'] == "Collection":
                 pass
+            elif row['model'] == "Book":
+                for dsid in all_files:
+                    if 'PRESERVE' in all_files and 'OBJ' in all_files:
+                        if 'attachments' in what_to_add:
+                            new_csv_content.append(self.__add_an_attachment(dsid, row, True))
+                        if 'filesets' in what_to_add:
+                            new_csv_content.append(self.__add_a_file(dsid, row, True))
+                    else:
+                        if 'attachments' in what_to_add:
+                            new_csv_content.append(self.__add_an_attachment(dsid, row))
+                        if 'filesets' in what_to_add:
+                            new_csv_content.append(self.__add_a_file(dsid, row))
             else:
                 raise Exception(f"Unknown work type on {row['source_identifier']}: {row['model']}")
         return new_csv_content
@@ -255,6 +267,8 @@ class RDFTypeGenerator:
             return self.__get_rdf_types_for_file_on_an_audio_work(dsid, preserve_and_obj)
         elif self.parent_type == "Video":
             return self.__get_rdf_types_for_file_on_a_video_work(dsid, preserve_and_obj)
+        elif self.parent_type == "Book":
+            return self.__get_rdf_types_for_file_on_a_book(dsid, preserve_and_obj)
         else:
             raise Exception(f"Parent type unknown: {self.parent_type}")
 
@@ -316,6 +330,29 @@ class RDFTypeGenerator:
             return "http://pcdm.org/use#Transcript"
         elif dsid == "TN":
             return "http://pcdm.org/use#ThumbnailImage"
+        else:
+            return "http://pcdm.org/use#OriginalFile"
+
+    @staticmethod
+    def __get_rdf_types_for_file_on_a_book(dsid, preserve_and_obj):
+        if dsid == "OBJ" and preserve_and_obj is False:
+            return "http://pcdm.org/use#PreservationFile | http://pcdm.org/use#IntermediateFile"
+        elif dsid == "OBJ":
+            return "http://pcdm.org/use#PreservationFile"
+        elif dsid == "MODS":
+            return "http://pcdm.org/file-format-types#Markup"
+        elif dsid == "TRANSCRIPT":
+            return "http://pcdm.org/use#Transcript"
+        elif dsid == "OCR":
+            return "http://pcdm.org/use#Transcript"
+        elif dsid == "PDF":
+            return "http://pcdm.org/file-format-types#Document | http://pcdm.org/use#ServiceFile"
+        elif dsid == "ORIGINAL":
+            return "http://pcdm.org/file-format-types#Document | http://pcdm.org/use#ServiceFile | http://pcdm.org/use#OriginalFile"
+        elif dsid == "ORIGINAL_EDITED":
+            return "http://pcdm.org/file-format-types#Document | http://pcdm.org/use#ServiceFile"
+        elif dsid == "TEI":
+            return "http://pcdm.org/file-format-types#Markup"
         else:
             return "http://pcdm.org/use#OriginalFile"
 
