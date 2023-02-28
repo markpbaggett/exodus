@@ -652,7 +652,7 @@ class MetadataMapping:
             "info:fedora/islandora:binaryObjectCModel": "Generic",
             "info:fedora/islandora:sp_large_image_cmodel": "Image",
             "info:fedora/islandora:sp_basic_image": "Image",
-            "info:fedora/islandora:sp_pdf": "PDF",
+            "info:fedora/islandora:sp_pdf": "Pdf",
             "info:fedora/islandora:sp_videoCModel": "Video",
         }
         x = ResourceIndexSearch().get_islandora_work_type(file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', ''))
@@ -664,7 +664,7 @@ class MetadataMapping:
             "Book": "https://ontology.lib.utk.edu/works#BookWork",
             "Generic": "https://ontology.lib.utk.edu/works#GenericWork",
             "Image": "https://ontology.lib.utk.edu/works#ImageWork",
-            "PDF": "https://ontology.lib.utk.edu/works#PDFWork",
+            "Pdf": "https://ontology.lib.utk.edu/works#PDFWork",
             "Video": "https://ontology.lib.utk.edu/works#VideoWork",
         }
         return ontology_values[model]
