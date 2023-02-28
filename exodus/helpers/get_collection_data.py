@@ -240,7 +240,7 @@ class CollectionOrganizer:
 
     def __get_unique_collections(self):
         unique_collections = []
-        work_types = ('Image', 'Video', 'Audio')
+        work_types = ('Image', 'Video', 'Audio', 'Pdf')
         for thing in self.original_as_dict:
             if thing['model'] in work_types:
                 if thing['parents'] not in unique_collections:
