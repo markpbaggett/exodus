@@ -134,6 +134,14 @@ class FileOrganizer:
                     else:
                         new_csv_content.append(self.__add_an_attachment(dsid, row))
                         new_csv_content.append(self.__add_a_file(dsid, row))
+            elif row['model'] == "Pdf":
+                for dsid in all_files:
+                    if 'OBJ' in all_files and 'PDFA' in all_files:
+                        new_csv_content.append(self.__add_an_attachment(dsid, row, True))
+                        new_csv_content.append(self.__add_a_file(dsid, row, True))
+                    else:
+                        new_csv_content.append(self.__add_an_attachment(dsid, row))
+                        new_csv_content.append(self.__add_a_file(dsid, row))
             elif row['model'] == "Collection":
                 pass
             elif row['model'] == "Book":
@@ -269,6 +277,8 @@ class RDFTypeGenerator:
             return self.__get_rdf_types_for_file_on_a_video_work(dsid, preserve_and_obj)
         elif self.parent_type == "Book":
             return self.__get_rdf_types_for_file_on_a_book(dsid, preserve_and_obj)
+        elif self.parent_type == "Pdf":
+            return self.__get_rdf_types_for_file_on_a_pdf_work(dsid, preserve_and_obj)
         else:
             raise Exception(f"Parent type unknown: {self.parent_type}")
 
@@ -330,6 +340,23 @@ class RDFTypeGenerator:
             return "http://pcdm.org/use#Transcript"
         elif dsid == "TN":
             return "http://pcdm.org/use#ThumbnailImage"
+        else:
+            return "http://pcdm.org/use#OriginalFile"
+
+    @staticmethod
+    def __get_rdf_types_for_file_on_a_pdf_work(dsid, preserve_and_obj):
+        if dsid == "OBJ" and preserve_and_obj is False:
+            return "http://pcdm.org/use#PreservationFile | http://pcdm.org/use#IntermediateFile"
+        elif dsid == "PDFA":
+            return "http://pcdm.org/use#PreservationFile"
+        elif dsid == "OBJ":
+            return "http://pcdm.org/use#IntermediateFile | http://pcdm.org/use#OriginalFile"
+        elif dsid == "FULL_TEXT":
+            return "http://pcdm.org/file-format-types#UnstructuredText"
+        elif dsid == "POLICY":
+            return "http://pcdm.org/file-format-types#StructuredText"
+        elif dsid == "MODS":
+            return "http://pcdm.org/file-format-types#Markup"
         else:
             return "http://pcdm.org/use#OriginalFile"
 
