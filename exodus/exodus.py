@@ -133,6 +133,60 @@ class XMLtoDictProperty:
             return xmltodict.parse(fd.read(), process_namespaces=True, namespaces=self.namespaces)
 
 
+class RoleAndNameProperty(XMLtoDictProperty):
+    def __init__(self, file):
+        super().__init__(file)
+        self.all_names = self.__find_all_names()
+
+    def __find_all_names(self):
+        if 'mods:name' in self.doc['mods:mods']:
+            all_names = self.doc['mods:mods']['mods:name']
+            if type(all_names) == list:
+                return all_names
+            elif type(all_names) == dict:
+                return [all_names]
+            elif type(all_names) == str:
+                return [all_names]
+            else:
+                return ['Problem']
+        else:
+            return []
+
+    def find(self):
+        roles_and_names = {}
+        for name in self.all_names:
+            local_roles = []
+            try:
+                local_roles.append(f"utk_{name['mods:role']['mods:roleTerm']['#text'].lower().replace(' ', '_')}")
+            except KeyError:
+                print(name)
+            # TODO: A name can have multiple roles
+            except TypeError:
+                for role in name['mods:role']:
+                    local_roles.append(f"utk_{role['mods:roleTerm']['#text'].lower().replace(' ', '_')}")
+            # TODO: Rework this.  It's not pretty but it works.
+            name_value = name['mods:namePart']
+            for role in local_roles:
+                print(name_value)
+                if type(name_value) is list:
+                    for part in name_value:
+                        if type(part) is dict:
+                            if role not in roles_and_names:
+                                roles_and_names[role] = [part['mods:namePart']]
+                            else:
+                                roles_and_names[role].append([part['mods:namePart']])
+                        if type(part) is str and not part.startswith('http'):
+                            if role not in roles_and_names:
+                                roles_and_names[role] = [part]
+                            else:
+                                roles_and_names[role].append(part)
+                elif role not in roles_and_names and not name_value.startswith('http'):
+                    roles_and_names[role] = [name_value]
+                elif not name_value.startswith('http'):
+                    roles_and_names[role].append(name_value)
+        return roles_and_names
+
+
 class NameProperty(XMLtoDictProperty):
     """
     Used for names.
@@ -676,6 +730,8 @@ class MetadataMapping:
                 return TitleProperty(file, namespaces).find()
             case "NameProperty":
                 return NameProperty(file).find()
+            case "RoleAndNameProperty":
+                return RoleAndNameProperty(file).find()
             case "GeoNamesProperty":
                 return GeoNamesProperty(file, namespaces).find(name)
             case "DataProvider":
