@@ -167,10 +167,9 @@ class RoleAndNameProperty(XMLtoDictProperty):
             # TODO: Rework this.  It's not pretty but it works.
             name_value = name['mods:namePart']
             for role in local_roles:
-                print(name_value)
                 if type(name_value) is list:
                     for part in name_value:
-                        if type(part) is dict:
+                        if type(part) is dict and part.get('mods:namePart'):
                             if role not in roles_and_names:
                                 roles_and_names[role] = [part['mods:namePart']]
                             else:
@@ -557,6 +556,112 @@ class TypesProperties(BaseProperty):
         return return_values
 
 
+class LocalTypesProperties(BaseProperty):
+    def __init__(self, path, namespaces):
+        super().__init__(path, namespaces)
+
+    def find(self):
+        return {
+            'resource_type_local': self.__find_dcterms_type(),
+            'form_local': self.__find_local_form()
+        }
+
+    def __find_dcterms_type(self):
+        genre_uris = {
+            "cartographic": "http://id.loc.gov/vocabulary/resourceTypes/car",
+            "image": "http://id.loc.gov/vocabulary/resourceTypes/img",
+            "notated music": "http://id.loc.gov/vocabulary/resourceTypes/not",
+            "still image": "http://id.loc.gov/vocabulary/resourceTypes/img",
+            "text": "http://id.loc.gov/vocabulary/resourceTypes/txt",
+        }
+        type_of_resource_uris = {
+            "text": "http://id.loc.gov/vocabulary/resourceTypes/txt",
+            "cartographic": "http://id.loc.gov/vocabulary/resourceTypes/car",
+            "notated music": "http://id.loc.gov/vocabulary/resourceTypes/not",
+            "sound recording-nonmusical": "http://id.loc.gov/vocabulary/resourceTypes/aun",
+            "sound recording": "http://id.loc.gov/vocabulary/resourceTypes/aud",
+            "still image": "http://id.loc.gov/vocabulary/resourceTypes/img",
+            "moving image": "http://id.loc.gov/vocabulary/resourceTypes/mov",
+            "three dimensional object": "http://id.loc.gov/vocabulary/resourceTypes/art",
+
+        }
+        # TODO: Works but messy!
+        genre_to_dcterms_match_1 = [
+            value.text
+            for value in self.root.xpath(
+                "mods:genre[not(@*)][string() = 'cartographic']",
+                namespaces=self.namespaces
+            )
+        ]
+        genre_to_dcterms_match_2 = [
+            value.text
+            for value in self.root.xpath(
+                "mods:genre[not(@*)][string() = 'notated music']",
+                namespaces=self.namespaces
+            )
+        ]
+        genre_to_dcterms_match_3 = [
+            value.text
+            for value in self.root.xpath(
+                "mods:genre[@authority = 'dct'][string() = 'image']",
+                namespaces=self.namespaces
+            )
+        ]
+        genre_to_dcterms_match_4 = [
+            value.text
+            for value in self.root.xpath(
+                "mods:genre[@authority = 'dct'][string() = 'still image']",
+                namespaces=self.namespaces
+            )
+        ]
+        genre_to_dcterms_match_5 = [
+            value.text
+            for value in self.root.xpath(
+                "mods:genre[@authority = 'dct'][string() = 'text']",
+                namespaces=self.namespaces
+            )
+        ]
+        genre_to_dcterms_matches = (genre_to_dcterms_match_1, genre_to_dcterms_match_2, genre_to_dcterms_match_3, genre_to_dcterms_match_4, genre_to_dcterms_match_5)
+        type_of_resource_to_dcterms_type = [
+            value.text
+            for value in self.root.xpath(
+                "mods:typeOfResource[not(@collection)]", namespaces=self.namespaces
+            )
+        ]
+        type_of_resource_collection = [
+            value.text
+            for value in self.root.xpath(
+                "mods:typeOfResource[@collection]", namespaces=self.namespaces
+            )
+        ]
+        all_dcterms_types = []
+        for matches in genre_to_dcterms_matches:
+            for match in matches:
+                if match in genre_uris:
+                    all_dcterms_types.append(match)
+        for value in type_of_resource_to_dcterms_type:
+            if value in type_of_resource_uris:
+                all_dcterms_types.append(value)
+
+        if len(type_of_resource_collection) > 0:
+            all_dcterms_types.append("http://id.loc.gov/vocabulary/resourceTypes/col")
+        return all_dcterms_types
+
+    def __find_local_form(self):
+        form_no_uri = [value.text for value in
+                       self.root.xpath("mods:physicalDescription/mods:form[not(@type='material')]",
+                                       namespaces=self.namespaces)]
+        genre_strings = [value.text for value in self.root.xpath(
+            "mods:genre[not(text()='cartographic') and not(text()='notated music')]",
+            namespaces=self.namespaces)]
+        all_matches = [form_no_uri, genre_strings]
+        return_values = []
+        for match in all_matches:
+            for value in match:
+                return_values.append(value)
+        return return_values
+
+
 class PublisherProperty(BaseProperty):
     def __init__(self, path, namespaces):
         super().__init__(path, namespaces)
@@ -668,6 +773,7 @@ class MetadataMapping:
                 'remote_files': '',
                 'parents': ' | '.join(ResourceIndexSearch().get_parent_collections(file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', '')),),
                 'has_work_type': self.__get_utk_ontology_value(model),
+                'primary_identifier': file.split('/')[-1].replace('_MODS.xml', '').replace('.xml', ''),
             }
             self.__dereference_islandora_type(file)
             for rdf_property in self.mapping_data:
@@ -744,6 +850,8 @@ class MetadataMapping:
                 return KeywordProperty(file, namespaces).find_topic()
             case "TypesProperties":
                 return TypesProperties(file, namespaces).find()
+            case "LocalTypesProperties":
+                return LocalTypesProperties(file, namespaces).find()
             case "LanguageURIProperty":
                 return LanguageURIProperty(file, namespaces).find_term()
             case "PublisherProperty":
