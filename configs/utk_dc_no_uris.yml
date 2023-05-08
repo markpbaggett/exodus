@@ -279,7 +279,7 @@ mapping:
     properties:
       - 'http://www.europeana.eu/schemas/edm/hasType'
       - 'http://purl.org/dc/terms/type'
-    special: "TypesProperties"
+    special: "LocalTypesProperties"
 
   - name: language
     xpaths:
