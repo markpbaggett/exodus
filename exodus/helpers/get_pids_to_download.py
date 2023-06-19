@@ -10,8 +10,9 @@ class PidFinder:
         with open(self.original_csv, 'r') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                if '_OBJ_fileset' in row['source_identifier']:
-                    pids_to_download.append(row['source_identifier'].replace('_OBJ_fileset', ''))
+                pids_to_download.append(row['source_identifier'].split('_')[0])
+                # if '_OBJ_fileset' in row['source_identifier']:
+                #     pids_to_download.append(row['source_identifier'].replace('_OBJ_fileset', ''))
         return pids_to_download
 
     def write(self, output_file):
@@ -22,5 +23,5 @@ class PidFinder:
 
 
 if __name__ == "__main__":
-    x = PidFinder('archivision_cleanup/archivision_institution_only_filesheets_and_attachments_5.csv')
-    x.write('archivision_5.txt')
+    x = PidFinder('errored_entries/final_sheets/arch3.csv')
+    x.write('arch3.txt')

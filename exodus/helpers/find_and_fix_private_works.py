@@ -1,5 +1,4 @@
 import csv
-import tqdm
 
 class ImportReader:
     def __init__(self, csv_file, pattern='archivision_5'):
@@ -31,9 +30,12 @@ class ImportReader:
     def __fix_path_to_objects(self):
         new_csv_content = []
         for row in self.original_as_dict:
-            if row['remote_files'] != "" and 'OBJ' in row['title']:
+            if row['remote_files'] != "" and 'FileSet' in row['model']:
                 pid = row['remote_files'].split('/')[6]
-                row['remote_files'] = f'https://dlweb.lib.utk.edu/dlwebtemp/{self.pattern}/{pid}.tif'
+                if 'OBJ' in row['parents']:
+                    row['remote_files'] = f'https://dlweb.lib.utk.edu/dlwebtemp/{self.pattern}/{pid}.jpg'
+                elif 'MODS' in row['parents']:
+                    row['remote_files'] = f'https://dlweb.lib.utk.edu/dlwebtemp/{self.pattern}/{pid}.xml'
                 new_csv_content.append(row)
             else:
                 new_csv_content.append(row)
