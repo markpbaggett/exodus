@@ -36,6 +36,8 @@ class FileOrganizer:
             'rdf_type': RDFTypeGenerator(row['model']).find_file_types(filename, preserve_and_obj),
             'file_language': ''
         }
+        if preserve_and_obj == True and filename == "OBJ" and row['model'] == "Pdf":
+            initial_data['parents'] = f"{row['source_identifier'].replace('.xml', '')}"
         for k, v in row.items():
             if k not in default_headings:
                 initial_data[k] = ''
@@ -137,8 +139,11 @@ class FileOrganizer:
             elif row['model'] == "Pdf":
                 for dsid in all_files:
                     if 'OBJ' in all_files and 'PDFA' in all_files:
-                        new_csv_content.append(self.__add_an_attachment(dsid, row, True))
-                        new_csv_content.append(self.__add_a_file(dsid, row, True))
+                        if dsid == "OBJ":
+                            new_csv_content.append(self.__add_a_file(dsid, row, True))
+                        else:
+                            new_csv_content.append(self.__add_an_attachment(dsid, row, True))
+                            new_csv_content.append(self.__add_a_file(dsid, row, True))
                     else:
                         new_csv_content.append(self.__add_an_attachment(dsid, row))
                         new_csv_content.append(self.__add_a_file(dsid, row))
