@@ -122,8 +122,7 @@ class ResourceIndexSearch:
             page_results = requests.get(f"{self.base_url}&query={query}").json()
             for page in page_results['results']:
                 pages.append(page)
-        return (len(books), len(pages))
-        # return books
+        return len(books), len(pages)
 
 
 if __name__ == "__main__":
