@@ -1,0 +1,239 @@
+mapping:
+  - name: local_identifier
+    xpaths:
+      - 'mods:identifier[@type="local"]'
+      - 'mods:identifier[@type="Vendor ID"]'
+      - 'mods:identifier[@type="archival number"]'
+      - 'mods:identifier[@type="catalog"]'
+      - 'mods:identifier[@type="circular"]'
+      - 'mods:identifier[@type="cw"]'
+      - 'mods:identifier[@type="document ID"]'
+      - 'mods:identifier[@type="documentID"]'
+      - 'mods:identifier[@type="filename"]'
+      - 'mods:identifier[@type="film number"]'
+      - 'mods:identifier[@type="legacy"]'
+      - 'mods:identifier[@type="original ID"]'
+      - 'mods:identifier[@type="photograph number"]'
+      - 'mods:identifier[@type="slide number"]'
+      - 'mods:identifier[@type="pid"]'
+      - 'mods:identifier[@type="opac"]'
+      - 'mods:identifier[@type="spc"]'
+    property: "http://id.loc.gov/vocabulary/identifiers/local"
+
+  - name: ark
+    xpaths:
+      - 'mods:identifier[@type="ark"]'
+    property: "http://id.loc.gov/vocabulary/identifiers/ark"
+
+  - name: acquisition_identifier
+    xpaths:
+      - 'mods:identifier[@type="acquisition"]'
+    property: "http://opaquenamespace.org/ns/accessionNumber"
+
+  - name: oclc
+    xpaths:
+      - 'mods:identifier[@type="oclc"]'
+    property: "http://dbpedia.org/ontology/oclc"
+
+  - name: issn
+    xpaths:
+      - 'mods:identifier[@type="issn"]'
+    property: "http://dbpedia.org/ontology/issn"
+
+  - name: isbn
+    xpaths:
+      - 'mods:identifier[@type="isbn"]'
+    property: "http://dbpedia.org/ontology/isbn"
+
+  - name: title_and_alternative_title
+    xpaths:
+      - 'mods:titleInfo[not(@supplied)]/mods:title'
+      - 'mods:titleInfo[@supplied="yes"]/mods:title'
+    properties:
+      - "http://purl.org/dc/terms/title"
+      - "http://purl.org/dc/terms/alternative"
+    special: "TitleProperty"
+
+  - name: abstract
+    xpaths:
+      - 'mods:abstract'
+      - 'mods:physicalDescription/mods:form[@type="material"]'
+    property: "http://purl.org/dc/terms/abstract"
+
+  - name: table_of_contents
+    xpaths:
+      - 'mods:tableOfContents'
+    property: "http://purl.org/dc/terms/tableOfContents"
+
+  - name: date_created
+    xpaths:
+      - 'mods:originInfo/mods:dateCreated[not(@encoding="edtf")]'
+    property: "http://purl.org/dc/terms/created"
+
+  - name: date_issued
+    xpaths:
+      - 'mods:originInfo/mods:dateIssued[not(@encoding="edtf")]'
+    property: "http://purl.org/dc/terms/issued"
+
+  - name: date_other
+    xpaths:
+      - 'mods:originInfo/mods:dateOther[not(@encoding="edtf")]'
+    property: "http://purl.org/dc/terms/date"
+
+  - name: machine_date
+    xpaths:
+      - 'mods:originInfo/mods:dateOther[@encoding="edtf"]'
+      - 'mods:originInfo/mods:dateCreated[@encoding="edtf"]'
+      - 'mods:originInfo/mods:dateIssued[@encoding="edtf"]'
+    properties:
+      - "https://dbpedia.org/ontology/date"
+      - "https://dbpedia.org/ontology/publicationDate"
+      - "https://dbpedia.org/ontology/completionDate"
+    special: MachineDate
+
+  - name: utk_publisher
+    xpaths:
+      - 'mods:originInfo/mods:publisher'
+    property: 'https://ontology.lib.utk.edu/roles#pbl'
+
+  - name: utk_place_of_publication
+    xpaths:
+      - 'mods:originInfo/mods:place/mods:placeTerm'
+    property: 'https://ontology.lib.utk.edu/roles#pup'
+
+  - name: note
+    xpaths:
+      - 'mods:physicalDescription/mods:shelfLocator'
+      - 'mods:physicalDescription/mods:note'
+      - 'mods:note[@type="handwritten"]'
+      - 'mods:note[@displayLabel="Attribution"]'
+      - 'mods:note[@displayLabel="use and reproduction"]'
+      - 'mods:note[@displayLabel="Local Rights"]'
+      - 'mods:note[not(@*)]'
+      - 'mods:accessCondition[@type="restriction on access"]'
+      - 'mods:location[not(mods:physicalLocation[text()[contains(., "University of Tennessee")]])]/mods:shelfLocator'
+    property: "http://www.w3.org/2004/02/skos/core#note"
+
+  - name: extent
+    xpaths:
+      - 'mods:physicalDescription/mods:extent'
+    properties:
+      - "http://rdaregistry.info/Elements/u/P60550"
+    special: ExtentProperty
+
+  - name: instrumentation
+    xpaths:
+      - 'mods:note[@type="Instrumentation"]'
+    property: "http://opaquenamespace.org/ns/sheetmusic_instrumentation"
+
+  - name: first_line
+    xpaths:
+      - 'mods:note[@type="first line"]'
+      - 'mods:note[@type="First line"]'
+    property: "http://opaquenamespace.org/ns/sheetmusic_instrumentation"
+
+  - name: intended_audience
+    xpaths:
+      - 'mods:note[@displayLabel="Grade level"]'
+    property: "http://id.loc.gov/ontologies/bibframe/IntendedAudience"
+
+  - name: rights
+    xpaths:
+      - 'mods:accessCondition[not(@type="restriction on access")]/@xlink:href'
+    properties:
+      - 'http://www.europeana.eu/schemas/edm/rights'
+      - 'http://purl.org/dc/terms/license'
+    special: RightsOrLicenseProperties
+
+  - name: spatial_local
+    xpaths:
+      - 'mods:subject/mods:geographic'
+    property: "http://id.loc.gov/ontologies/bibframe/geographicCoverage"
+
+  - name: coordinates
+    xpaths:
+      - 'mods:subject/mods:cartographics/mods:coordinates'
+    property: 'https://www.ica.org/standards/RiC/ontology#Coordinates'
+
+  - name: temporal
+    xpaths:
+      - 'mods:subject/mods:temporal'
+    properties:
+      - "http://purl.org/dc/terms/temporal"
+
+  - name: call_number
+    xpaths:
+      - 'mods:classification'
+    properties:
+      - "http://id.loc.gov/vocabulary/classSchemes/lcc"
+
+  - name: bibliographic_citation
+    xpaths:
+      - "mods:relatedItem[@type='host'][@displayLabel='Bibliographic Citation']/mods:titleInfo/mods:title"
+    properties:
+      - "http://purl.org/dc/terms/bibliographicCitation"
+
+  - name: providers
+    xpaths:
+      - "mods:recordInfo/mods:recordContentSource"
+    properties:
+      - "http://www.europeana.eu/schemas/edm/provider"
+      - "http://www.europeana.eu/schemas/edm/dataProvider"
+    special: "DataProvider"
+
+  - name: repository
+    xpaths:
+      - 'mods:location/mods:physicalLocation[not(@displayLabel)]'
+      - 'mods:location/mods:physicalLocation[@displayLabel="Repository"]'
+      - 'mods:location/mods:physicalLocation[@displayLabel="Collection"]'
+      - 'mods:relatedItem[@displayLabel="Collection]/mods:titleInfo/mods:title'
+    properties:
+      - "http://id.loc.gov/vocabulary/relators/rps"
+      - "http://dbpedia.org/ontology/collection"
+    special: "PhysicalLocationsProperties"
+
+  - name: keyword
+    xpaths:
+      - 'mods:subject/mods:topic'
+      - 'mods:subject/mods:name/mods:namePart'
+    property:
+      - 'https://w3id.org/idsa/core/keyword'
+
+  - name: types_properties
+    xpaths:
+      - "mods:genre[(not(@*) and (string() = ('cartographic', 'notated music')) or (@authority = 'dct' and (string() = ('text', 'image', 'still image')))]"
+      - "mods:typeOfResource[not(@collection)]"
+      - "mods:typeOfResource[@collection]"
+      - 'mods:genre[@authority="lcgft"]/@valueURI'
+      - "mods:genre[not(@*) and not(text()='cartographic') and not(text()='notated music')]"
+      - "mods:physicalDescription/mods:form[not(@valueURI][not(@type='material')]"
+      - "mods:physicalDescription/mods:form/@valueURI"
+    properties:
+      - 'http://www.europeana.eu/schemas/edm/hasType'
+      - 'http://purl.org/dc/terms/type'
+    special: "LocalTypesProperties"
+
+  - name: language
+    xpaths:
+      - "mods:language/mods:languageTerm"
+    properties:
+      - "http://purl.org/dc/terms/language"
+    special: "LanguageURIProperty"
+
+  - name: sheetmusic_hostitem
+    xpaths:
+      - "mods:relatedItem/mods:identifier[@type='catalog']"
+    properties:
+      - "http://opaquenamespace.org/ns/sheetmusic_hostItem"
+
+  - name: ark
+    xpaths:
+      - "mods:identifier[@type='ark']"
+    properties:
+      - "http://purl.org/dc/terms/identifier"
+
+  - name: is_part_of
+    xpaths:
+      - "mods:relatedItem[@displayLabel='Collection']/mods:location/mods:url"
+    properties:
+      - "http://purl.org/dc/terms/isPartOf"
