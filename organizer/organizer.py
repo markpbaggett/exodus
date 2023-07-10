@@ -44,8 +44,10 @@ class FileOrganizer:
         if row['model'] == "Audio" or row['model'] == "Video":
             if filename == "TRANSCRIPT":
                 initial_data['file_language'] = 'en'
+                initial_data['title'] = 'Captions in English'
             elif filename == "TRANSCRIPT-ES":
                 initial_data['file_language'] = 'es'
+                initial_data['title'] = 'Subtítulos en español'
         return initial_data
 
     def __add_an_attachment(self, filename, row, preserve_and_obj=False):
@@ -66,8 +68,10 @@ class FileOrganizer:
         if row['model'] == "Audio" or row['model'] == "Video":
             if filename == "TRANSCRIPT":
                 initial_data['file_language'] = 'en'
+                initial_data['title'] = 'Captions in English'
             elif filename == "TRANSCRIPT-ES":
                 initial_data['file_language'] = 'es'
+                initial_data['title'] = 'Subtítulos en español'
         return initial_data
 
     @staticmethod
@@ -166,7 +170,7 @@ class FileOrganizer:
         return new_csv_content
 
     def write_csv(self, filename):
-        with open(filename, 'w', newline='') as bulkrax_sheet:
+        with open(filename, 'w', newline='', encoding='utf-8') as bulkrax_sheet:
             writer = csv.DictWriter(bulkrax_sheet, fieldnames=self.headers)
             writer.writeheader()
             for data in self.new_csv_with_files:
