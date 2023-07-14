@@ -2,8 +2,9 @@ import csv
 
 
 class FileCurator:
-    def __init__(self, csv):
+    def __init__(self, csv, curation_type="both"):
         self.original_csv = csv
+        self.curation_type = curation_type
         self.files_and_attachments = self.__get_files_and_attachments_only()
         self.headers = self.__get_headers()
 
@@ -16,8 +17,15 @@ class FileCurator:
         with open(self.original_csv, 'r') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                if row['model'] == "Attachment" or row['model'] == "FileSet":
-                    csv_content.append(row)
+                if self.curation_type == "both":
+                    if row['model'] == "Attachment" or row['model'] == "FileSet":
+                        csv_content.append(row)
+                elif self.curation_type == "filesets":
+                    if row['model'] == "FileSet":
+                        csv_content.append(row)
+                elif self.curation_type == "attachments":
+                    if row['model'] == "Attachment":
+                        csv_content.append(row)
         return csv_content
 
     def __write_sheet(self, filename, values, newline=''):
@@ -58,6 +66,12 @@ if __name__ == "__main__":
         dest="total_size",
         help="If multisheet, the number of attachments and filesets. Must be even.", default=800
     )
+    parser.add_argument(
+        "-ty", "--type",
+        dest="curation_type",
+        help="filesets, attachments, both",
+        default="both"
+    )
     args = parser.parse_args()
     files_sheet = f"{args.sheet.replace('.csv', '')}_with_filesheets_and_attachments_only.csv"
     if args.files_sheet:
@@ -65,7 +79,7 @@ if __name__ == "__main__":
     multi_sheet = True
     if args.multi_sheets == "single":
         multi_sheet = False
-    x = FileCurator(args.sheet)
+    x = FileCurator(args.sheet, curation_type=args.curation_type)
     x.write_files_and_attachments_only(
         files_sheet,
         multi_sheets=multi_sheet,
