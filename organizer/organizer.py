@@ -360,8 +360,6 @@ class RDFTypeGenerator:
             return "http://pcdm.org/use#PreservationFile"
         elif dsid == "OBJ":
             return "http://pcdm.org/use#IntermediateFile | http://pcdm.org/use#OriginalFile"
-        elif dsid == "FULL_TEXT":
-            return "http://pcdm.org/file-format-types#UnstructuredText"
         elif dsid == "POLICY":
             return "http://pcdm.org/file-format-types#StructuredText"
         elif dsid == "MODS":
