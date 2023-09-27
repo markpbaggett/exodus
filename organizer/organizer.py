@@ -76,12 +76,20 @@ class FileOrganizer:
 
     @staticmethod
     def __get_filename_title(dsid, preserve_and_obj, row):
-        if preserve_and_obj:
+        if preserve_and_obj and row['model'] == "Image":
             identifier = row['local_identifier'].split(' | ')[0]
             if dsid == "OBJ":
                 return f"{identifier}_i"
             elif dsid == "PRESERVE":
                 return f"{identifier}_p"
+            else:
+                return dsid
+        elif preserve_and_obj and row['model'] == "Audio":
+            identifier = row['local_identifier'].split(' | ')[0]
+            if dsid == "OBJ":
+                return f"{identifier}_p"
+            elif dsid == "PROXY_MP3":
+                return f"{identifier}_i"
             else:
                 return dsid
         else:
