@@ -29,6 +29,8 @@ class ValidateMigration:
         if 'license' in row and row['license'] != "":
             if 'http://' not in row['license']:
                 self.all_exceptions.append(f'{row["source_identifier"]} has invalid license: {row["license"]}.')
+            if '/rdf' in row['license']:
+                self.all_exceptions.append(f'{row["source_identifier"]} has invalid license: {row["license"]}.')
 
     def validate_values(self, row):
         system_fields = ("source_identifier", "model", "remote_files", "parents", "visibility")
