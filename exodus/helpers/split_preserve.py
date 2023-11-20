@@ -8,7 +8,7 @@ class FileSplitter:
         self.headers = self.__get_headers()
 
     def __get_headers(self):
-        original_headers = [k for k, v in self.files_and_attachments[0].items()]
+        original_headers = [k for k, v in self.files_and_attachments['preserve'][0].items()]
         return original_headers
 
     def __get_files_and_attachments_only(self):
@@ -17,8 +17,10 @@ class FileSplitter:
         with open(self.original_csv, 'r') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                if 'OBJ' in row['source_identifer']:
+                if 'OBJ' in row['source_identifier']:
                     preserve_content.append(row)
+                else:
+                    nonpreserve_content.append(row)
         return {'preserve': preserve_content, 'nonpreserve': nonpreserve_content}
 
     def __write_sheet(self, filename, values, newline=''):
@@ -31,7 +33,7 @@ class FileSplitter:
 
     def write(self):
         self.__write_sheet(f"{self.original_csv.replace('.csv', '')}_preserve.csv", values=self.files_and_attachments['preserve'])
-        self.__write_sheet("nonpreserve.csv", values=self.files_and_attachments['nonpreserve'])
+        self.__write_sheet(f"{self.original_csv.replace('.csv', '')}_nonpreserve.csv", values=self.files_and_attachments['nonpreserve'])
         return
 
 
