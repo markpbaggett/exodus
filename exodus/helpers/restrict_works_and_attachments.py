@@ -32,7 +32,19 @@ class PolicyReader:
 
 
 if __name__ == "__main__":
-    x = PolicyReader('policies/restricted_files.xml')
-    print(x.work_restricted)
-    print(x.restricted_files)
+    import os
+    restricted_works = []
+    restritced_files = []
+    for root, dirs, files in os.walk('collections/rfta_audio/policies'):
+        for file in files:
+            if file.endswith('.xml'):
+                x = PolicyReader(os.path.join(root, file))
+                if x.work_restricted:
+                    restricted_works.append(file.replace('.xml', ''))
+                for restricted_file in x.restricted_files:
+                    restritced_files.append(f'{file}_{restricted_file}')
+    print(restricted_works)
+    print(restritced_files)
+
+
 
